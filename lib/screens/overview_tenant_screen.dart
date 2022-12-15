@@ -49,12 +49,12 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100.0)),
-                          elevation: 5,
+                          elevation: 10,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               menuList[position].icon,
-                              size: 50,
+                              size: 70,
                               color: Colors.blue,
                             ),
                           ),

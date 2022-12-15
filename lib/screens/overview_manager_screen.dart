@@ -54,7 +54,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               menuList[position].icon,
-                              size: 50,
+                              size: 70,
                               color: Colors.blue,
                             ),
                           ),

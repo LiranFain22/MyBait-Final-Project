@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mybait/screens/overview_manager_screen.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
+
+import './screens/overview_manager_screen.dart';
+import './screens/overview_tenant_screen.dart';
 
 import './screens/login_screen.dart';
 
@@ -9,7 +10,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
 
   @override
   Widget build(BuildContext context) {
