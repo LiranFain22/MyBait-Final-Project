@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mybait/screens/overview_manager_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  static const routeName = '/login';
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -11,6 +12,13 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool checkLogin(TextEditingController nameController, TextEditingController passwordController) {
+    if (nameController.text == 'admin' && passwordController.text == 'admin') {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,17 +26,27 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                'MyBait',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'MyBait',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 30,
+                    ),
+                  ),
                 ),
-              ),
+                const Icon(
+                  Icons.home_outlined,
+                  color: Colors.blue,
+                  size: 40,
+                )
+              ],
             ),
             Container(
               alignment: Alignment.center,
@@ -71,8 +89,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   child: const Text('Login'),
                   onPressed: () {
-                    print(nameController.text);
-                    print(passwordController.text);
+                    if(checkLogin(nameController, passwordController)) {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Login successful!'),
+                          duration: Duration(seconds: 2),
+                        )
+                      );
+                      Navigator.pushNamed(context, OverviewManagerScreen.routeName);
+                    } else {
+                      // todo: message with username or password invalid
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Username or Password Invalid, please Try again...'),
+                          duration: Duration(seconds: 3),
+                        )
+                      );
+                    }
                   },
                 )),
             Row(
