@@ -11,27 +11,71 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isUserNameValidate = false;
+  bool _isPasswordValidate = false;
 
-  void checkLogin(TextEditingController nameController,
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void loginValidation(TextEditingController userNameController,
       TextEditingController passwordController) {
-    if (nameController.text == 'admin' && passwordController.text == 'admin') {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Login successful!'),
-        duration: Duration(seconds: 2),
-      ));
-      Navigator.of(context).pushReplacementNamed(OverviewManagerScreen.routeName);
-    } else if (nameController.text == 'user' &&
-        passwordController.text == 'user') {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Login successful!'),
-        duration: Duration(seconds: 2),
-      ));
-      Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
+    if (userNameController.text == 'admin') {
+      if (passwordController.text == 'admin') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login successful!'),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context)
+            .pushReplacementNamed(OverviewManagerScreen.routeName);
+      } else {
+        // userName correct, password incorrect
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Username or Password Invalid, please Try again...'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     } else {
+      // userName incorrect
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Username or Password Invalid, please Try again...'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+
+    if (userNameController.text == 'user') {
+      if (passwordController.text == 'user') {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login successful!'),
+          duration: Duration(seconds: 2),
+        ));
+        Navigator.of(context)
+            .pushReplacementNamed(OverviewTenantScreen.routeName);
+      } else {
+        // userName correct, password incorrect
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Username or Password Invalid, please Try again...'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      // userName incorrect
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -82,10 +126,11 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               padding: EdgeInsets.all(10),
               child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
+                controller: userNameController,
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'User Name',
+                  errorText: _isUserNameValidate ? 'Field is empty' : null,
                 ),
               ),
             ),
@@ -94,9 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextField(
                 obscureText: true,
                 controller: passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
+                  errorText: _isPasswordValidate ? 'Field is empty' : null,
                 ),
               ),
             ),
@@ -112,7 +158,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   child: const Text('Login'),
                   onPressed: () {
-                    checkLogin(nameController, passwordController);
+                    setState(() {
+                      loginValidation(userNameController, passwordController);
+                      userNameController.text.isEmpty ? _isUserNameValidate = true : _isUserNameValidate = false;
+                      passwordController.text.isEmpty ? _isPasswordValidate = true : _isPasswordValidate = false;
+                    });
                   },
                 )),
             Row(
