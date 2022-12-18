@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mybait/models/report.dart';
+
+import 'reports_screen.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -7,6 +10,14 @@ class _MenuItem {
   final String title;
 
   _MenuItem(this.icon, this.title);
+
+  IconData get getIcon {
+    return icon;
+  }
+
+  String get getTitle {
+    return title;
+  }
 }
 
 class OverviewTenantScreen extends StatefulWidget {
@@ -30,7 +41,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
       appBar: AppBar(
         title: const Text('Tenant - Main'),
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer('TENANT'),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -41,7 +52,17 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
             return Padding(
               padding: const EdgeInsets.all(20.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (menuList[position].getTitle == 'Report') {
+                    Navigator.of(context).pushNamed(ReportsScreen.routeName);
+                  }
+                  if (menuList[position].getTitle == 'Payment') {
+                    // todo: implement payment screen
+                  }
+                  if (menuList[position].getTitle == 'Information') {
+                    // todo: implement information screen
+                  }
+                },
                 child: Center(
                   child: Column(
                     children: [

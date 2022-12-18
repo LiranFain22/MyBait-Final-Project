@@ -25,57 +25,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void loginValidation(TextEditingController userNameController,
       TextEditingController passwordController) {
-    if (userNameController.text == 'admin') {
-      if (passwordController.text == 'admin') {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login successful!'),
-          duration: Duration(seconds: 2),
-        ));
-        Navigator.of(context)
-            .pushReplacementNamed(OverviewManagerScreen.routeName);
-      } else {
-        // userName correct, password incorrect
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Username or Password Invalid, please Try again...'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
-    } else {
-      // userName incorrect
+    if (userNameController.text == 'admin' && passwordController.text == 'admin') {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Username or Password Invalid, please Try again...'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-    }
-
-    if (userNameController.text == 'user') {
-      if (passwordController.text == 'user') {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login successful!'),
-          duration: Duration(seconds: 2),
-        ));
-        Navigator.of(context)
-            .pushReplacementNamed(OverviewTenantScreen.routeName);
-      } else {
-        // userName correct, password incorrect
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Username or Password Invalid, please Try again...'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Login successful!'),
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.of(context).pushReplacementNamed(OverviewManagerScreen.routeName);
+    } else if (userNameController.text == 'user' &&
+        passwordController.text == 'user') {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Login successful!'),
+        duration: Duration(seconds: 2),
+      ));
+      Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
     } else {
-      // userName incorrect
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -119,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
               child: const Text(
-                'Sign in',
+                'Login',
                 style: TextStyle(fontSize: 20),
               ),
             ),

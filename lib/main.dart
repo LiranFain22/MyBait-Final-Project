@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import './screens/overview_manager_screen.dart';
 import './screens/overview_tenant_screen.dart';
-
+import './screens/reports_screen.dart';
+import './screens/edit_report_screen.dart';
 import './screens/login_screen.dart';
 
 void main() {
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       routes: {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
+        ReportsScreen.routeName: (context) => ReportsScreen(''),
+        EditReportScreen.routeName:(context) => EditReportScreen(),
       },
     );
   }
