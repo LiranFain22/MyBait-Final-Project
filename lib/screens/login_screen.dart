@@ -111,12 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            // TextButton(
-            //   onPressed: () {
-            //     // todo: implement forgot password screen
-            //   },
-            //   child: const Text('Forgot Password'),
-            // ),
             Container(
               height: 50,
             ),
