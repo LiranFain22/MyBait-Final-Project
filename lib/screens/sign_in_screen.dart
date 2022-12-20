@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'overview_tenant_screen.dart';
+
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signIn';
 
@@ -135,65 +137,94 @@ class _SignInScreenInfo extends StatelessWidget {
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'First name',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                //const SizedBox(height: 40.0),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: TextFormField(
+                    //TODO IMPLMENT CONTROLLER
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'First name',
+                    ),
+                  ),
+                  )
                 ),
-              ),
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        //TODO IMPLMENT CONTROLLER
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Last name',
+                        ),
+                      ),
+                    )
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Last Name',
+            Row(
+
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        //TODO IMPLMENT CONTROLLER
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'City',
+                        ),
+                      ),
+                    )
                 ),
-              ),
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        //TODO IMPLMENT CONTROLLER
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Street',
+                        ),
+                      ),
+                    )
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'City',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        //TODO IMPLMENT CONTROLLER
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'building number',
+                        ),
+                      ),
+                    )
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Street',
+                Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextFormField(
+                        //TODO IMPLMENT CONTROLLER
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Apartment number',
+                        ),
+                      ),
+                    )
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'building number',
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
-                decoration: const InputDecoration(
-                  border: UnderlineInputBorder(),
-                  labelText: 'Apartment number',
-                ),
-              ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -215,6 +246,19 @@ class _SignInScreenInfo extends StatelessWidget {
                 ),
               ),
             ),
+            TextButton(
+              child: const Text(
+                'next',
+                style: TextStyle(fontSize: 20),
+              ),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Account successfully created!'),
+                  duration: Duration(seconds: 2),
+                ));
+                //Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
+              },
+            )
           ],
         ),
       ),
