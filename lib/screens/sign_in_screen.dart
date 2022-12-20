@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 
-class SingInScreen extends StatefulWidget {
-  static const routeName = '/login';
+class SignInScreen extends StatefulWidget {
+  static const routeName = '/signIn';
 
   @override
-  State<SingInScreen> createState() => _SingInScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SingInScreenState extends State<SingInScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 

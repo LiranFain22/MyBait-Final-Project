@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
 
 import '../screens/overview_manager_screen.dart';
-
+import '../screens/sign_in_screen.dart';
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
@@ -144,6 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   onPressed: () {
                     // todo: implement forgot sign-up screen
+                    Navigator.of(context).pushNamed(SignInScreen.routeName);
                   },
                 )
               ],
