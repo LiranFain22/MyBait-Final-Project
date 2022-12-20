@@ -128,7 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
 class _SignInScreenInfo extends StatelessWidget {
   const _SignInScreenInfo({super.key});
-
+//TODO ADD TextEditingController AND CHANGE THE NAVIGATION FROM SIGN IN SCREEN STATE TO SIGN IN INFO
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -285,6 +285,7 @@ class _SignInScreenInfo extends StatelessWidget {
                   content: Text('Account successfully created!'),
                   duration: Duration(seconds: 2),
                 ));
+                //TODO MOVE TO TENANT SCREEN
                 //Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
               },
             )
