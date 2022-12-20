@@ -10,6 +10,35 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController1 = TextEditingController();
+  TextEditingController passwordController2 = TextEditingController();
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passwordController1.dispose();
+    passwordController2.dispose();
+    super.dispose();
+  }
+
+  void signInValidation(TextEditingController userNameController,
+      TextEditingController passwordController,
+      TextEditingController valPasswordController) {
+    if(passwordController.text != valPasswordController.text){
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('The passwords are different, please Try again...'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+    //if(userNameController.text.contains(other))
+    //TODO check for SPECIAL CHARACTERS
+    //https://stackoverflow.com/questions/52835450/flutter-how-to-avoid-special-characters-in-validator
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +79,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
+                controller: userNameController,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Enter your username',
@@ -60,7 +89,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
+                controller: passwordController1,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Enter password',
@@ -70,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               child: TextFormField(
-                //TODO IMPLMENT CONTROLLER
+                controller: passwordController2,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Confirm the password',
