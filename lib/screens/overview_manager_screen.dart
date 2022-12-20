@@ -30,7 +30,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
       appBar: AppBar(
         title: const Text('Manager - Main'),
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer('MANAGER'),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -54,7 +54,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               menuList[position].icon,
-                              size: 50,
+                              size: 70,
                               color: Colors.blue,
                             ),
                           ),
