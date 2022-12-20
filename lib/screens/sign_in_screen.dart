@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mybait/screens/overview_manager_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signIn';
@@ -9,10 +8,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,47 +45,175 @@ class _SignInScreenState extends State<SignInScreen> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'User Name',
+                  border: UnderlineInputBorder(),
+                  labelText: 'Enter your username',
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
+                  border: UnderlineInputBorder(),
+                  labelText: 'Enter password',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Confirm the password',
                 ),
               ),
             ),
             TextButton(
+              child: const Text(
+                'next',
+                style: TextStyle(fontSize: 20),
+              ),
               onPressed: () {
-                // todo: implement forgot password screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const _SignInScreenInfo()),
+                );
               },
-              child: const Text('Forgot Password'),
-            ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SignInScreenInfo extends StatelessWidget {
+  const _SignInScreenInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ListView(
+          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text('Does not have account?'),
-                TextButton(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
                   child: const Text(
-                    'Sign in',
-                    style: TextStyle(fontSize: 20),
+                    'MyBait',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 30,
+                    ),
                   ),
-                  onPressed: () {
-                    // todo: implement forgot sign-up screen
-                  },
+                ),
+                const Icon(
+                  Icons.home_outlined,
+                  color: Colors.blue,
+                  size: 40,
                 )
               ],
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Personal Information',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'First name',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Last Name',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'City',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Street',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'building number',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Apartment number',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Email Address',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              child: TextFormField(
+                //TODO IMPLMENT CONTROLLER
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'payment',
+                ),
+              ),
             ),
           ],
         ),

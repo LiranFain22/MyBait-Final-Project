@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  MaterialApp(
       title: 'MyBait',
-      home: LoginScreen(),
+      home: SignInScreen(),
       routes: {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
