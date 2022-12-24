@@ -12,6 +12,8 @@ class MenuItem {
 class OverviewManagerScreen extends StatefulWidget {
   static const routeName = '/menu-manager';
 
+  const OverviewManagerScreen({super.key});
+
   @override
   State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
 }

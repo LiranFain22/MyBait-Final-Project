@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './screens/overview_manager_screen.dart';
 import './screens/overview_tenant_screen.dart';
@@ -7,21 +8,24 @@ import './screens/edit_report_screen.dart';
 import './screens/login_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       title: 'MyBait',
       home: LoginScreen(),
       routes: {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
         ReportsScreen.routeName: (context) => ReportsScreen(''),
-        EditReportScreen.routeName:(context) => EditReportScreen(),
+        EditReportScreen.routeName: (context) => EditReportScreen(),
       },
     );
   }

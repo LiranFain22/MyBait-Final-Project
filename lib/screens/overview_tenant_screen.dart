@@ -23,6 +23,8 @@ class _MenuItem {
 class OverviewTenantScreen extends StatefulWidget {
   static const routeName = '/menu-tenant';
 
+  const OverviewTenantScreen({super.key});
+
   @override
   State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
 }

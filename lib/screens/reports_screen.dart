@@ -11,7 +11,7 @@ class ReportsScreen extends StatelessWidget {
 
   final String userType;
 
-  ReportsScreen(this.userType);
+  ReportsScreen(this.userType, {super.key});
 
   final List<Report> reports = [
     Report(

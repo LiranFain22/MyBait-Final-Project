@@ -5,6 +5,8 @@ import '../models/report.dart';
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
 
+  const EditReportScreen({super.key});
+
   @override
   State<EditReportScreen> createState() => _EditReportScreenState();
 }
