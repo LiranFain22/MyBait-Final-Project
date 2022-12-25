@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "139437726878",
+    "project_id": "mybait-95d70",
+    "storage_bucket": "mybait-95d70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139437726878:android:22f30413f1cdf92f03af8f",
+        "android_client_info": {
+          "package_name": "com.example.mybait"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "139437726878-asspdoqqjistnsifn4f827efj1u5tcg3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABMgAzowbSHeK_Z015jNP2qZDm7F6mb4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "139437726878-asspdoqqjistnsifn4f827efj1u5tcg3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

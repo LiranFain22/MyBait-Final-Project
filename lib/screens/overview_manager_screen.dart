@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mybait/screens/managing_fault_screen.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -7,6 +8,14 @@ class MenuItem {
   final String title;
 
   MenuItem(this.icon, this.title);
+
+  IconData get getIcon {
+    return icon;
+  }
+
+  String get getTitle {
+    return title;
+  }
 }
 
 class OverviewManagerScreen extends StatefulWidget {
@@ -43,7 +52,17 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
             return Padding(
               padding: const EdgeInsets.all(20.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (menuList[position].getTitle == 'Managing Fault') {
+                    Navigator.of(context).pushNamed(ManagingFaultScreen.routeName);
+                  }
+                  if (menuList[position].getTitle == 'Cash Register') {
+                    // todo: implement Cash Register screen
+                  }
+                  if (menuList[position].getTitle == 'Information') {
+                    // todo: implement Information screen
+                  }
+                },
                 child: Center(
                   child: Column(
                     children: [
