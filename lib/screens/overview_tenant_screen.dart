@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mybait/models/report.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'reports_screen.dart';
 
+import '../models/report.dart';
 import '../widgets/app_drawer.dart';
 
 class _MenuItem {
@@ -42,6 +43,36 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tenant - Main'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure, do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(
+                            false); // dismisses only the dialog and returns false
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       drawer: AppDrawer('TENANT'),
       body: Padding(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mybait/screens/managing_fault_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../screens/managing_fault_screen.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -40,6 +42,36 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manager - Main'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure, do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(
+                            false); // dismisses only the dialog and returns false
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       drawer: AppDrawer('MANAGER'),
       body: Padding(
@@ -54,7 +86,8 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Managing Fault') {
-                    Navigator.of(context).pushNamed(ManagingFaultScreen.routeName);
+                    Navigator.of(context)
+                        .pushNamed(ManagingFaultScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Cash Register') {
                     // todo: implement Cash Register screen

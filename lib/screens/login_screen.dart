@@ -30,12 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (isValid) {
       _formkey.currentState!.save();
-      _submitAuthForm(_userEmail.trim(), _userName.trim(), _userPassword.trim(),
-          _isLogin);
+      _submitAuthForm(
+          _userEmail.trim(), _userName.trim(), _userPassword.trim(), _isLogin);
     }
   }
 
-  void _submitAuthForm(String email, String username, String password, bool isLogin) async {
+  void _submitAuthForm(
+      String email, String username, String password, bool isLogin) async {
     UserCredential userCredential;
 
     try {
@@ -132,46 +133,46 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              if (!_isLogin)
-                Container(
-                  padding: EdgeInsets.all(10),
-                  child: TextFormField(
-                    key: ValueKey('email'),
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty || !value.contains('@')) {
-                        return 'Please Enter an Correct Email Address';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _userEmail = value!;
-                    },
-                  ),
-                ),
               Container(
                 padding: EdgeInsets.all(10),
                 child: TextFormField(
-                  key: ValueKey('username'),
+                  key: ValueKey('email'),
+                  keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || value.length < 4) {
-                      return 'Please Enter at least 4 character';
+                    if (value!.isEmpty || !value.contains('@')) {
+                      return 'Please Enter an Correct Email Address';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _userName = value!;
+                    _userEmail = value!;
                   },
                 ),
               ),
+              if (!_isLogin)
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextFormField(
+                    key: ValueKey('username'),
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 4) {
+                        return 'Please Enter at least 4 character';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _userName = value!;
+                    },
+                  ),
+                ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextFormField(
