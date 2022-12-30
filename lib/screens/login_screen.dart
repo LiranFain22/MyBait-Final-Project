@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../screens/overview_manager_screen.dart';
-import '../screens/overview_tenant_screen.dart';
-
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
@@ -48,6 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: email,
