@@ -15,9 +15,8 @@ class ManagingFaultScreen extends StatefulWidget {
   static const routeName = '/managing-fault';
 
   final String userType;
-  final String userId;
 
-  ManagingFaultScreen(this.userId, this.userType, {super.key});
+  ManagingFaultScreen(this.userType, {super.key});
 
   @override
   State<ManagingFaultScreen> createState() => _ManagingFaultScreenState();
@@ -31,14 +30,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
       appBar: AppBar(
         title: const Text('Managing Fault'),
       ),
-      drawer: AppDrawer(widget.userId, widget.userType),
-      // body: const Center(
-      //   child: Text(
-      //     'Here Manager will review reports',
-      //     style: TextStyle(fontSize: 25),
-      //     textAlign: TextAlign.center,
-      //   ),
-      // )
+      drawer: AppDrawer(widget.userType),
       body: StreamBuilder(
         stream:
             FirebaseFirestore.instance.collection('review').snapshots(),

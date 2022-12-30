@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mybait/screens/overview_manager_screen.dart';
+import 'package:mybait/screens/overview_tenant_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -45,6 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
+        if (email.contains('manager')) {
+          Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
+        } else {
+          Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+        }
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Login successfully'),

@@ -2,20 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/edit_report_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/managing_fault_screen.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/screens/splash_screen.dart';
-
-// import 'package:mybait/providers/reports.dart';
-// import 'package:provider/provider.dart';
-
-// import './screens/overview_manager_screen.dart';
-// import './screens/overview_tenant_screen.dart';
-// import './screens/reports_screen.dart';
-// import './screens/edit_report_screen.dart';
-// import './screens/login_screen.dart';
-// import './screens/managing_fault_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +23,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    String userType = '';
     return MaterialApp(
       title: 'MyBait',
       home: StreamBuilder(
@@ -40,15 +34,27 @@ class MyApp extends StatelessWidget {
           }
           if (userSnapshot.hasData) {
             if (userSnapshot.data!.email!.contains('manager')) {
+              userType = 'MANAGER';
               return OverviewManagerScreen(userSnapshot.data!.uid);
             }
             if (userSnapshot.data!.email!.contains('tenant')) {
+              userType = 'TENANT';
               return OverviewTenantScreen(userSnapshot.data!.uid);
             }
           }
           return LoginScreen();
         },
       ),
+      routes: {
+        // '/':(context) => const LoginScreen(),
+        OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(userType),
+        OverviewTenantScreen.routeName:(context) => OverviewTenantScreen(userType),
+        EditReportScreen.routeName:(context) => EditReportScreen(userType),
+        ManagingFaultScreen.routeName: (context) => ManagingFaultScreen(userType),
+        ReportsScreen.routeName:(context) => ReportsScreen(userType),
+        SplashScreen.routeName:(context) => SplashScreen(),
+        LoginScreen.routeName:(context) => const LoginScreen(),
+      },
     );
   }
 }

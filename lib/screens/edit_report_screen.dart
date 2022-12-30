@@ -214,7 +214,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                                 'Your report send to manager building for review.'),
                           ),
                         );
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewTenantScreen(widget.userId)));
+                        Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
                       }
                     },
                   ),

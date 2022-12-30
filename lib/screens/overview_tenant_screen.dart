@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/login_screen.dart';
 
 import 'reports_screen.dart';
 
@@ -23,9 +24,9 @@ class _MenuItem {
 
 class OverviewTenantScreen extends StatefulWidget {
   static const routeName = '/menu-tenant';
-  String userId;
+  String userType;
 
-  OverviewTenantScreen(this.userId, {super.key});
+  OverviewTenantScreen(this.userType, {super.key});
 
   @override
   State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
@@ -58,7 +59,9 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
                     TextButton(
                       onPressed: () {
                         FirebaseAuth.instance.signOut();
-                        Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                        Navigator.of(context).pop(
+                            true); // dismisses only the dialog and returns true
+                        Navigator.pushNamed(context, LoginScreen.routeName);
                       },
                       child: const Text('Yes'),
                     ),
@@ -76,7 +79,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(widget.userId ,'TENANT'),
+      drawer: AppDrawer(widget.userType),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -89,7 +92,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Report') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsScreen(widget.userId ,userType)));
+                    Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Payment') {
                     // todo: implement payment screen

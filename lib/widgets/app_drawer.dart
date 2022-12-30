@@ -8,9 +8,8 @@ import '../screens/reports_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   final String userType;
-  final String userId;
 
-  AppDrawer(this.userId, this.userType);
+  const AppDrawer(this.userType, {super.key});
 
   Widget userDrawerToShow(BuildContext context, String userType) {
     if (userType == 'MANAGER') {
@@ -25,7 +24,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewManagerScreen(userId)));
+              Navigator.of(context).pushReplacementNamed(OverviewManagerScreen.routeName);
             },
           ),
           const Divider(),
@@ -33,7 +32,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.error_outline),
             title: Text('Managing Fault'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ManagingFaultScreen(userId, userType)));
+              Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
             },
           ),
           const Divider(),
@@ -66,7 +65,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewTenantScreen(userId)));
+              Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
             },
           ),
           const Divider(),
@@ -74,7 +73,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.report_gmailerrorred),
             title: Text('Reports'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsScreen(userId, userType)));
+              Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
             },
           ),
           const Divider(),

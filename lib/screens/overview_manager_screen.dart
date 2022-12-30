@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/login_screen.dart';
 
 import '../screens/managing_fault_screen.dart';
 
@@ -22,9 +23,9 @@ class MenuItem {
 
 class OverviewManagerScreen extends StatefulWidget {
   static const routeName = '/menu-manager';
-  String userId;
+  String userType;
 
-  OverviewManagerScreen(this.userId, {super.key});
+  OverviewManagerScreen(this.userType, {super.key});
 
   @override
   State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
@@ -57,6 +58,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                       onPressed: () {
                         FirebaseAuth.instance.signOut();
                         Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                        Navigator.pushNamed(context, LoginScreen.routeName);
                       },
                       child: const Text('Yes'),
                     ),
@@ -74,7 +76,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(widget.userId ,'MANAGER'),
+      drawer: AppDrawer(widget.userType),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -87,7 +89,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Managing Fault') {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ManagingFaultScreen(widget.userId, userType)));
+                    Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Cash Register') {
                     // todo: implement Cash Register screen
