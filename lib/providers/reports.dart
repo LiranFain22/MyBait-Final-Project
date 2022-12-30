@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/report.dart';
 
 class Reports {
@@ -9,8 +11,14 @@ class Reports {
     return _reportList;
   }
 
-  void addReportToReview(Report report) {
-    _reportList.add(report);
+  void addReportToReview(Report report, DocumentReference<Map<String, dynamic>> documentRef) {
+    FirebaseFirestore.instance.collection('review').add({
+      'id': documentRef.id,
+      'title': report.title,
+      'description': report.description,
+      'location': report.location,
+      'imageUrl': report.imageUrl,
+    });
   }
 
   void removeReportFromReportList(String reportId) {

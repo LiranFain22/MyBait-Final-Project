@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mybait/screens/managing_fault_screen.dart';
 
 import '../screens/overview_manager_screen.dart';
 import '../screens/overview_tenant_screen.dart';
@@ -7,8 +8,9 @@ import '../screens/reports_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   final String userType;
+  final String userId;
 
-  AppDrawer(this.userType);
+  AppDrawer(this.userId, this.userType);
 
   Widget userDrawerToShow(BuildContext context, String userType) {
     if (userType == 'MANAGER') {
@@ -23,8 +25,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OverviewManagerScreen.routeName);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewManagerScreen(userId)));
             },
           ),
           const Divider(),
@@ -32,7 +33,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.error_outline),
             title: Text('Managing Fault'),
             onTap: () {
-              // todo: implement Managing Fault Page
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ManagingFaultScreen(userId, userType)));
             },
           ),
           const Divider(),
@@ -65,8 +66,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OverviewTenantScreen.routeName);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewTenantScreen(userId)));
             },
           ),
           const Divider(),
@@ -74,8 +74,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.report_gmailerrorred),
             title: Text('Reports'),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(ReportsScreen.routeName);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsScreen(userId, userType)));
             },
           ),
           const Divider(),

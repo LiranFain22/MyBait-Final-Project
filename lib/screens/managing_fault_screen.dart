@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +15,9 @@ class ManagingFaultScreen extends StatefulWidget {
   static const routeName = '/managing-fault';
 
   final String userType;
+  final String userId;
 
-  ManagingFaultScreen(this.userType, {super.key});
+  ManagingFaultScreen(this.userId, this.userType, {super.key});
 
   @override
   State<ManagingFaultScreen> createState() => _ManagingFaultScreenState();
@@ -29,25 +31,44 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
       appBar: AppBar(
         title: const Text('Managing Fault'),
       ),
-      drawer: AppDrawer(widget.userType),
-      body: ListView.builder(
-        itemCount: reportList.length,
-        padding: const EdgeInsets.all(10),
-        itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(reportList[index].imageUrl!),
-              ),
-              title: Text(reportList[index].title!),
-              subtitle: Text(reportList[index].description!),
-              trailing: IconButton(
-                icon: const Icon(Icons.info_outline),
-                onPressed: () {
-                  // todo: implement report_review_screen
-                },
-              ),
-            ),
+      drawer: AppDrawer(widget.userId, widget.userType),
+      // body: const Center(
+      //   child: Text(
+      //     'Here Manager will review reports',
+      //     style: TextStyle(fontSize: 25),
+      //     textAlign: TextAlign.center,
+      //   ),
+      // )
+      body: StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection('review').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          var documents = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: documents.length,
+            padding: const EdgeInsets.all(10),
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(documents[index]['imageUrl']),
+                  ),
+                  title: Text(documents[index]['title']),
+                  subtitle: Text(documents[index]['description']),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.info_outline),
+                    onPressed: () {
+                      // todo: implement review_report_screen
+                    },
+                  ),
+                ),
+              );
+            },
           );
         },
       ),

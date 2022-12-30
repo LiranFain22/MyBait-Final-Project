@@ -22,8 +22,9 @@ class MenuItem {
 
 class OverviewManagerScreen extends StatefulWidget {
   static const routeName = '/menu-manager';
+  String userId;
 
-  const OverviewManagerScreen({super.key});
+  OverviewManagerScreen(this.userId, {super.key});
 
   @override
   State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
@@ -73,7 +74,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer('MANAGER'),
+      drawer: AppDrawer(widget.userId ,'MANAGER'),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -86,8 +87,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Managing Fault') {
-                    Navigator.of(context)
-                        .pushNamed(ManagingFaultScreen.routeName);
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ManagingFaultScreen(widget.userId, userType)));
                   }
                   if (menuList[position].getTitle == 'Cash Register') {
                     // todo: implement Cash Register screen

@@ -23,14 +23,16 @@ class _MenuItem {
 
 class OverviewTenantScreen extends StatefulWidget {
   static const routeName = '/menu-tenant';
+  String userId;
 
-  const OverviewTenantScreen({super.key});
+  OverviewTenantScreen(this.userId, {super.key});
 
   @override
   State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
 }
 
 class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
+  final currentUser = FirebaseAuth.instance.currentUser;
   final String userType = 'TENANT';
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
@@ -74,7 +76,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer('TENANT'),
+      drawer: AppDrawer(widget.userId ,'TENANT'),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -87,7 +89,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Report') {
-                    Navigator.of(context).pushNamed(ReportsScreen.routeName);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ReportsScreen(widget.userId ,userType)));
                   }
                   if (menuList[position].getTitle == 'Payment') {
                     // todo: implement payment screen

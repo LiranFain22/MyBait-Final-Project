@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mybait/screens/overview_tenant_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 
 import '../providers/reports.dart';
@@ -8,8 +9,9 @@ import '../widgets/app_drawer.dart';
 
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
+  String userId;
 
-  const EditReportScreen({super.key});
+  EditReportScreen(this.userId, {super.key});
 
   @override
   State<EditReportScreen> createState() => _EditReportScreenState();
@@ -66,7 +68,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
       appBar: AppBar(
         title: const Text('Edit Report'),
       ),
-      drawer: AppDrawer('TENANT'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -204,16 +205,16 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!
                             .save(); // saves all onSaved in each textFormField
+                        Reports reports = Reports();
+                        var documentToCreate = FirebaseFirestore.instance.collection('review').doc();
+                        reports.addReportToReview(_editedReport, documentToCreate);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
                                 'Your report send to manager building for review.'),
                           ),
                         );
-                        Reports reports = Reports();
-                        reports.addReportToReview(_editedReport);
-                        Navigator.of(context)
-                            .pushNamed(ReportsScreen.routeName);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OverviewTenantScreen(widget.userId)));
                       }
                     },
                   ),

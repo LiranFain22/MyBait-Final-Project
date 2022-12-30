@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/splash_screen.dart';
 
 // import 'package:mybait/providers/reports.dart';
 // import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,12 +35,15 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return SplashScreen();
+          }
           if (userSnapshot.hasData) {
             if (userSnapshot.data!.email!.contains('manager')) {
-              return OverviewManagerScreen();
+              return OverviewManagerScreen(userSnapshot.data!.uid);
             }
             if (userSnapshot.data!.email!.contains('tenant')) {
-              return OverviewTenantScreen();
+              return OverviewTenantScreen(userSnapshot.data!.uid);
             }
           }
           return LoginScreen();
