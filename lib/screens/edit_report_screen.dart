@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 
-import '../providers/reports.dart';
+import '../models/reports.dart';
 import '../models/report.dart';
 import '../widgets/app_drawer.dart';
 

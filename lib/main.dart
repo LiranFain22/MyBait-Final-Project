@@ -8,6 +8,7 @@ import 'package:mybait/screens/managing_fault_screen.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
+import 'package:mybait/screens/review_report_screen.dart';
 import 'package:mybait/screens/splash_screen.dart';
 
 Future<void> main() async {

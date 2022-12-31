@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mybait/screens/review_report_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/reports.dart';
+import '../models/reports.dart';
 import '../models/report.dart';
 import '../widgets/app_drawer.dart';
 
@@ -32,8 +33,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
       ),
       drawer: AppDrawer(widget.userType),
       body: StreamBuilder(
-        stream:
-            FirebaseFirestore.instance.collection('review').snapshots(),
+        stream: FirebaseFirestore.instance.collection('review').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -54,8 +54,16 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
                   subtitle: Text(documents[index]['description']),
                   trailing: IconButton(
                     icon: const Icon(Icons.info_outline),
-                    onPressed: () {
-                      // todo: implement review_report_screen
+                    onPressed: () async {
+                      String documentId = documents[index].id;
+                      if (documentId.isNotEmpty) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                ReviewReportScreen(documentId)));
+                      } else {
+                        print('no document');
+                        const CircularProgressIndicator();
+                      }
                     },
                   ),
                 ),
