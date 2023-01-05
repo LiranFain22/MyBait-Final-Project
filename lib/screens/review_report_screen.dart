@@ -65,8 +65,20 @@ class ReviewReportScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         child: const Text('Cancel'),
-                        onPressed: () {
-                          // todo: implement cancel action
+                        onPressed: () async {
+                          try {
+                            await FirebaseFirestore.instance.runTransaction(
+                                (Transaction myTransaction) async {
+                              myTransaction.delete(snapshot.data!.reference);
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'The report has been removed from review..')));
+                            Navigator.of(context).pop();
+                          } on Exception catch (error) {
+                            print(error.toString());
+                          }
                         },
                       ),
                     ],
