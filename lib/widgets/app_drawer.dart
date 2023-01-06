@@ -6,11 +6,17 @@ import '../screens/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
 
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
+  static const routeName = '/drawer';
   final String userType;
 
   const AppDrawer(this.userType, {super.key});
 
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
   Widget userDrawerToShow(BuildContext context, String userType) {
     if (userType == 'MANAGER') {
       return Column(
@@ -41,6 +47,14 @@ class AppDrawer extends StatelessWidget {
             title: Text('Cash Register'),
             onTap: () {
               // todo: implement Cash Register Page
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.report_gmailerrorred),
+            title: Text('Reports'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
             },
           ),
           const Divider(),
@@ -99,7 +113,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: userDrawerToShow(context, userType)
+      child: userDrawerToShow(context, widget.userType)
     );
   }
 }

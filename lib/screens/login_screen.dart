@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/widgets/app_drawer.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -48,8 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password,
         );
         if (email.contains('manager')) {
+          const AppDrawer('MANAGER');
           Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
         } else {
+          const AppDrawer('TENANT');
           Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
         }
         ScaffoldMessenger.of(context).showSnackBar(

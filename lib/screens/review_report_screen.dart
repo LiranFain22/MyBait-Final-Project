@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/models/report.dart';
+
+import 'package:mybait/models/reports.dart';
 
 class ReviewReportScreen extends StatelessWidget {
   static const routeName = '/reviewReport';
@@ -58,27 +59,28 @@ class ReviewReportScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        child: const Text('Approve'),
-                        onPressed: () {
-                          // todo: implement approve action
-                        },
-                      ),
+                          child: const Text('Approve'),
+                          onPressed: () {
+                            // todo: implement approve action
+                            // 1. Create a copy of the source document in the target collection, i.e. read it from the source collection,
+                            //    get the document fields and create a new document in the target collection with these fields,
+                            //    and then;
+                            Reports reports = Reports();
+                            Report report = Report(
+                              id: snapshot.data!['id'],
+                              title: snapshot.data!['title'],
+                              description: snapshot.data!['description'],
+                              location: snapshot.data!['location'],
+                              imageUrl: snapshot.data!['imageUrl'],
+                            );
+                            reports.addReportToReports(report);
+                            // 2. Delete the document from the source collection.
+                            deleteDocument(snapshot, context);
+                          }),
                       ElevatedButton(
                         child: const Text('Cancel'),
                         onPressed: () async {
-                          try {
-                            await FirebaseFirestore.instance.runTransaction(
-                                (Transaction myTransaction) async {
-                              myTransaction.delete(snapshot.data!.reference);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'The report has been removed from review..')));
-                            Navigator.of(context).pop();
-                          } on Exception catch (error) {
-                            print(error.toString());
-                          }
+                          await deleteDocument(snapshot, context);
                         },
                       ),
                     ],
@@ -91,5 +93,20 @@ class ReviewReportScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> deleteDocument(AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
+      BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance
+          .runTransaction((Transaction myTransaction) async {
+        myTransaction.delete(snapshot.data!.reference);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('The report has been removed from review..')));
+      Navigator.of(context).pop();
+    } on Exception catch (error) {
+      print(error.toString());
+    }
   }
 }

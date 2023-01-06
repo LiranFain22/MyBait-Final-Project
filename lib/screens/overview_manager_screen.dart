@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/reports_screen.dart';
 
 import '../screens/managing_fault_screen.dart';
 
@@ -36,6 +37,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
     MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
+    MenuItem(Icons.info_outline, 'Reports'),
     MenuItem(Icons.account_circle_outlined, 'Information'),
   ];
 
@@ -90,6 +92,9 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                 onTap: () {
                   if (menuList[position].getTitle == 'Managing Fault') {
                     Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
+                  }
+                  if (menuList[position].getTitle == 'Reports') {
+                   Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName); 
                   }
                   if (menuList[position].getTitle == 'Cash Register') {
                     // todo: implement Cash Register screen

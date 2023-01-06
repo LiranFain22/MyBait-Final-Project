@@ -32,6 +32,26 @@ class Reports {
     );
   }
 
+  void addReportToReports(Report report) {
+    FirebaseFirestore.instance.collection('reports').add({
+      'id': 'documentRef.id',
+      'title': report.title,
+      'description': report.description,
+      'location': report.location,
+      'imageUrl': report.imageUrl,
+    }).then(
+      (value) {
+        FirebaseFirestore.instance.collection('reports').doc(value.id).set({
+          'id': value.id,
+          'title': report.title,
+          'description': report.description,
+          'location': report.location,
+          'imageUrl': report.imageUrl,
+        });
+      },
+    );
+  }
+
   void removeReportFromReportList(String reportId) {
     for (Report report in _reportList) {
       if (report.id == reportId) {
