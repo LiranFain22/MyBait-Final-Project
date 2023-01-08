@@ -7,6 +7,7 @@ import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/payment_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/screens/splash_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         SplashScreen.routeName:(context) => SplashScreen(),
         LoginScreen.routeName:(context) => const LoginScreen(),
         AppDrawer.routeName:(context) => AppDrawer(),
+        PaymentScreen.routeName:(context) => PaymentScreen(),
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/payment_screen.dart';
 
 import 'reports_screen.dart';
 
@@ -90,7 +91,7 @@ class OverviewTenantScreen extends StatelessWidget {
                     Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Payment') {
-                    // todo: implement payment screen
+                    Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Information') {
                     // todo: implement information screen

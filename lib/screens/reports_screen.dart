@@ -28,14 +28,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
       ),
       drawer: AppDrawer(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('reports').snapshots(),
+        stream: FirebaseFirestore.instance.collection('reports').where('status', isEqualTo: 'INPROGRESS').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          // var documents = snapshot.data!.docs;
           if (snapshot.hasData) {
             var documents = snapshot.data!.docs;
             return ListView.builder(
@@ -61,7 +60,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushReplacementNamed(EditReportScreen.routeName);
+          Navigator.of(context)
+              .pushReplacementNamed(EditReportScreen.routeName);
         },
       ),
     );
