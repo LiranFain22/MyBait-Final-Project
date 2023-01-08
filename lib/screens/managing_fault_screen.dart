@@ -15,9 +15,7 @@ enum SelectedOptions {
 class ManagingFaultScreen extends StatefulWidget {
   static const routeName = '/managing-fault';
 
-  final String userType;
-
-  ManagingFaultScreen(this.userType, {super.key});
+  ManagingFaultScreen({super.key});
 
   @override
   State<ManagingFaultScreen> createState() => _ManagingFaultScreenState();
@@ -31,7 +29,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
       appBar: AppBar(
         title: const Text('Managing Fault'),
       ),
-      drawer: AppDrawer(widget.userType),
+      drawer: AppDrawer(),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('review').snapshots(),
         builder: (context, snapshot) {

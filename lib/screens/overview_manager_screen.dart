@@ -26,7 +26,7 @@ class OverviewManagerScreen extends StatelessWidget {
   static const routeName = '/menu-manager';
   String userType = 'MANAGER';
 
-  OverviewManagerScreen(this.userType, {super.key});
+  OverviewManagerScreen({super.key});
 
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
@@ -72,7 +72,7 @@ class OverviewManagerScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(userType),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(

@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String userType = '';
     return MaterialApp(
       title: 'MyBait',
       home: StreamBuilder(
@@ -36,27 +35,24 @@ class MyApp extends StatelessWidget {
           }
           if (userSnapshot.hasData) {
             if (userSnapshot.data!.email!.contains('manager')) {
-              userType = 'MANAGER';
-              return OverviewManagerScreen(userSnapshot.data!.uid);
+              return OverviewManagerScreen();
             }
             if (userSnapshot.data!.email!.contains('tenant')) {
-              userType = 'TENANT';
-              return OverviewTenantScreen(userSnapshot.data!.uid);
+              return OverviewTenantScreen();
             }
           }
-          return LoginScreen();
+          return const LoginScreen();
         },
       ),
       routes: {
-        // '/':(context) => const LoginScreen(),
-        OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(userType),
-        OverviewTenantScreen.routeName:(context) => OverviewTenantScreen(userType),
-        EditReportScreen.routeName:(context) => EditReportScreen(userType),
-        ManagingFaultScreen.routeName: (context) => ManagingFaultScreen(userType),
-        ReportsScreen.routeName:(context) => ReportsScreen(userType),
+        OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
+        OverviewTenantScreen.routeName:(context) => OverviewTenantScreen(),
+        EditReportScreen.routeName:(context) => EditReportScreen(),
+        ManagingFaultScreen.routeName: (context) => ManagingFaultScreen(),
+        ReportsScreen.routeName:(context) => ReportsScreen(),
         SplashScreen.routeName:(context) => SplashScreen(),
         LoginScreen.routeName:(context) => const LoginScreen(),
-        AppDrawer.routeName:(context) => AppDrawer(userType),
+        AppDrawer.routeName:(context) => AppDrawer(),
       },
     );
   }

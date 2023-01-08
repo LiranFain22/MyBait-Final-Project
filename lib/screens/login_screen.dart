@@ -49,10 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password,
         );
         if (email.contains('manager')) {
-          AppDrawer('MANAGER');
           Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
         } else {
-          AppDrawer('TENANT');
           Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
         }
         ScaffoldMessenger.of(context).showSnackBar(

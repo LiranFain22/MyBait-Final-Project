@@ -7,9 +7,8 @@ import '../widgets/app_drawer.dart';
 
 class ReportsScreen extends StatefulWidget {
   static const routeName = '/reports';
-  final String userType;
 
-  ReportsScreen(this.userType, {super.key});
+  ReportsScreen({super.key});
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
@@ -27,7 +26,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       appBar: AppBar(
         title: const Text('Reports'),
       ),
-      drawer: AppDrawer(widget.userType),
+      drawer: AppDrawer(),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('reports').snapshots(),
         builder: (context, snapshot) {

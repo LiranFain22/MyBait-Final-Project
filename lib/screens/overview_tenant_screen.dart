@@ -26,7 +26,7 @@ class OverviewTenantScreen extends StatelessWidget {
   static const routeName = '/menu-tenant';
   String userType = 'TENANT';
 
-  OverviewTenantScreen(this.userType, {super.key});
+  OverviewTenantScreen({super.key});
 
   final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -74,7 +74,7 @@ class OverviewTenantScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(userType),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(

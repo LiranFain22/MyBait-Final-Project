@@ -9,9 +9,8 @@ import '../widgets/app_drawer.dart';
 
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
-  String userId;
 
-  EditReportScreen(this.userId, {super.key});
+  EditReportScreen({super.key});
 
   @override
   State<EditReportScreen> createState() => _EditReportScreenState();
