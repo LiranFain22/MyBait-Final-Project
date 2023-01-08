@@ -22,18 +22,12 @@ class MenuItem {
   }
 }
 
-class OverviewManagerScreen extends StatefulWidget {
+class OverviewManagerScreen extends StatelessWidget {
   static const routeName = '/menu-manager';
-  String userType;
+  String userType = 'MANAGER';
 
   OverviewManagerScreen(this.userType, {super.key});
 
-  @override
-  State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
-}
-
-class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
-  final String userType = 'MANAGE';
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
     MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
@@ -78,7 +72,7 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(widget.userType),
+      drawer: AppDrawer(userType),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(

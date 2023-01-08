@@ -22,19 +22,14 @@ class _MenuItem {
   }
 }
 
-class OverviewTenantScreen extends StatefulWidget {
+class OverviewTenantScreen extends StatelessWidget {
   static const routeName = '/menu-tenant';
-  String userType;
+  String userType = 'TENANT';
 
   OverviewTenantScreen(this.userType, {super.key});
 
-  @override
-  State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
-}
-
-class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
   final currentUser = FirebaseAuth.instance.currentUser;
-  final String userType = 'TENANT';
+
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
     _MenuItem(Icons.payment_outlined, 'Payment'),
@@ -79,7 +74,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(widget.userType),
+      drawer: AppDrawer(userType),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(

@@ -5,24 +5,20 @@ import '../screens/overview_manager_screen.dart';
 import '../screens/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
 
-
-class AppDrawer extends StatefulWidget {
+class AppDrawer extends StatelessWidget {
   static const routeName = '/drawer';
-  final String userType;
+  String userType;
 
-  const AppDrawer(this.userType, {super.key});
+  AppDrawer(this.userType, {super.key});
 
-  @override
-  State<AppDrawer> createState() => _AppDrawerState();
-}
-
-class _AppDrawerState extends State<AppDrawer> {
   Widget userDrawerToShow(BuildContext context, String userType) {
+    // print(userType);
     if (userType == 'MANAGER') {
       return Column(
         children: [
           AppBar(
-            title: const Text('Hello Manager!'), // todo: change to name of user base Firebase!
+            title: Text(
+                'Hello $userType!'), // todo: change to name of user base Firebase!
             automaticallyImplyLeading: false,
           ),
           const Divider(),
@@ -30,7 +26,8 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: Icon(Icons.home),
             title: Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(OverviewManagerScreen.routeName);
+              Navigator.of(context)
+                  .pushReplacementNamed(OverviewManagerScreen.routeName);
             },
           ),
           const Divider(),
@@ -38,7 +35,8 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: Icon(Icons.error_outline),
             title: Text('Managing Fault'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
+              Navigator.of(context)
+                  .pushReplacementNamed(ManagingFaultScreen.routeName);
             },
           ),
           const Divider(),
@@ -54,7 +52,8 @@ class _AppDrawerState extends State<AppDrawer> {
             leading: Icon(Icons.report_gmailerrorred),
             title: Text('Reports'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
+              Navigator.of(context)
+                  .pushReplacementNamed(ReportsScreen.routeName);
             },
           ),
           const Divider(),
@@ -69,51 +68,51 @@ class _AppDrawerState extends State<AppDrawer> {
       );
     }
     return Column(
-        children: [
-          AppBar(
-            title: const Text('Hello Tenant!'), // todo: change to name of user base Firebase!
-            automaticallyImplyLeading: false,
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(OverviewTenantScreen.routeName);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(Icons.report_gmailerrorred),
-            title: Text('Reports'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(Icons.payment_outlined),
-            title: Text('Payment'),
-            onTap: () {
-              // todo: implement Payment Page
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('Information'),
-            onTap: () {
-              // todo: implement Information Page
-            },
-          ),
-        ],
-      );
+      children: [
+        AppBar(
+          title: Text(
+              'Hello $userType!'), // todo: change to name of user base Firebase!
+          automaticallyImplyLeading: false,
+        ),
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.home),
+          title: Text('Home'),
+          onTap: () {
+            Navigator.of(context)
+                .pushReplacementNamed(OverviewTenantScreen.routeName);
+          },
+        ),
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.report_gmailerrorred),
+          title: Text('Reports'),
+          onTap: () {
+            Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
+          },
+        ),
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.payment_outlined),
+          title: Text('Payment'),
+          onTap: () {
+            // todo: implement Payment Page
+          },
+        ),
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.info_outline),
+          title: Text('Information'),
+          onTap: () {
+            // todo: implement Information Page
+          },
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: userDrawerToShow(context, widget.userType)
-    );
+    return Drawer(child: userDrawerToShow(context, userType));
   }
 }

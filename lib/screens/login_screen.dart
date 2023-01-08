@@ -49,10 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password,
         );
         if (email.contains('manager')) {
-          const AppDrawer('MANAGER');
+          AppDrawer('MANAGER');
           Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
         } else {
-          const AppDrawer('TENANT');
+          AppDrawer('TENANT');
           Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
         }
         ScaffoldMessenger.of(context).showSnackBar(
@@ -73,6 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
             .set({
           'username': username,
           'email': email,
+          'uid': userCredential.user!.uid,
+          'userType': 'TENANT',
         });
       }
     } on PlatformException catch (error) {
@@ -153,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   key: ValueKey('email'),
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
+                    suffixIcon: Icon(Icons.email_outlined),
                     labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
@@ -173,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextFormField(
                     key: ValueKey('username'),
                     decoration: const InputDecoration(
+                      suffixIcon: Icon(Icons.account_box_outlined),
                       labelText: 'Username',
                       border: OutlineInputBorder(),
                     ),
@@ -192,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextFormField(
                   key: ValueKey('password'),
                   decoration: const InputDecoration(
+                    suffixIcon: Icon(Icons.lock_outline),
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
