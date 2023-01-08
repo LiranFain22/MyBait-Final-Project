@@ -49,17 +49,19 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password,
         );
         if (email.contains('manager')) {
-          Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
+          Navigator.pushReplacementNamed(
+              context, OverviewManagerScreen.routeName);
         } else {
-          Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+          Navigator.pushReplacementNamed(
+              context, OverviewTenantScreen.routeName);
         }
         ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
+          const SnackBar(
+            content: Text('Login successfully'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: email,
@@ -74,6 +76,14 @@ class _LoginScreenState extends State<LoginScreen> {
           'uid': userCredential.user!.uid,
           'userType': 'TENANT',
         });
+        await ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login successfully'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
       }
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
