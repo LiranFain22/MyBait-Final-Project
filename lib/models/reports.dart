@@ -13,20 +13,22 @@ class Reports {
 
   void addReportToReview(
       Report report, DocumentReference<Map<String, dynamic>> documentRef) {
-    FirebaseFirestore.instance.collection('review').add({
+    FirebaseFirestore.instance.collection('reports').add({
       'id': 'documentRef.id',
       'title': report.title,
       'description': report.description,
       'location': report.location,
       'imageUrl': report.imageUrl,
+      'status': 'WAITING'
     }).then(
       (value) {
-        FirebaseFirestore.instance.collection('review').doc(value.id).set({
+        FirebaseFirestore.instance.collection('reports').doc(value.id).set({
           'id': value.id,
           'title': report.title,
           'description': report.description,
           'location': report.location,
           'imageUrl': report.imageUrl,
+          'status': 'WAITING'
         });
       },
     );

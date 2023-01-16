@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -20,6 +21,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
     super.dispose();
   }
 
+  void _showDialog(String title, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Image.network(
+            imageUrl,
+            cacheHeight: 200,
+            cacheWidth: 200,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +45,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
       ),
       drawer: AppDrawer(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('reports').where('status', isEqualTo: 'INPROGRESS').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('reports')
+            .where('status', isEqualTo: 'INPROGRESS')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -41,27 +61,34 @@ class _ReportsScreenState extends State<ReportsScreen> {
               itemCount: documents.length,
               padding: const EdgeInsets.all(10),
               itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(documents[index]['imageUrl']),
+                return GestureDetector(
+                  onTap: () {
+                    _showDialog(documents[index]['title'],
+                        documents[index]['imageUrl']);
+                  },
+                  child: Card(
+                    child: ListTile(
+                      leading: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(documents[index]['imageUrl']),
+                        ),
+                      title: Text(documents[index]['title']),
                     ),
-                    title: Text(documents[index]['title']),
                   ),
                 );
               },
             );
           }
-          return Text('OHH NO!');
+          return const Text('OHH NO!');
         },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context)
-              .pushReplacementNamed(EditReportScreen.routeName);
+          // Navigator.of(context)
+          //     .pushReplacementNamed(EditReportScreen.routeName);
+          Navigator.of(context).pushNamed(EditReportScreen.routeName);
         },
       ),
     );

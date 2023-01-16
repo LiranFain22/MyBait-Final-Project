@@ -31,7 +31,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
       ),
       drawer: AppDrawer(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('review').snapshots(),
+        stream: FirebaseFirestore.instance.collection('reports').where('status', isEqualTo: 'WAITING').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

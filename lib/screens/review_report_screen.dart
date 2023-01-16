@@ -11,7 +11,7 @@ class ReviewReportScreen extends StatelessWidget {
 
   Future<DocumentSnapshot> getDocument(String documentId) async {
     return FirebaseFirestore.instance
-        .collection('review')
+        .collection('reports')
         .doc(documentId)
         .get();
   }
