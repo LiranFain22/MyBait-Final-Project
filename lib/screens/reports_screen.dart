@@ -31,6 +31,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
             imageUrl,
             cacheHeight: 200,
             cacheWidth: 200,
+            loadingBuilder: (context, child, loadingProgress) {
+              return loadingProgress == null
+                  ? child
+                  : const LinearProgressIndicator();
+            },
           ),
         );
       },
@@ -39,6 +44,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
@@ -47,7 +53,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('reports')
-            .where('status', isEqualTo: 'INPROGRESS')
+            // .where('createBy',
+            //     isEqualTo: FirebaseAuth.instance.currentUser!.uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -66,15 +73,37 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     _showDialog(documents[index]['title'],
                         documents[index]['imageUrl']);
                   },
-                  child: Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(documents[index]['imageUrl']),
+                  child: documents[index]['status'] == 'INPROGRESS'
+                      ? Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(documents[index]['imageUrl']),
+                            ),
+                            title: Text(documents[index]['title']),
+                            trailing: const Text(
+                              'In Progress',
+                              style: TextStyle(
+                                color: Colors.orange
+                              ),
+                            ),
+                          ),
+                        )
+                      : Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(documents[index]['imageUrl']),
+                            ),
+                            title: Text(documents[index]['title']),
+                            trailing: const Text(
+                              'Waiting',
+                              style: TextStyle(
+                                color: Colors.redAccent
+                              ),
+                            ),
+                          ),
                         ),
-                      title: Text(documents[index]['title']),
-                    ),
-                  ),
                 );
               },
             );
@@ -86,8 +115,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add),
         onPressed: () {
-          // Navigator.of(context)
-          //     .pushReplacementNamed(EditReportScreen.routeName);
           Navigator.of(context).pushNamed(EditReportScreen.routeName);
         },
       ),
