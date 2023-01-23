@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/register_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -233,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: _trySubmit,
                     )),
               if (!_isLoading)
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextButton(
@@ -248,7 +249,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           _isLogin = !_isLogin;
                         });
                       },
-                    )
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'Sign-up',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                      },
+                    ),
                   ],
                 ),
             ],
