@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
@@ -8,19 +9,21 @@ import '../screens/reports_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   static const routeName = '/drawer';
+  User? user = FirebaseAuth.instance.currentUser;
+  String userType = '';
 
   AppDrawer({super.key});
 
   Widget userDrawerToShow(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    String userType = '';
-    user!.email!.contains('manager') ? userType = 'MANAGER' : userType = 'TENANT';
+    user!.email!.contains('manager')
+        ? userType = 'MANAGER'
+        : userType = 'TENANT';
     if (userType == 'MANAGER') {
       return Column(
         children: [
           AppBar(
-            title: Text(
-                'Hello $userType!'), // todo: change to name of user base Firebase!
+            title: const Text(
+                'What you like to do?'),
             automaticallyImplyLeading: false,
           ),
           const Divider(),
@@ -72,8 +75,8 @@ class AppDrawer extends StatelessWidget {
     return Column(
       children: [
         AppBar(
-          title: Text(
-              'Hello $userType!'), // todo: change to name of user base Firebase!
+         title: const Text(
+                'What you like to do? 🤔'),
           automaticallyImplyLeading: false,
         ),
         const Divider(),

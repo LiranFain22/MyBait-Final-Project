@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Login successfully'),
+            content: Text('Login successfully 🥳'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 2),
           ),
@@ -237,22 +237,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    TextButton(
-                      child: Text(
-                        _isLogin
-                            ? 'Create new account'
-                            : 'I already have an account',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isLogin = !_isLogin;
-                        });
-                      },
-                    ),
+                    // TextButton(
+                    //   child: Text(
+                    //     _isLogin
+                    //         ? 'Create new account'
+                    //         : 'I already have an account',
+                    //     style: TextStyle(fontSize: 20),
+                    //   ),
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       _isLogin = !_isLogin;
+                    //     });
+                    //   },
+                    // ),
                     TextButton(
                       child: const Text(
-                        'Sign-up',
+                        'Create new account',
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {

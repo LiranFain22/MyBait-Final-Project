@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/login_screen.dart';
@@ -25,7 +26,6 @@ class _MenuItem {
 
 class OverviewTenantScreen extends StatelessWidget {
   static const routeName = '/menu-tenant';
-  String userType = 'TENANT';
 
   OverviewTenantScreen({super.key});
 
@@ -41,7 +41,7 @@ class OverviewTenantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tenant - Main'),
+        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),

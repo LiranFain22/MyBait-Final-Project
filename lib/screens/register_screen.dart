@@ -1,9 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/overview_tenant_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const routeName = '/register';
+
+  RegisterScreen({super.key});
+
+  final _auth = FirebaseAuth.instance;
+
   final _formkey = GlobalKey<FormState>();
+
   var _email = '';
   var _password = '';
   var _firstName = '';
@@ -13,7 +23,99 @@ class RegisterScreen extends StatelessWidget {
   var _buildingNumber = '';
   var _apartmentNumber = '';
 
-  RegisterScreen({super.key});
+  void _trySubmit(BuildContext context) {
+    final isValid = _formkey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+
+    if (isValid) {
+      _formkey.currentState!.save();
+      _submitAuthForm(
+        context,
+        _email.trim(),
+        _password.trim(),
+        _firstName,
+        _lastName,
+        _city,
+        _street,
+        _buildingNumber,
+        _apartmentNumber,
+      );
+    }
+  }
+
+  void _submitAuthForm(
+    BuildContext context,
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    String city,
+    String street,
+    String buildingNumber,
+    String apartmentNumber,
+  ) async {
+    try {
+      UserCredential userCredential;
+      userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .set({
+        'uid': userCredential.user!.uid,
+        'userType': 'TENANT',
+        'email': email,
+        'password': password,
+        'firstName': firstName,
+        'lastName': lastName,
+        'city': city,
+        'street': street,
+        'buildingNumber': buildingNumber,
+        'apartmentNumber': apartmentNumber,
+      });
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .get()
+          .then((value) {
+        userCredential.user!.updateDisplayName(value['firstName']);
+      });
+      print(userCredential.user!.displayName);
+      await ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+    } on PlatformException catch (error) {
+      var message = 'An error occurred, please check your credentials!';
+
+      if (error.message != null) {
+        message = error.message!;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).errorColor,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (error) {
+      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: Theme.of(context).errorColor,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,14 +331,48 @@ class RegisterScreen extends StatelessWidget {
                     child: const Text('Back'),
                     onPressed: () {
                       Navigator.of(context)
-                          .popAndPushNamed(LoginScreen.routeName);
+                          .pushReplacementNamed(LoginScreen.routeName);
                     },
                   ),
                   TextButton(
                     child: const Text('Submit'),
                     onPressed: () {
-                      Navigator.of(context)
-                          .popAndPushNamed(LoginScreen.routeName);
+                      _trySubmit(context);
+                      // try {
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(
+                      //       content: Text('Register Successfully! 🤩'),
+                      //       backgroundColor: Colors.green,
+                      //       duration: Duration(seconds: 2),
+                      //     ),
+                      //   );
+                      //   Navigator.of(context).pushReplacementNamed(
+                      //       OverviewTenantScreen.routeName);
+                      // } on PlatformException catch (error) {
+                      //   var message =
+                      //       'An error occurred, please check your credentials!';
+
+                      //   if (error.message != null) {
+                      //     message = error.message!;
+                      //   }
+
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     SnackBar(
+                      //       content: Text(message),
+                      //       backgroundColor: Theme.of(context).errorColor,
+                      //       duration: const Duration(seconds: 2),
+                      //     ),
+                      //   );
+                      // } catch (error) {
+                      //   print(error);
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     SnackBar(
+                      //       content: Text(error.toString()),
+                      //       backgroundColor: Theme.of(context).errorColor,
+                      //       duration: const Duration(seconds: 2),
+                      //     ),
+                      //   );
+                      // }
                     },
                   ),
                 ],
