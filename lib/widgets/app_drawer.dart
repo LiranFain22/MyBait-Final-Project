@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
+import 'package:mybait/screens/payment_screen.dart';
 
+import '../screens/login_screen.dart';
 import '../screens/overview_manager_screen.dart';
 import '../screens/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
@@ -69,6 +71,38 @@ class AppDrawer extends StatelessWidget {
               // todo: implement Information Page
             },
           ),
+           const Divider(),
+        ListTile(
+          leading: Icon(Icons.exit_to_app),
+          title: Text('Logout'),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Logout'),
+                content: const Text('Are you sure, do you want to logout?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pop(
+                          true); // dismisses only the dialog and returns true
+                      Navigator.pushNamed(context, LoginScreen.routeName);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(
+                          false); // dismisses only the dialog and returns false
+                    },
+                    child: const Text('No'),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
         ],
       );
     }
@@ -101,7 +135,7 @@ class AppDrawer extends StatelessWidget {
           leading: Icon(Icons.payment_outlined),
           title: Text('Payment'),
           onTap: () {
-            // todo: implement Payment Page
+            Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
           },
         ),
         const Divider(),
@@ -110,6 +144,38 @@ class AppDrawer extends StatelessWidget {
           title: Text('Information'),
           onTap: () {
             // todo: implement Information Page
+          },
+        ),
+         const Divider(),
+        ListTile(
+          leading: Icon(Icons.exit_to_app),
+          title: Text('Logout'),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Logout'),
+                content: const Text('Are you sure, do you want to logout?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pop(
+                          true); // dismisses only the dialog and returns true
+                      Navigator.pushNamed(context, LoginScreen.routeName);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(
+                          false); // dismisses only the dialog and returns false
+                    },
+                    child: const Text('No'),
+                  ),
+                ],
+              ),
+            );
           },
         ),
       ],

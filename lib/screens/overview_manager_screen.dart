@@ -28,6 +28,8 @@ class OverviewManagerScreen extends StatelessWidget {
 
   OverviewManagerScreen({super.key});
 
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
     MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
@@ -39,7 +41,7 @@ class OverviewManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manager - Main'),
+        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
