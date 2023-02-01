@@ -1,16 +1,16 @@
-# mybait
+# MyBait 🏠
+##### MyBait is a mobile application that simplifies building management
+###### Graduation project in the software engineering degree at Afeka College - College of Engineering.
+The project aims to create an application that manages the house committee in the building easily and straightforwardly anywhere and at any time using a smartphone.
+The application was built using Flutter and Firebase where Flutter is used for the front end which produces an application platform for iOS and Android and Firebase which is used for the back end to manage the server and the data institution
 
-A new Flutter project.
+Pics from the app:
 
-## Getting Started
+![Login Screen](https://github.com/LiranFain22/mybait-Final-Project/blob/main/login.png?raw=true)
 
-This project is a starting point for a Flutter application.
+![Main Screen](https://github.com/LiranFain22/mybait-Final-Project/blob/main/main.png?raw=true)
 
-A few resources to get you started if this is your first Flutter project:
+![Drawer](https://github.com/LiranFain22/mybait-Final-Project/blob/main/drawer.png?raw=true)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
