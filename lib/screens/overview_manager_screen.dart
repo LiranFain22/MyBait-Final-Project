@@ -98,6 +98,9 @@ class OverviewManagerScreen extends StatelessWidget {
                   if (menuList[position].getTitle == 'Information') {
                     // todo: implement Information screen
                   }
+                  if (menuList[position].getTitle == 'Information') {
+                    // todo: implement Information screen
+                  }
                 },
                 child: Center(
                   child: Column(
