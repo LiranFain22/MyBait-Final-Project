@@ -19,7 +19,7 @@ class PaymentHistoryScreen extends StatelessWidget {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('payments')
-            .where('status', isEqualTo: 'PAID')
+            .where('isPaid', isEqualTo: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -27,24 +27,30 @@ class PaymentHistoryScreen extends StatelessWidget {
           }
           if (snapshot.hasData) {
             var paymentDocuments = snapshot.data!.docs;
-            return ListView.builder(
-                itemCount: paymentDocuments.length,
-                padding: const EdgeInsets.all(5),
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.greenAccent[400],
-                        foregroundColor: Colors.white,
-                          child:
-                              paymentDocuments[index]['paymentType'] == 'month'
+            return paymentDocuments.length == 0
+                ? const Center(
+                    child: Text(
+                    'No History ☺️',
+                    style: TextStyle(fontSize: 36)
+                  ))
+                : ListView.builder(
+                    itemCount: paymentDocuments.length,
+                    padding: const EdgeInsets.all(5),
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                              backgroundColor: Colors.greenAccent[400],
+                              foregroundColor: Colors.white,
+                              child: paymentDocuments[index]['paymentType'] ==
+                                      'month'
                                   ? const Icon(Icons.calendar_month)
                                   : const Icon(Icons.construction_outlined)),
-                      title: Text(paymentDocuments[index]['title']),
-                      trailing: const Icon(Icons.done),
-                    ),
-                  );
-                });
+                          title: Text(paymentDocuments[index]['title']),
+                          trailing: const Icon(Icons.done),
+                        ),
+                      );
+                    });
           } else {
             return Center(
               child: Column(
