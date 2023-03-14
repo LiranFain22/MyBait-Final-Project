@@ -1,57 +1,114 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../screens/edit_report_screen.dart';
-
-import '../models/report.dart';
-
 import '../widgets/app_drawer.dart';
 
-class ReportsScreen extends StatelessWidget {
+class ReportsScreen extends StatefulWidget {
   static const routeName = '/reports';
 
-  final String userType;
+  ReportsScreen({super.key});
 
-  ReportsScreen(this.userType);
+  @override
+  State<ReportsScreen> createState() => _ReportsScreenState();
+}
 
-  final List<Report> reports = [
-    Report(
-        id: '1',
-        title: 'Broken Door',
-        description: 'Lobby door is broken',
-        location: 'Lobby',
-        imageUrl: 'https://images.unsplash.com/photo-1600876876038-161d838876c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YnJva2VuJTIwZG9vcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60'),
-    Report(
-        id: '2',
-        title: 'Broken Pipe',
-        description: 'Broken pipe in parking lot 12',
-        location: 'Parking Lot',
-        imageUrl: 'https://images.unsplash.com/photo-1562545714-62c15e7fdf9e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8cGlwZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60'),
-    Report(
-        id: '3',
-        title: 'Burn Out Lamp',
-        description: 'Burn Out Lamp in Floor 3',
-        location: 'Floor 3',
-        imageUrl: 'https://images.unsplash.com/photo-1552529232-9e6cb081de19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8bGFtcHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60'),
-  ];
+class _ReportsScreenState extends State<ReportsScreen> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _showDialog(String title, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Image.network(
+            imageUrl,
+            cacheHeight: 200,
+            cacheWidth: 200,
+            loadingBuilder: (context, child, loadingProgress) {
+              return loadingProgress == null
+                  ? child
+                  : const LinearProgressIndicator();
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
       ),
-      drawer: AppDrawer(userType),
-      body: ListView.builder(
-        itemCount: reports.length,
-        padding: const EdgeInsets.all(10.0),
-        itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(reports[index].imageUrl!),
-              ),
-              title: Text(reports[index].title!),
-            ),
-          );
+      drawer: AppDrawer(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('reports')
+            // .where('createBy',
+            //     isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData) {
+            var documents = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: documents.length,
+              padding: const EdgeInsets.all(10),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    _showDialog(documents[index]['title'],
+                        documents[index]['imageUrl']);
+                  },
+                  child: documents[index]['status'] == 'INPROGRESS'
+                      ? Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(documents[index]['imageUrl']),
+                            ),
+                            title: Text(documents[index]['title']),
+                            trailing: const Text(
+                              'In Progress',
+                              style: TextStyle(
+                                color: Colors.orange
+                              ),
+                            ),
+                          ),
+                        )
+                      : Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(documents[index]['imageUrl']),
+                            ),
+                            title: Text(documents[index]['title']),
+                            trailing: const Text(
+                              'Waiting',
+                              style: TextStyle(
+                                color: Colors.redAccent
+                              ),
+                            ),
+                          ),
+                        ),
+                );
+              },
+            );
+          }
+          return const Text('OHH NO!');
         },
       ),
       floatingActionButton: FloatingActionButton(

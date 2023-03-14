@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mybait/models/report.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/payment_screen.dart';
 
 import 'reports_screen.dart';
 
+import '../models/report.dart';
 import '../widgets/app_drawer.dart';
 
 class _MenuItem {
@@ -20,15 +24,13 @@ class _MenuItem {
   }
 }
 
-class OverviewTenantScreen extends StatefulWidget {
+class OverviewTenantScreen extends StatelessWidget {
   static const routeName = '/menu-tenant';
 
-  @override
-  State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
-}
+  OverviewTenantScreen({super.key});
 
-class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
-  final String userType = 'TENANT';
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
     _MenuItem(Icons.payment_outlined, 'Payment'),
@@ -39,9 +41,41 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tenant - Main'),
+        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure, do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pop(
+                            true); // dismisses only the dialog and returns true
+                        Navigator.pushNamed(context, LoginScreen.routeName);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(
+                            false); // dismisses only the dialog and returns false
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      drawer: AppDrawer('TENANT'),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -54,10 +88,10 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Report') {
-                    Navigator.of(context).pushNamed(ReportsScreen.routeName);
+                    Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Payment') {
-                    // todo: implement payment screen
+                    Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Information') {
                     // todo: implement information screen

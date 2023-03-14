@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/reports_screen.dart';
 
+import '../models/reports.dart';
 import '../models/report.dart';
+import '../widgets/app_drawer.dart';
 
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
+
+  EditReportScreen({super.key});
 
   @override
   State<EditReportScreen> createState() => _EditReportScreenState();
 }
 
 class _EditReportScreenState extends State<EditReportScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _descriptionFocusNode = FocusNode();
   final _locationFocusNode = FocusNode();
   final _imageFocusNode = FocusNode();
+  final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
-  final _form = GlobalKey<FormState>();
   var _editedReport = Report(
     id: null,
     title: '',
@@ -22,16 +30,16 @@ class _EditReportScreenState extends State<EditReportScreen> {
     location: '',
     imageUrl: '',
   );
-  var _initValue = {
-    'title': '',
-    'description': '',
-    'location': '',
-    'imageUrl': '',
-  };
-  var _isInit = true;
+
+  @override
+  void initState() {
+    _imageUrlFocusNode.addListener(_updateImageUrl);
+    super.initState();
+  }
 
   @override
   void dispose() {
+    _imageUrlFocusNode.removeListener(_updateImageUrl);
     _descriptionFocusNode.dispose();
     _locationFocusNode.dispose();
     _imageFocusNode.dispose();
@@ -62,13 +70,12 @@ class _EditReportScreenState extends State<EditReportScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _form,
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
                 TextFormField(
-                  initialValue: _initValue['title'],
-                  decoration: InputDecoration(labelText: 'Title'),
+                  decoration: const InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_descriptionFocusNode);
@@ -90,8 +97,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                   },
                 ),
                 TextFormField(
-                  initialValue: _initValue['description'],
-                  decoration: InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   focusNode: _descriptionFocusNode,
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
@@ -114,8 +120,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                   },
                 ),
                 TextFormField(
-                  initialValue: _initValue['location'],
-                  decoration: InputDecoration(labelText: 'Location'),
+                  decoration: const InputDecoration(labelText: 'Location'),
                   focusNode: _locationFocusNode,
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
@@ -154,7 +159,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                         ),
                       ),
                       child: _imageUrlController.text.isEmpty
-                          ? Text('Enter a URL')
+                          ? const Text('Enter a URL')
                           : FittedBox(
                               child: Image.network(_imageUrlController.text),
                               fit: BoxFit.cover,
@@ -162,7 +167,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Image URL'),
+                        decoration:
+                            const InputDecoration(labelText: 'Image URL'),
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.done,
                         controller: _imageUrlController,
@@ -171,12 +177,16 @@ class _EditReportScreenState extends State<EditReportScreen> {
                           if (value!.isEmpty) {
                             return 'Please Enter an Image URL.';
                           }
-                          if (!value.endsWith('.png') &&
-                              !value.endsWith('.jpg') &&
-                              !value.endsWith('.jpeg')) {
-                            return 'Please enter a valid image URL.';
-                          }
                           return null;
+                        },
+                        onSaved: (value) {
+                          _editedReport = Report(
+                            id: _editedReport.id,
+                            title: _editedReport.title,
+                            description: _editedReport.description,
+                            location: _editedReport.location,
+                            imageUrl: value,
+                          );
                         },
                       ),
                     )
@@ -185,13 +195,26 @@ class _EditReportScreenState extends State<EditReportScreen> {
                 Container(
                   height: 50,
                 ),
-                Container(
+                SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: ElevatedButton(
                     child: const Text('Submit'),
                     onPressed: () {
-                      // Implement submit button report to Manager
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!
+                            .save(); // saves all onSaved in each textFormField
+                        Reports reports = Reports();
+                        var documentToCreate = FirebaseFirestore.instance.collection('review').doc();
+                        reports.addReportToReview(_editedReport, documentToCreate);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Your report send to manager building for review.'),
+                          ),
+                        );
+                        Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
+                      }
                     },
                   ),
                 ),

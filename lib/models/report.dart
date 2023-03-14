@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Report {
+class Report with ChangeNotifier{
   final String? id;
   final String? title;
   final String? description;

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/reports_screen.dart';
+
+import '../screens/managing_fault_screen.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -7,20 +12,28 @@ class MenuItem {
   final String title;
 
   MenuItem(this.icon, this.title);
+
+  IconData get getIcon {
+    return icon;
+  }
+
+  String get getTitle {
+    return title;
+  }
 }
 
-class OverviewManagerScreen extends StatefulWidget {
+class OverviewManagerScreen extends StatelessWidget {
   static const routeName = '/menu-manager';
+  String userType = 'MANAGER';
 
-  @override
-  State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
-}
+  OverviewManagerScreen({super.key});
 
-class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
-  final String userType = 'MANAGE';
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
     MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
+    MenuItem(Icons.info_outline, 'Reports'),
     MenuItem(Icons.account_circle_outlined, 'Information'),
   ];
 
@@ -28,9 +41,40 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manager - Main'),
+        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure, do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                        Navigator.pushNamed(context, LoginScreen.routeName);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(
+                            false); // dismisses only the dialog and returns false
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      drawer: AppDrawer('MANAGER'),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
@@ -41,7 +85,23 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
             return Padding(
               padding: const EdgeInsets.all(20.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (menuList[position].getTitle == 'Managing Fault') {
+                    Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
+                  }
+                  if (menuList[position].getTitle == 'Reports') {
+                   Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName); 
+                  }
+                  if (menuList[position].getTitle == 'Cash Register') {
+                    // todo: implement Cash Register screen
+                  }
+                  if (menuList[position].getTitle == 'Information') {
+                    // todo: implement Information screen
+                  }
+                  if (menuList[position].getTitle == 'Information') {
+                    // todo: implement Information screen
+                  }
+                },
                 child: Center(
                   child: Column(
                     children: [
