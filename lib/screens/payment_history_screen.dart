@@ -27,7 +27,7 @@ class PaymentHistoryScreen extends StatelessWidget {
           }
           if (snapshot.hasData) {
             var paymentDocuments = snapshot.data!.docs;
-            return paymentDocuments.length == 0
+            return paymentDocuments.isEmpty
                 ? const Center(
                     child: Text(
                     'No History ☺️',
