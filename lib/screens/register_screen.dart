@@ -75,14 +75,11 @@ class RegisterScreen extends StatelessWidget {
         'buildingNumber': buildingNumber,
         'apartmentNumber': apartmentNumber,
       });
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(userCredential.user!.uid)
-          .get()
-          .then((value) {
-        userCredential.user!.updateDisplayName(value['firstName']);
-      });
-      print(userCredential.user!.displayName);
+      
+      // Update user display name
+      await userCredential.user!.updateDisplayName(firstName);
+      await userCredential.user!.reload();
+
       await ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Login successfully'),

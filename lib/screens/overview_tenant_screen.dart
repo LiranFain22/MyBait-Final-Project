@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/login_screen.dart';
@@ -6,7 +5,6 @@ import 'package:mybait/screens/payment_screen.dart';
 
 import 'reports_screen.dart';
 
-import '../models/report.dart';
 import '../widgets/app_drawer.dart';
 
 class _MenuItem {
