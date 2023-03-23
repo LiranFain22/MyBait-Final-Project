@@ -44,7 +44,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String userId = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
@@ -53,7 +52,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('reports')
-            // .where('createBy',
+            // .where('createdBy',
             //     isEqualTo: FirebaseAuth.instance.currentUser!.uid)
             .snapshots(),
         builder: (context, snapshot) {
