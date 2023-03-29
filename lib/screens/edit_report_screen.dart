@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 
@@ -17,6 +18,7 @@ class EditReportScreen extends StatefulWidget {
 }
 
 class _EditReportScreenState extends State<EditReportScreen> {
+  User user = FirebaseAuth.instance.currentUser!;
   final _formKey = GlobalKey<FormState>();
   final _descriptionFocusNode = FocusNode();
   final _locationFocusNode = FocusNode();
@@ -29,6 +31,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
     description: '',
     location: '',
     imageUrl: '',
+    createBy: '',
   );
 
   @override
@@ -186,6 +189,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                             description: _editedReport.description,
                             location: _editedReport.location,
                             imageUrl: value,
+                            createBy: user.uid
                           );
                         },
                       ),

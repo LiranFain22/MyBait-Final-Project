@@ -19,7 +19,8 @@ class Reports {
       'description': report.description,
       'location': report.location,
       'imageUrl': report.imageUrl,
-      'status': 'WAITING'
+      'status': 'WAITING',
+      'createBy': report.createBy,
     }).then(
       (value) {
         FirebaseFirestore.instance.collection('reports').doc(value.id).set({
@@ -28,7 +29,8 @@ class Reports {
           'description': report.description,
           'location': report.location,
           'imageUrl': report.imageUrl,
-          'status': 'WAITING'
+          'status': 'WAITING',
+          'createBy': report.createBy,
         });
       },
     );
