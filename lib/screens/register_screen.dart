@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/welcome_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const routeName = '/register';
@@ -18,10 +19,6 @@ class RegisterScreen extends StatelessWidget {
   var _password = '';
   var _firstName = '';
   var _lastName = '';
-  var _city = '';
-  var _street = '';
-  var _buildingNumber = '';
-  var _apartmentNumber = '';
 
   void _trySubmit(BuildContext context) {
     final isValid = _formkey.currentState!.validate();
@@ -35,10 +32,6 @@ class RegisterScreen extends StatelessWidget {
         _password.trim(),
         _firstName,
         _lastName,
-        _city,
-        _street,
-        _buildingNumber,
-        _apartmentNumber,
       );
     }
   }
@@ -49,10 +42,6 @@ class RegisterScreen extends StatelessWidget {
     String password,
     String firstName,
     String lastName,
-    String city,
-    String street,
-    String buildingNumber,
-    String apartmentNumber,
   ) async {
     try {
       UserCredential userCredential;
@@ -70,10 +59,6 @@ class RegisterScreen extends StatelessWidget {
         'password': password,
         'firstName': firstName,
         'lastName': lastName,
-        'city': city,
-        'street': street,
-        'buildingNumber': buildingNumber,
-        'apartmentNumber': apartmentNumber,
       });
       
       // Update user display name
@@ -87,7 +72,7 @@ class RegisterScreen extends StatelessWidget {
           duration: Duration(seconds: 2),
         ),
       );
-      Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+      Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
 
@@ -154,9 +139,9 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: TextFormField(
-                  key: ValueKey('email'),
+                  key: const ValueKey('email'),
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.email_outlined),
@@ -177,7 +162,7 @@ class RegisterScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextFormField(
-                  key: ValueKey('password'),
+                  key: const ValueKey('password'),
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.lock_outline),
                     labelText: 'Password',
@@ -237,90 +222,6 @@ class RegisterScreen extends StatelessWidget {
                   },
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('City'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.location_city_outlined),
-                    labelText: 'City',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter City';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _city = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Street'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.store_mall_directory_outlined),
-                    labelText: 'Street',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Street';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _street = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Build Number'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.numbers_outlined),
-                    labelText: 'Building Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Build number';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _buildingNumber = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Apartment Number'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.numbers_outlined),
-                    labelText: 'Apartment Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Apartment Number';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _apartmentNumber = value!;
-                  },
-                ),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -335,41 +236,6 @@ class RegisterScreen extends StatelessWidget {
                     child: const Text('Submit'),
                     onPressed: () {
                       _trySubmit(context);
-                      // try {
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(
-                      //       content: Text('Register Successfully! 🤩'),
-                      //       backgroundColor: Colors.green,
-                      //       duration: Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      //   Navigator.of(context).pushReplacementNamed(
-                      //       OverviewTenantScreen.routeName);
-                      // } on PlatformException catch (error) {
-                      //   var message =
-                      //       'An error occurred, please check your credentials!';
-
-                      //   if (error.message != null) {
-                      //     message = error.message!;
-                      //   }
-
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       content: Text(message),
-                      //       backgroundColor: Theme.of(context).errorColor,
-                      //       duration: const Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      // } catch (error) {
-                      //   print(error);
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       content: Text(error.toString()),
-                      //       backgroundColor: Theme.of(context).errorColor,
-                      //       duration: const Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      // }
                     },
                   ),
                 ],

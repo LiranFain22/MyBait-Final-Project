@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/create_building_screen.dart';
 import 'package:mybait/screens/edit_report_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
@@ -12,6 +13,7 @@ import 'package:mybait/screens/payment_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/screens/splash_screen.dart';
+import 'package:mybait/screens/welcome_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
 
 Future<void> main() async {
@@ -44,7 +46,7 @@ class MyApp extends StatelessWidget {
               return OverviewTenantScreen();
             }
           }
-          return const LoginScreen();
+          return RegisterScreen();
         },
       ),
       routes: {
@@ -59,6 +61,8 @@ class MyApp extends StatelessWidget {
         PaymentScreen.routeName:(context) => PaymentScreen(),
         RegisterScreen.routeName:(context) => RegisterScreen(),
         PaymentHistoryScreen.routeName:(context) => PaymentHistoryScreen(),
+        WelcomeScreen.routeName:(context) => const WelcomeScreen(),
+        CreateBuildingScreen.routeName:(context) => CreateBuildingScreen(),
       },
     );
   }
