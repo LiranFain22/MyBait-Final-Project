@@ -72,6 +72,7 @@ class ReviewReportScreen extends StatelessWidget {
                               description: snapshot.data!['description'],
                               location: snapshot.data!['location'],
                               imageUrl: snapshot.data!['imageUrl'],
+                              createBy: snapshot.data!['createBy'],
                             );
                             reports.addReportToReports(report);
                             // 2. Delete the document from the source collection.
@@ -88,7 +89,7 @@ class ReviewReportScreen extends StatelessWidget {
                 ],
               );
             }
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),
