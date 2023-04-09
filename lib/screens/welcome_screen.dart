@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/create_building_screen.dart';
+import 'package:mybait/screens/join_building_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const routeName = '/welcome';
@@ -63,7 +64,9 @@ class WelcomeScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, JoinBuildingScreen.routeName);
+                    },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

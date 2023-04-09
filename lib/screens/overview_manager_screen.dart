@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/reports_screen.dart';
+import 'package:share/share.dart';
 
+import '../screens/login_screen.dart';
+import '../screens/reports_screen.dart';
 import '../screens/managing_fault_screen.dart';
 
 import '../widgets/app_drawer.dart';
@@ -24,7 +26,6 @@ class MenuItem {
 
 class OverviewManagerScreen extends StatelessWidget {
   static const routeName = '/menu-manager';
-  String userType = 'MANAGER';
 
   OverviewManagerScreen({super.key});
 
@@ -41,8 +42,52 @@ class OverviewManagerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
+        // title: Text('hi ${currentUser!.displayName}! 👋🏻'),
+        title: Row(
+          children: const [
+            Text(' MyBait '),
+            Icon(Icons.home),
+          ],
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.share_outlined),
+            onPressed: () async {
+              // todo: Add joinID link
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser!.uid)
+                  .get()
+                  .then((userDoc) {
+                String buildingID = userDoc.get('buildingID');
+                FirebaseFirestore.instance
+                    .collection('Buildings')
+                    .doc(buildingID)
+                    .get()
+                    .then((buildingDoc) {
+                  String joinID = buildingDoc.get('joinID');
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Code to join building:'),
+                      content: Row(
+                        children: [
+                          Text('${buildingDoc.get('joinID')}'),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              Share.share('Join my building 🏠\nThe code is: $joinID');
+                            },
+                            icon: const Icon(Icons.share),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+              });
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
@@ -55,7 +100,8 @@ class OverviewManagerScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         FirebaseAuth.instance.signOut();
-                        Navigator.of(context, rootNavigator: true).pop(true); // dismisses only the dialog and returns true
+                        Navigator.of(context, rootNavigator: true).pop(
+                            true); // dismisses only the dialog and returns true
                         Navigator.pushNamed(context, LoginScreen.routeName);
                       },
                       child: const Text('Yes'),
@@ -87,16 +133,15 @@ class OverviewManagerScreen extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   if (menuList[position].getTitle == 'Managing Fault') {
-                    Navigator.of(context).pushReplacementNamed(ManagingFaultScreen.routeName);
+                    Navigator.of(context)
+                        .pushReplacementNamed(ManagingFaultScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Reports') {
-                   Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName); 
+                    Navigator.of(context)
+                        .pushReplacementNamed(ReportsScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Cash Register') {
                     // todo: implement Cash Register screen
-                  }
-                  if (menuList[position].getTitle == 'Information') {
-                    // todo: implement Information screen
                   }
                   if (menuList[position].getTitle == 'Information') {
                     // todo: implement Information screen

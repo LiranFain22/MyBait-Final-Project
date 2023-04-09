@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/create_building_screen.dart';
 import 'package:mybait/screens/edit_report_screen.dart';
+import 'package:mybait/screens/join_building_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
 import 'package:mybait/screens/overview_manager_screen.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
               return OverviewTenantScreen();
             }
           }
-          return RegisterScreen();
+          return const LoginScreen();
         },
       ),
       routes: {
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         PaymentHistoryScreen.routeName:(context) => PaymentHistoryScreen(),
         WelcomeScreen.routeName:(context) => const WelcomeScreen(),
         CreateBuildingScreen.routeName:(context) => CreateBuildingScreen(),
+        JoinBuildingScreen.routeName:(context) => const JoinBuildingScreen(),
       },
     );
   }

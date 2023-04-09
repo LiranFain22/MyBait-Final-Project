@@ -56,7 +56,6 @@ class RegisterScreen extends StatelessWidget {
         'uid': userCredential.user!.uid,
         'userType': 'TENANT',
         'email': email,
-        'password': password,
         'firstName': firstName,
         'lastName': lastName,
       });
