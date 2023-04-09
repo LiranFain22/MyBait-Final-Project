@@ -21,6 +21,11 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
 
+
+  final apartmentInputController = TextEditingController();
+  bool _isSubmitted = false;
+  bool _updateBTNPressed = false;
+
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => chars.codeUnitAt(_rnd.nextInt(chars.length))));
 
@@ -33,8 +38,16 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
 
   final _auth = FirebaseAuth.instance;
 
-  void _congratulationsDialog(String joinID) {
-    showDialog(
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    apartmentInputController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _congratulationsDialog(
+      String userID, String joinID, String inputNumber) async {
+    await showDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -44,8 +57,15 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
           actions: [
             CupertinoDialogAction(
               child: const Text("Got it!"),
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userID)
+                    .update({'apartmentNumber': inputNumber});
+                    _updateBTNPressed = true;
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacementNamed(
+                    context, OverviewManagerScreen.routeName);
               },
             ),
           ],
@@ -54,7 +74,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
     );
   }
 
-  String _updateApartmentNumberDialog() {
+  void _updateApartmentNumberDialog(String userID, String joinID) {
     String inputNumber = "";
     showDialog(
       context: context,
@@ -67,13 +87,24 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
             child: Column(
               children: [
                 TextField(
+                  controller: apartmentInputController,
                   decoration: InputDecoration(
                     labelText: "Enter Apartment Number",
                     filled: true,
                     fillColor: Colors.grey.shade50,
                   ),
-                  onSubmitted: (value) {
+                  onSubmitted: (value) async {
                     inputNumber = value;
+                    setState(() {
+                      _isSubmitted = true;
+                    });
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text("Update"),
+                  onPressed: () async {
+                    print('update button pressed\ninputNumber = ${apartmentInputController.text}');
+                    _congratulationsDialog(userID, joinID, apartmentInputController.text);
                   },
                 ),
               ],
@@ -82,8 +113,6 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
         );
       },
     );
-
-    return inputNumber;
   }
 
   void _trySubmit(BuildContext context) {
@@ -111,16 +140,16 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
   ) async {
     try {
       String joinID = getRandomString(5);
-      UserCredential userCredential = (_auth.currentUser) as UserCredential;
+      User? user = _auth.currentUser;
       await FirebaseFirestore.instance.collection("Buildings").add({
         'buildingID': 'temporary',
         'buildingNumber': buildingNumber,
         'city': city,
         'country': country,
         'joinID': joinID,
-        'manager': userCredential.user?.uid,
+        'manager': user!.uid,
         'street': street,
-        'tenants': [userCredential.user?.uid],
+        'tenants': [user.uid],
       }).then((value) {
         FirebaseFirestore.instance.collection('Buildings').doc(value.id).set({
           'buildingID': value.id,
@@ -128,40 +157,44 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
           'city': city,
           'country': country,
           'joinID': getRandomString(5),
-          'manager': userCredential.user?.uid,
+          'manager': user.uid,
           'street': street,
-          'tenants': [userCredential.user?.uid]
+          'tenants': [user.uid]
         });
 
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .update({
+        FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'userType': 'MANAGER',
         });
       });
 
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).update({
-        'apartmentNumber': _updateApartmentNumberDialog
-      });
+      _updateApartmentNumberDialog(user.uid, joinID);
 
-      _congratulationsDialog(joinID);
+      // if (_isSubmitted) {
+      //   await FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc(user.uid)
+      //       .update({'apartmentNumber': userApartmentInput});
 
-      await ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      //   _congratulationsDialog(joinID);
 
-      Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
+      //   await ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Login successfully'),
+      //       backgroundColor: Colors.green,
+      //       duration: Duration(seconds: 2),
+      //     ),
+      //   );
+
+      //   Navigator.pushReplacementNamed(
+      //       context, OverviewManagerScreen.routeName);
+      // }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(error.toString()),
         backgroundColor: Theme.of(context).errorColor,
         duration: const Duration(seconds: 2),
       ));
+      debugPrint(error.toString());
     }
   }
 

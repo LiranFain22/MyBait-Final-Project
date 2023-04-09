@@ -53,7 +53,6 @@ class OverviewManagerScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.share_outlined),
             onPressed: () async {
-              // todo: Add joinID link
               await FirebaseFirestore.instance
                   .collection('users')
                   .doc(currentUser!.uid)
