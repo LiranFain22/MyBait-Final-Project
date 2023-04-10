@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var _userName = '';
   var _userPassword = '';
   var _isLoading = false;
+  var _userType = '';
 
   void _trySubmit() {
     final isValid = _formkey.currentState!.validate();
@@ -48,7 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
-        if (email.contains('manager')) {
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).get().then((value) {
+          setState(() {
+            _userType = value.data()!['userType'];
+          });
+        });
+        if (_userType == 'MANAGER') {
           Navigator.pushReplacementNamed(
               context, OverviewManagerScreen.routeName);
         } else {
@@ -236,19 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // TextButton(
-                    //   child: Text(
-                    //     _isLogin
-                    //         ? 'Create new account'
-                    //         : 'I already have an account',
-                    //     style: TextStyle(fontSize: 20),
-                    //   ),
-                    //   onPressed: () {
-                    //     setState(() {
-                    //       _isLogin = !_isLogin;
-                    //     });
-                    //   },
-                    // ),
                     TextButton(
                       child: const Text(
                         'Create new account',
