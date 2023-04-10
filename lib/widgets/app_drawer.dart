@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/managing_fault_screen.dart';
 import 'package:mybait/screens/payment_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/login_screen.dart';
 import '../screens/overview_manager_screen.dart';
@@ -23,8 +24,8 @@ class _AppDrawerState extends State<AppDrawer> {
 
   var _userType = '';
 
-  _fetchUserType() async {
-    await FirebaseFirestore.instance
+  _fetchUserType() {
+    FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get()
