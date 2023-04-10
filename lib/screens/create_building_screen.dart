@@ -164,30 +164,11 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
 
         FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'userType': 'MANAGER',
+          'buildingID': value.id,
         });
       });
 
       _updateApartmentNumberDialog(user.uid, joinID);
-
-      // if (_isSubmitted) {
-      //   await FirebaseFirestore.instance
-      //       .collection('users')
-      //       .doc(user.uid)
-      //       .update({'apartmentNumber': userApartmentInput});
-
-      //   _congratulationsDialog(joinID);
-
-      //   await ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(
-      //       content: Text('Login successfully'),
-      //       backgroundColor: Colors.green,
-      //       duration: Duration(seconds: 2),
-      //     ),
-      //   );
-
-      //   Navigator.pushReplacementNamed(
-      //       context, OverviewManagerScreen.routeName);
-      // }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(error.toString()),

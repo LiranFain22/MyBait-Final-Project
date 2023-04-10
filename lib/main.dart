@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,31 +41,37 @@ class MyApp extends StatelessWidget {
             return SplashScreen();
           }
           if (userSnapshot.hasData) {
-            if (userSnapshot.data!.email!.contains('manager')) {
-              return OverviewManagerScreen();
-            }
-            if (userSnapshot.data!.email!.contains('tenant')) {
-              return OverviewTenantScreen();
-            }
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(userSnapshot.data!.uid)
+                .get()
+                .then((value) {
+              if (value.data()!['userType'] == 'MANAGER') {
+                return OverviewManagerScreen();
+              }
+              if (value.data()!['userType'] == 'TENANT') {
+                return OverviewTenantScreen();
+              }
+            });
           }
           return const LoginScreen();
         },
       ),
       routes: {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
-        OverviewTenantScreen.routeName:(context) => OverviewTenantScreen(),
-        EditReportScreen.routeName:(context) => EditReportScreen(),
+        OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
+        EditReportScreen.routeName: (context) => EditReportScreen(),
         ManagingFaultScreen.routeName: (context) => ManagingFaultScreen(),
-        ReportsScreen.routeName:(context) => ReportsScreen(),
-        SplashScreen.routeName:(context) => SplashScreen(),
-        LoginScreen.routeName:(context) => const LoginScreen(),
-        AppDrawer.routeName:(context) => AppDrawer(),
-        PaymentScreen.routeName:(context) => PaymentScreen(),
-        RegisterScreen.routeName:(context) => RegisterScreen(),
-        PaymentHistoryScreen.routeName:(context) => PaymentHistoryScreen(),
-        WelcomeScreen.routeName:(context) => const WelcomeScreen(),
-        CreateBuildingScreen.routeName:(context) => CreateBuildingScreen(),
-        JoinBuildingScreen.routeName:(context) => const JoinBuildingScreen(),
+        ReportsScreen.routeName: (context) => ReportsScreen(),
+        SplashScreen.routeName: (context) => SplashScreen(),
+        LoginScreen.routeName: (context) => const LoginScreen(),
+        AppDrawer.routeName: (context) => AppDrawer(),
+        PaymentScreen.routeName: (context) => PaymentScreen(),
+        RegisterScreen.routeName: (context) => RegisterScreen(),
+        PaymentHistoryScreen.routeName: (context) => PaymentHistoryScreen(),
+        WelcomeScreen.routeName: (context) => const WelcomeScreen(),
+        CreateBuildingScreen.routeName: (context) => CreateBuildingScreen(),
+        JoinBuildingScreen.routeName: (context) => const JoinBuildingScreen(),
       },
     );
   }

@@ -29,8 +29,6 @@ class OverviewManagerScreen extends StatelessWidget {
 
   OverviewManagerScreen({super.key});
 
-  final currentUser = FirebaseAuth.instance.currentUser;
-
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Fault'),
     MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
@@ -55,10 +53,11 @@ class OverviewManagerScreen extends StatelessWidget {
             onPressed: () async {
               await FirebaseFirestore.instance
                   .collection('users')
-                  .doc(currentUser!.uid)
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
                   .get()
                   .then((userDoc) {
-                String buildingID = userDoc.get('buildingID');
+                // String buildingID = userDoc.get('buildingID');
+                String buildingID = userDoc.data()!['buildingID'];
                 FirebaseFirestore.instance
                     .collection('Buildings')
                     .doc(buildingID)
@@ -75,7 +74,8 @@ class OverviewManagerScreen extends StatelessWidget {
                           const Spacer(),
                           IconButton(
                             onPressed: () {
-                              Share.share('Join my building 🏠\nThe code is: $joinID');
+                              Share.share(
+                                  'Join my building 🏠\nThe code is: $joinID');
                             },
                             icon: const Icon(Icons.share),
                           ),
