@@ -68,7 +68,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundImage:
-                            NetworkImage(documents[index]['imageUrl']),
+                            NetworkImage(documents[index]['imageURL']),
                       ),
                       title: Text(documents[index]['title']),
                       subtitle: Text(documents[index]['description']),
@@ -79,7 +79,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
                           if (documentId.isNotEmpty) {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
-                                    ReviewReportScreen(documentId)));
+                                    ReviewReportScreen(buildingID!, documentId)));
                           } else {
                             print('no document');
                             const CircularProgressIndicator();

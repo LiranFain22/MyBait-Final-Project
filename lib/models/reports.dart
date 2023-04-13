@@ -11,49 +11,66 @@ class Reports {
     return _reportList;
   }
 
-  void addReportToReview(
-      Report report, DocumentReference<Map<String, dynamic>> documentRef) {
-    FirebaseFirestore.instance.collection('reports').add({
+  void addReportToReview(Report report, String buildID) {
+    FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildID)
+        .collection('Reports')
+        .add({
       'id': 'documentRef.id',
       'title': report.title,
       'description': report.description,
       'location': report.location,
-      'imageUrl': report.imageUrl,
+      'imageURL': report.imageUrl,
       'status': 'WAITING',
-      'createBy': report.createBy,
+      'createdBy': report.createBy,
     }).then(
       (value) {
-        FirebaseFirestore.instance.collection('reports').doc(value.id).set({
+        FirebaseFirestore.instance
+            .collection('Buildings')
+            .doc(buildID)
+            .collection('Reports')
+            .doc(value.id)
+            .set({
           'id': value.id,
           'title': report.title,
           'description': report.description,
           'location': report.location,
-          'imageUrl': report.imageUrl,
+          'imageURL': report.imageUrl,
           'status': 'WAITING',
-          'createBy': report.createBy,
+          'createdBy': report.createBy,
         });
       },
     );
   }
 
-  void addReportToReports(Report report) {
-    FirebaseFirestore.instance.collection('reports').add({
+  void addReportToReports(Report report, String buildingID) {
+    FirebaseFirestore.instance
+    .collection('Buildings')
+    .doc(buildingID)
+    .collection('Reports')
+    .add({
       'id': 'documentRef.id',
       'title': report.title,
       'description': report.description,
       'location': report.location,
-      'imageUrl': report.imageUrl,
-      'createBy': report.createBy,
+      'imageURL': report.imageUrl,
+      'createdBy': report.createBy,
       'status': 'INPROGRESS'
     }).then(
       (value) {
-        FirebaseFirestore.instance.collection('reports').doc(value.id).set({
+        FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(value.id)
+        .set({
           'id': value.id,
           'title': report.title,
           'description': report.description,
           'location': report.location,
-          'imageUrl': report.imageUrl,
-          'createBy': report.createBy,
+          'imageURL': report.imageUrl,
+          'createdBy': report.createBy,
           'status': 'INPROGRESS'
         });
       },

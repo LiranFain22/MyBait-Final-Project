@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 
 import '../models/reports.dart';
 import '../models/report.dart';
-import '../widgets/app_drawer.dart';
 
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
@@ -66,6 +64,16 @@ class _EditReportScreenState extends State<EditReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<String> fetchBuildingID() async {
+      var userDocument = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      var data = userDocument.data();
+      var buildingID = data!['buildingID'] as String;
+      return buildingID;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Report'),
@@ -184,13 +192,12 @@ class _EditReportScreenState extends State<EditReportScreen> {
                         },
                         onSaved: (value) {
                           _editedReport = Report(
-                            id: _editedReport.id,
-                            title: _editedReport.title,
-                            description: _editedReport.description,
-                            location: _editedReport.location,
-                            imageUrl: value,
-                            createBy: user.uid
-                          );
+                              id: _editedReport.id,
+                              title: _editedReport.title,
+                              description: _editedReport.description,
+                              location: _editedReport.location,
+                              imageUrl: value,
+                              createBy: user.uid);
                         },
                       ),
                     )
@@ -204,20 +211,33 @@ class _EditReportScreenState extends State<EditReportScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     child: const Text('Submit'),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!
                             .save(); // saves all onSaved in each textFormField
                         Reports reports = Reports();
-                        var documentToCreate = FirebaseFirestore.instance.collection('review').doc();
-                        reports.addReportToReview(_editedReport, documentToCreate);
+                        // String buildingID = fetchBuildingID() as String;
+                        var userDocument = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .get();
+                        var data = userDocument.data();
+                        var buildingID = data!['buildingID'] as String;
+                        var documentToCreate = FirebaseFirestore.instance
+                            .collection('Buildings')
+                            .doc(buildingID)
+                            .collection('Reports')
+                            .doc();
+                        reports.addReportToReview(
+                            _editedReport, buildingID);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
                                 'Your report send to manager building for review.'),
                           ),
                         );
-                        Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
+                        Navigator.of(context)
+                            .pushReplacementNamed(ReportsScreen.routeName);
                       }
                     },
                   ),

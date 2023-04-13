@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/models/report.dart';
@@ -6,14 +8,17 @@ import 'package:mybait/models/reports.dart';
 
 class ReviewReportScreen extends StatelessWidget {
   static const routeName = '/reviewReport';
-  String documentId;
-  ReviewReportScreen(this.documentId, {super.key});
+  String buildingID;
+  String reportID;
+  ReviewReportScreen(this.buildingID, this.reportID, {super.key});
 
-  Future<DocumentSnapshot> getDocument(String documentId) async {
+  Future<DocumentSnapshot> getDocument(String buildingID, String reportID) async {
     return FirebaseFirestore.instance
-        .collection('reports')
-        .doc(documentId)
-        .get();
+    .collection('Buildings')
+    .doc(buildingID)
+    .collection('Reports')
+    .doc(reportID)
+    .get();
   }
 
   @override
@@ -25,7 +30,7 @@ class ReviewReportScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(
-          future: getDocument(documentId),
+          future: getDocument(buildingID, reportID),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Center(
@@ -39,7 +44,7 @@ class ReviewReportScreen extends StatelessWidget {
             } else if (snapshot.connectionState == ConnectionState.done) {
               return Column(
                 children: [
-                  Image.network(snapshot.data!['imageUrl']),
+                  Image.network(snapshot.data!['imageURL']),
                   Text(
                     snapshot.data!['title'],
                     style: const TextStyle(
@@ -60,7 +65,7 @@ class ReviewReportScreen extends StatelessWidget {
                     children: [
                       ElevatedButton(
                           child: const Text('Approve'),
-                          onPressed: () {
+                          onPressed: () async {
                             // todo: implement approve action
                             // 1. Create a copy of the source document in the target collection, i.e. read it from the source collection,
                             //    get the document fields and create a new document in the target collection with these fields,
@@ -71,10 +76,16 @@ class ReviewReportScreen extends StatelessWidget {
                               title: snapshot.data!['title'],
                               description: snapshot.data!['description'],
                               location: snapshot.data!['location'],
-                              imageUrl: snapshot.data!['imageUrl'],
-                              createBy: snapshot.data!['createBy'],
+                              imageUrl: snapshot.data!['imageURL'],
+                              createBy: snapshot.data!['createdBy'],
                             );
-                            reports.addReportToReports(report);
+                            var userDocument = await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .get();
+                            var data = userDocument.data();
+                            var buildingID = data!['buildingID'] as String;
+                            reports.addReportToReports(report, buildingID);
                             // 2. Delete the document from the source collection.
                             deleteDocument(snapshot, context);
                           }),
