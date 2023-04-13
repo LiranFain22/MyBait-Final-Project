@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mybait/screens/overview_manager_screen.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
+import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {

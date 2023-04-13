@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
 class RegisterScreen extends StatelessWidget {

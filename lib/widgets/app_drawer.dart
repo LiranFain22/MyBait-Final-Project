@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mybait/screens/managing_fault_screen.dart';
-import 'package:mybait/screens/payment_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_fault_screen.dart';
+import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/login_screen.dart';
-import '../screens/overview_manager_screen.dart';
-import '../screens/overview_tenant_screen.dart';
+import '../screens/MANAGER/overview_manager_screen.dart';
+import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
 
 class AppDrawer extends StatefulWidget {

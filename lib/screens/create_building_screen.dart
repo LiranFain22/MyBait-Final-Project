@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mybait/screens/overview_manager_screen.dart';
+import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
 class CreateBuildingScreen extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../screens/edit_report_screen.dart';
+import 'edit_report_screen.dart';
 import '../widgets/app_drawer.dart';
 
 class ReportsScreen extends StatefulWidget {

@@ -1,19 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:share/share.dart';
+import 'package:mybait/screens/login_screen.dart';
+import 'package:mybait/screens/TENANT/payment_screen.dart';
 
-import '../screens/login_screen.dart';
-import '../screens/reports_screen.dart';
-import '../screens/managing_fault_screen.dart';
+import '../reports_screen.dart';
 
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
-class MenuItem {
+class _MenuItem {
   final IconData icon;
   final String title;
 
-  MenuItem(this.icon, this.title);
+  _MenuItem(this.icon, this.title);
 
   IconData get getIcon {
     return icon;
@@ -24,69 +22,25 @@ class MenuItem {
   }
 }
 
-class OverviewManagerScreen extends StatelessWidget {
-  static const routeName = '/menu-manager';
+class OverviewTenantScreen extends StatelessWidget {
+  static const routeName = '/menu-tenant';
 
-  OverviewManagerScreen({super.key});
+  OverviewTenantScreen({super.key});
+
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   List menuList = [
-    MenuItem(Icons.error_outline, 'Managing Fault'),
-    MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
-    MenuItem(Icons.info_outline, 'Reports'),
-    MenuItem(Icons.account_circle_outlined, 'Information'),
+    _MenuItem(Icons.report_gmailerrorred, 'Report'),
+    _MenuItem(Icons.payment_outlined, 'Payment'),
+    _MenuItem(Icons.info_outline, 'Information'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text('hi ${currentUser!.displayName}! 👋🏻'),
-        title: Row(
-          children: const [
-            Text(' MyBait '),
-            Icon(Icons.home),
-          ],
-        ),
+        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.share_outlined),
-            onPressed: () async {
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .get()
-                  .then((userDoc) {
-                // String buildingID = userDoc.get('buildingID');
-                String buildingID = userDoc.data()!['buildingID'];
-                FirebaseFirestore.instance
-                    .collection('Buildings')
-                    .doc(buildingID)
-                    .get()
-                    .then((buildingDoc) {
-                  String joinID = buildingDoc.get('joinID');
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Code to join building:'),
-                      content: Row(
-                        children: [
-                          Text('${buildingDoc.get('joinID')}'),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              Share.share(
-                                  'Join my building 🏠\nThe code is: $joinID');
-                            },
-                            icon: const Icon(Icons.share),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                });
-              });
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
@@ -99,7 +53,7 @@ class OverviewManagerScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         FirebaseAuth.instance.signOut();
-                        Navigator.of(context, rootNavigator: true).pop(
+                        Navigator.of(context).pop(
                             true); // dismisses only the dialog and returns true
                         Navigator.pushNamed(context, LoginScreen.routeName);
                       },
@@ -131,19 +85,14 @@ class OverviewManagerScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: InkWell(
                 onTap: () {
-                  if (menuList[position].getTitle == 'Managing Fault') {
-                    Navigator.of(context)
-                        .pushReplacementNamed(ManagingFaultScreen.routeName);
+                  if (menuList[position].getTitle == 'Report') {
+                    Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
                   }
-                  if (menuList[position].getTitle == 'Reports') {
-                    Navigator.of(context)
-                        .pushReplacementNamed(ReportsScreen.routeName);
-                  }
-                  if (menuList[position].getTitle == 'Cash Register') {
-                    // todo: implement Cash Register screen
+                  if (menuList[position].getTitle == 'Payment') {
+                    Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
                   }
                   if (menuList[position].getTitle == 'Information') {
-                    // todo: implement Information screen
+                    // todo: implement information screen
                   }
                 },
                 child: Center(
@@ -153,7 +102,7 @@ class OverviewManagerScreen extends StatelessWidget {
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100.0)),
-                          elevation: 5,
+                          elevation: 10,
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(

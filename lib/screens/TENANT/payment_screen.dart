@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mybait/screens/payment_history_screen.dart';
+import 'package:mybait/screens/TENANT/payment_history_screen.dart';
 
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
 class PaymentScreen extends StatelessWidget {
   static const routeName = '/payment';
