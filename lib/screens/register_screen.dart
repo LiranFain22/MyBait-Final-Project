@@ -3,26 +3,45 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
   RegisterScreen({super.key});
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
 
   final _formkey = GlobalKey<FormState>();
 
   var _email = '';
+
   var _password = '';
+
   var _firstName = '';
+
   var _lastName = '';
+
+  var _isLoading = false;
+
+  void _onSubmit() {
+    setState(() => _isLoading = true);
+    Future.delayed(
+      const Duration(seconds: 2),
+      () => setState(() => _isLoading = false),
+    );
+  }
 
   void _trySubmit(BuildContext context) {
     final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
+
+    _onSubmit();
 
     if (isValid) {
       _formkey.currentState!.save();
@@ -32,6 +51,7 @@ class RegisterScreen extends StatelessWidget {
         _password.trim(),
         _firstName,
         _lastName,
+        _isLoading,
       );
     }
   }
@@ -42,6 +62,7 @@ class RegisterScreen extends StatelessWidget {
     String password,
     String firstName,
     String lastName,
+    bool isLoading,
   ) async {
     try {
       UserCredential userCredential;
@@ -59,7 +80,7 @@ class RegisterScreen extends StatelessWidget {
         'firstName': firstName,
         'lastName': lastName,
       });
-      
+
       // Update user display name
       await userCredential.user!.updateDisplayName(firstName);
       await userCredential.user!.reload();
@@ -87,7 +108,6 @@ class RegisterScreen extends StatelessWidget {
         ),
       );
     } catch (error) {
-      print(error);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString()),
@@ -137,6 +157,8 @@ class RegisterScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
+              // todo: ADD SIGN-IN WITH GOOGLE
+              
               Container(
                 padding: const EdgeInsets.all(10),
                 child: TextFormField(
@@ -231,10 +253,21 @@ class RegisterScreen extends StatelessWidget {
                           .pushReplacementNamed(LoginScreen.routeName);
                     },
                   ),
-                  TextButton(
-                    child: const Text('Submit'),
+                  ElevatedButton.icon(
+                    icon: _isLoading
+                        ? Container(
+                            width: 24,
+                            height: 24,
+                            padding: const EdgeInsets.all(2.0),
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : const Icon(Icons.add_circle_outline_outlined),
+                    label: const Text('Submit'),
                     onPressed: () {
-                      _trySubmit(context);
+                      _isLoading ? null : _trySubmit(context);
                     },
                   ),
                 ],

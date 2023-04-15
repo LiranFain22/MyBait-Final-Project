@@ -39,7 +39,7 @@ class OverviewTenantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('hi ${currentUser!.displayName}! 👋🏻'),
+        title: Text('Hi ${currentUser!.displayName}! 👋🏻'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
