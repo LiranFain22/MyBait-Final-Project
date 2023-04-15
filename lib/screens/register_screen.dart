@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
+import '../widgets/signInWithGoogle.dart';
+
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
@@ -157,8 +159,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              // todo: ADD SIGN-IN WITH GOOGLE
-              
               Container(
                 padding: const EdgeInsets.all(10),
                 child: TextFormField(
@@ -243,34 +243,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    child: const Text('Back'),
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginScreen.routeName);
-                    },
-                  ),
-                  ElevatedButton.icon(
-                    icon: _isLoading
-                        ? Container(
-                            width: 24,
-                            height: 24,
-                            padding: const EdgeInsets.all(2.0),
-                            child: const CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 3,
-                            ),
-                          )
-                        : const Icon(Icons.add_circle_outline_outlined),
-                    label: const Text('Submit'),
-                    onPressed: () {
-                      _isLoading ? null : _trySubmit(context);
-                    },
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      child: const Text('Back'),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(LoginScreen.routeName);
+                      },
+                    ),
+                    ElevatedButton.icon(
+                      icon: _isLoading
+                          ? Container(
+                              width: 24,
+                              height: 24,
+                              padding: const EdgeInsets.all(2.0),
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : const Icon(Icons.add_circle_outline_outlined),
+                      label: const Text('Submit'),
+                      onPressed: () {
+                        _isLoading ? null : _trySubmit(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(children: const [
+                  Expanded(child: Divider()),
+                  Text("Or continue with"),
+                  Expanded(child: Divider()),
+                ]),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(50.0),
+                child: GoogleSignInButton(),
               ),
             ],
           ),

@@ -6,6 +6,8 @@ import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 
+import 'forgot_password_screen.dart';
+
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
@@ -226,8 +228,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
               ),
-              Container(
-                height: 50,
+              const SizedBox(
+                height: 15,
               ),
               if (_isLoading) const CircularProgressIndicator.adaptive(),
               if (!_isLoading)
@@ -249,6 +251,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onPressed: () {
                         Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                      },
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'Forgot Password?',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(ForgotPasswordScreen.routeName);
                       },
                     ),
                   ],

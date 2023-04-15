@@ -32,56 +32,59 @@ class WelcomeScreen extends StatelessWidget {
             )
           ],
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 150,
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, CreateBuildingScreen.routeName);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 150,
+              width: 300,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, CreateBuildingScreen.routeName);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text(
-                      'Create Building',
-                      style: TextStyle(fontSize: 25),
-                    ),
+                  ),
+                  child: const Text(
+                    'Create Building',
+                    style: TextStyle(fontSize: 25),
                   ),
                 ),
               ),
-              SizedBox(
-                height: 150,
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, JoinBuildingScreen.routeName);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+            ),
+            SizedBox(
+              height: 150,
+              width: 300,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, JoinBuildingScreen.routeName);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text(
-                      'Join Building',
-                      style: TextStyle(fontSize: 25),
-                    ),
+                  ),
+                  child: const Text(
+                    'Join Building',
+                    style: TextStyle(fontSize: 25),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

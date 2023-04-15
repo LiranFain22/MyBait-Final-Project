@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 
@@ -19,10 +20,16 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
   final buildingIDController = TextEditingController();
   User? currentUser = FirebaseAuth.instance.currentUser;
 
+  final apartmentInputController = TextEditingController();
+
+  bool _isSubmitted = false;
+  bool _updateBTNPressed = false;
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     buildingIDController.dispose();
+    apartmentInputController.dispose();
     super.dispose();
   }
 
@@ -77,16 +84,6 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
                     try {
                       onSubmitCodeBuilding(
                           buildingIDController.text, currentUser!.uid);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Congratulations! 🥳\nYou have successfully joined the building!'),
-                          backgroundColor: Colors.green,
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                      Navigator.pushReplacementNamed(
-                          context, OverviewTenantScreen.routeName);
                     } catch (error) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -130,6 +127,78 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
 
     // Set buildID's tenant
     await setBuildingToUser(buildingCode, userID);
+
+    // Set apartment number
+    _updateApartmentNumberDialog(buildingCode, userID);
+  }
+
+    void _updateApartmentNumberDialog(String joinID, String userID) {
+    String inputNumber = "";
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('Last thing 😄'),
+          content: Card(
+            color: Colors.transparent,
+            elevation: 0.0,
+            child: Column(
+              children: [
+                TextField(
+                  controller: apartmentInputController,
+                  decoration: InputDecoration(
+                    labelText: "Enter Apartment Number",
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                  ),
+                  onSubmitted: (value) async {
+                    inputNumber = value;
+                    setState(() {
+                      _isSubmitted = true;
+                    });
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text("Update"),
+                  onPressed: () async {
+                    _congratulationsDialog(userID, joinID, apartmentInputController.text);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _congratulationsDialog(
+      String userID, String joinID, String inputNumber) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('Congratulations!'),
+          content: const Text(
+              'You have join a new building'),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("Got it!"),
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userID)
+                    .update({'apartmentNumber': inputNumber});
+                    _updateBTNPressed = true;
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacementNamed(
+                    context, OverviewTenantScreen.routeName);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> setBuildingToUser(String buildingCode, String userID) async {
