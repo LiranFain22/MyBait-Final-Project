@@ -39,7 +39,12 @@ class OverviewTenantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hi ${currentUser!.displayName}! 👋🏻'),
+        title: Row(
+          children: const [
+            Text(' MyBait '),
+            Icon(Icons.home),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
@@ -73,63 +78,80 @@ class OverviewTenantScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(),
-      body: Padding(
+      drawer: const AppDrawer(),
+      body: Container(
         padding: const EdgeInsets.all(10),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-          itemCount: menuList.length,
-          itemBuilder: (context, position) {
-            return Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: InkWell(
-                onTap: () {
-                  if (menuList[position].getTitle == 'Report') {
-                    Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
-                  }
-                  if (menuList[position].getTitle == 'Payment') {
-                    Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
-                  }
-                  if (menuList[position].getTitle == 'Information') {
-                    // todo: implement information screen
-                  }
-                },
-                child: Center(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0)),
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Icon(
-                              menuList[position].icon,
-                              size: 70,
-                              color: Colors.blue,
-                            ),
+        child: Column(
+          children: [
+            Text(
+              'Hi ${FirebaseAuth.instance.currentUser!.displayName}! 👋🏻',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemCount: menuList.length,
+                  itemBuilder: (context, position) {
+                    return Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: InkWell(
+                        onTap: () {
+                          if (menuList[position].getTitle == 'Report') {
+                            Navigator.of(context)
+                                .pushReplacementNamed(ReportsScreen.routeName);
+                          }
+                          if (menuList[position].getTitle == 'Payment') {
+                            Navigator.of(context)
+                                .pushReplacementNamed(PaymentScreen.routeName);
+                          }
+                          if (menuList[position].getTitle == 'Information') {
+                            // todo: implement information screen
+                          }
+                        },
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Center(
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100.0)),
+                                  elevation: 10,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Icon(
+                                      menuList[position].icon,
+                                      size: 70,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Container(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Text(
+                                    menuList[position].title,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          alignment: Alignment.bottomCenter,
-                          child: Text(
-                            menuList[position].title,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
