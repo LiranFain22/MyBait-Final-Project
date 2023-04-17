@@ -51,11 +51,16 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
-        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).get().then((value) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .get()
+            .then((value) {
           setState(() {
             _userType = value.data()!['userType'];
           });
         });
+
         if (_userType == 'MANAGER') {
           Navigator.pushReplacementNamed(
               context, OverviewManagerScreen.routeName);
@@ -250,7 +255,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                        Navigator.of(context)
+                            .pushNamed(RegisterScreen.routeName);
                       },
                     ),
                     TextButton(
@@ -259,7 +265,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(fontSize: 15),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushNamed(ForgotPasswordScreen.routeName);
+                        Navigator.of(context)
+                            .pushNamed(ForgotPasswordScreen.routeName);
                       },
                     ),
                   ],

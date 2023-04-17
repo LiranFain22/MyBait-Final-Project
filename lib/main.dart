@@ -31,33 +31,51 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<void> checkUserType(BuildContext context) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final DocumentSnapshot<Map<String, dynamic>> userData =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+      final String userType = userData.get('userType');
+      if (userType == 'MANAGER') {
+        // Navigate to manager screen
+        Navigator.pushReplacementNamed(
+            context, OverviewManagerScreen.routeName);
+      } else {
+        final String buildingID = userData.get('buildingID');
+        if (buildingID.isNotEmpty) {
+          // Navigate to tenant user screen
+          Navigator.pushReplacementNamed(
+              context, OverviewTenantScreen.routeName);
+        } else {
+          // Navigate to welcom screen
+          Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+        }
+      }
+    } else {
+      // Navigate to login screen
+      Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyBait',
       home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, userSnapshot) {
-          if (userSnapshot.connectionState == ConnectionState.waiting) {
-            return SplashScreen();
-          }
-          if (userSnapshot.hasData) {
-            FirebaseFirestore.instance
-                .collection('users')
-                .doc(userSnapshot.data!.uid)
-                .get()
-                .then((value) {
-              if (value.data()!['userType'] == 'MANAGER') {
-                return OverviewManagerScreen();
-              }
-              if (value.data()!['userType'] == 'TENANT') {
-                return OverviewTenantScreen();
-              }
-            });
-          }
-          return const LoginScreen();
-        },
-      ),
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen();
+            }
+            if (userSnapshot.hasData) {
+              checkUserType(context);
+            }
+            return const LoginScreen();
+          }),
       routes: {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
@@ -73,7 +91,8 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.routeName: (context) => const WelcomeScreen(),
         CreateBuildingScreen.routeName: (context) => CreateBuildingScreen(),
         JoinBuildingScreen.routeName: (context) => const JoinBuildingScreen(),
-        ForgotPasswordScreen.routeName:(context) => const ForgotPasswordScreen(),
+        ForgotPasswordScreen.routeName: (context) =>
+            const ForgotPasswordScreen(),
       },
     );
   }
