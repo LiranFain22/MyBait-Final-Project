@@ -5,7 +5,7 @@ class Report with ChangeNotifier{
   final String? title;
   final String? description;
   final String? location;
-  final String? imageUrl;
+  String imageUrl;
   final String? createBy;
 
   Report({
@@ -13,7 +13,12 @@ class Report with ChangeNotifier{
     @required this.title,
     @required this.description,
     @required this.location,
-    @required this.imageUrl,
+    required this.imageUrl,
     @required this.createBy,
   });
+
+  
+  void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
 }

@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mybait/screens/reports_screen.dart';
+import 'package:mybait/widgets/customButton.dart';
 
 import '../models/reports.dart';
 import '../models/report.dart';
@@ -16,6 +21,36 @@ class EditReportScreen extends StatefulWidget {
 }
 
 class _EditReportScreenState extends State<EditReportScreen> {
+  File? _image;
+
+  Future getImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) {
+        // Set default image => 'No Image Available'
+        _editedReport.setImageUrl('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png');
+        return;
+      }
+
+      final imageTemporary = File(image.path);
+
+      setState(() {
+        _image = imageTemporary;
+      });
+
+      _editedReport.setImageUrl(_image!.path);
+
+    } on PlatformException catch (e) {
+      // showDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return Text(e.message.toString());
+      //   },
+      // );
+      print(e.message);
+    }
+  }
+
   User user = FirebaseAuth.instance.currentUser!;
   final _formKey = GlobalKey<FormState>();
   final _descriptionFocusNode = FocusNode();
@@ -34,13 +69,11 @@ class _EditReportScreenState extends State<EditReportScreen> {
 
   @override
   void initState() {
-    _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
   }
 
   @override
   void dispose() {
-    _imageUrlFocusNode.removeListener(_updateImageUrl);
     _descriptionFocusNode.dispose();
     _locationFocusNode.dispose();
     _imageFocusNode.dispose();
@@ -48,32 +81,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
     super.dispose();
   }
 
-  // This function update imageUrl preview even if the focus is NOT on image url
-  void _updateImageUrl() {
-    if (!_imageFocusNode.hasFocus) {
-      if ((!_imageUrlController.text.startsWith('http') &&
-              !_imageUrlController.text.startsWith('https')) ||
-          (!_imageUrlController.text.endsWith('.png') &&
-              !_imageUrlController.text.endsWith('.jpg') &&
-              !_imageUrlController.text.endsWith('.jpeg'))) {
-        return;
-      }
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    Future<String> fetchBuildingID() async {
-      var userDocument = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      var data = userDocument.data();
-      var buildingID = data!['buildingID'] as String;
-      return buildingID;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Report'),
@@ -159,7 +168,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                     Container(
                       width: 100,
                       height: 100,
-                      margin: EdgeInsets.only(
+                      margin: const EdgeInsets.only(
                         top: 8,
                         right: 10,
                       ),
@@ -169,38 +178,29 @@ class _EditReportScreenState extends State<EditReportScreen> {
                           color: Colors.grey,
                         ),
                       ),
-                      child: _imageUrlController.text.isEmpty
-                          ? const Text('Enter a URL')
+                      child: _image == null
+                          // ? const Text('Enter a URL')
+                          ? Image.network(
+                              'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
                           : FittedBox(
-                              child: Image.network(_imageUrlController.text),
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
+                              child: Image.file(_image!),
                             ),
                     ),
-                    Expanded(
-                      child: TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Image URL'),
-                        keyboardType: TextInputType.url,
-                        textInputAction: TextInputAction.done,
-                        controller: _imageUrlController,
-                        focusNode: _imageFocusNode,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please Enter an Image URL.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _editedReport = Report(
-                              id: _editedReport.id,
-                              title: _editedReport.title,
-                              description: _editedReport.description,
-                              location: _editedReport.location,
-                              imageUrl: value,
-                              createBy: user.uid);
-                        },
-                      ),
-                    )
+                    Column(
+                      children: [
+                        customButton(
+                          title: 'Pick From Gallery',
+                          icon: Icons.image,
+                          onClick: () => getImage(ImageSource.gallery),
+                        ),
+                        customButton(
+                          title: 'Pick From Camera',
+                          icon: Icons.camera_alt,
+                          onClick: () => getImage(ImageSource.camera),
+                        )
+                      ],
+                    ),
                   ],
                 ),
                 Container(
@@ -228,8 +228,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                             .doc(buildingID)
                             .collection('Reports')
                             .doc();
-                        reports.addReportToReview(
-                            _editedReport, buildingID);
+                        reports.addReportToReview(_editedReport, buildingID);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
