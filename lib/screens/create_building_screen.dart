@@ -75,7 +75,6 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
   }
 
   void _updateApartmentNumberDialog(String userID, String joinID) {
-    String inputNumber = "";
     showDialog(
       context: context,
       builder: (context) {
@@ -94,7 +93,6 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     fillColor: Colors.grey.shade50,
                   ),
                   onSubmitted: (value) async {
-                    inputNumber = value;
                     setState(() {
                       _isSubmitted = true;
                     });
@@ -103,7 +101,6 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                 CupertinoDialogAction(
                   child: const Text("Update"),
                   onPressed: () async {
-                    print('update button pressed\ninputNumber = ${apartmentInputController.text}');
                     _congratulationsDialog(userID, joinID, apartmentInputController.text);
                   },
                 ),

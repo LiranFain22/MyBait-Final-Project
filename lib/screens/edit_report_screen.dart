@@ -41,12 +41,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
       _editedReport.setImageUrl(_image!.path);
 
     } on PlatformException catch (e) {
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return Text(e.message.toString());
-      //   },
-      // );
       print(e.message);
     }
   }
