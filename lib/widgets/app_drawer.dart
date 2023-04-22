@@ -36,8 +36,13 @@ class _AppDrawerState extends State<AppDrawer> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _userType = '';
+  }
+
   Widget userDrawerToShow(BuildContext context) {
-    _fetchUserType();
     if (_userType == 'MANAGER') {
       return Column(
         children: [
@@ -200,6 +205,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    _fetchUserType();
     return Drawer(child: userDrawerToShow(context));
   }
 }

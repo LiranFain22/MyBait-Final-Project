@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/create_building_screen.dart';
 import 'package:mybait/screens/join_building_screen.dart';
+import 'package:mybait/screens/login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static const routeName = '/welcome';
@@ -33,6 +35,38 @@ class WelcomeScreen extends StatelessWidget {
           ],
         ),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure, do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pop(
+                            true); // dismisses only the dialog and returns true
+                        Navigator.pushNamed(context, LoginScreen.routeName);
+                      },
+                      child: const Text('Yes'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(
+                            false); // dismisses only the dialog and returns false
+                      },
+                      child: const Text('No'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(

@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../screens/MANAGER/overview_manager_screen.dart';
+import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/welcome_screen.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  const GoogleSignInButton({super.key});
+  final String userType;
+  const GoogleSignInButton(this.userType, {super.key});
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -37,24 +40,33 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       onPressed: () async {
         UserCredential? userCredential = await _signInWithGoogle();
         if (userCredential != null) {
-          // Handle successful sign-in
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(userCredential.user!.uid)
-              .set({
-            'uid': userCredential.user!.uid,
-            'userType': 'TENANT',
-            'email': userCredential.user!.email,
-            'firstName': userCredential.user!.displayName,
-          });
-          await ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Login successfully'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
-          Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+          // todo: Handle successful sign-in
+          // Get a reference to the user's document you want to check
+          DocumentReference documentReference = FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid);
+
+          // Retrieve user's  document snapshot
+          DocumentSnapshot userDocumentSnapshot = await documentReference.get();
+
+          // Check if the user's document exists
+          if (userDocumentSnapshot.exists) {
+            // User's document exists, check if the 'buildingID' field exists
+            Map<String, dynamic> data =
+                userDocumentSnapshot.data() as Map<String, dynamic>;
+            if (data.containsKey('buildingID')) {
+              // 'buildingID' field exists, check which type of user is
+              if (data.containsValue('MANAGER')) {
+                Navigator.pushReplacementNamed(
+                    context, OverviewManagerScreen.routeName);
+              } else {
+                Navigator.pushReplacementNamed(
+                    context, OverviewTenantScreen.routeName);
+              }
+            }
+          } else {
+            createNewUser(userCredential, context);
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -85,5 +97,26 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         ],
       ),
     );
+  }
+
+  Future<void> createNewUser(
+      UserCredential userCredential, BuildContext context) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userCredential.user!.uid)
+        .set({
+      'uid': userCredential.user!.uid,
+      'userType': 'TENANT',
+      'email': userCredential.user!.email,
+      'userName': userCredential.user!.displayName,
+    });
+    await ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Login successfully'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
   }
 }

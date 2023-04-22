@@ -79,8 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'uid': userCredential.user!.uid,
         'userType': 'TENANT',
         'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
+        'userName': firstName,
       });
 
       // Update user display name
@@ -274,18 +273,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(children: const [
-                  Expanded(child: Divider()),
-                  Text("Or continue with"),
-                  Expanded(child: Divider()),
-                ]),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(50.0),
-                child: GoogleSignInButton(),
               ),
             ],
           ),

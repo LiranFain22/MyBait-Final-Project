@@ -6,6 +6,7 @@ import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 
+import '../widgets/signInWithGoogle.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -269,6 +270,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             .pushNamed(ForgotPasswordScreen.routeName);
                       },
                     ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: const [
+                        Expanded(child: Divider()),
+                        Text("Or continue with"),
+                        Expanded(child: Divider()),
+                      ]),
+                    ),
+                    GoogleSignInButton(_userType),
                   ],
                 ),
             ],
