@@ -32,32 +32,38 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   Future<void> checkUserType(BuildContext context) async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final DocumentSnapshot<Map<String, dynamic>> userData =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-      final String userType = userData.get('userType');
-      if (userType == 'MANAGER') {
-        // Navigate to manager screen
-        Navigator.pushReplacementNamed(
-            context, OverviewManagerScreen.routeName);
-      } else {
-        final String buildingID = userData.get('buildingID');
-        if (buildingID.isNotEmpty) {
-          // Navigate to tenant user screen
-          Navigator.pushReplacementNamed(
-              context, OverviewTenantScreen.routeName);
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get()
+          .then((userDoc) {
+        if (userDoc.exists) {
+          if (userDoc.data()!.containsKey('userType')) {
+            final String userType = userDoc.get('userType');
+            if (userType == 'MANAGER') {
+              // Navigate to manager screen
+              Navigator.pushReplacementNamed(
+                  context, OverviewManagerScreen.routeName);
+            } else {
+              if (userDoc.data()!.containsKey('buildingID') && userDoc.data()!.containsKey('apartmentNumber')) {
+                // Navigate to tenant user screen
+                Navigator.pushReplacementNamed(
+                    context, OverviewTenantScreen.routeName);
+              } else {
+                // Navigate to welcom screen
+                Navigator.pushReplacementNamed(
+                    context, WelcomeScreen.routeName);
+              }
+            }
+          }
         } else {
-          // Navigate to welcom screen
-          Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+          // Navigate to login screen
+          Navigator.pushReplacementNamed(context, LoginScreen.routeName);
         }
-      }
-    } else {
-      // Navigate to login screen
-      Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+      });
+    } on Exception catch (e) {
+      debugPrint(e.toString());
     }
   }
 

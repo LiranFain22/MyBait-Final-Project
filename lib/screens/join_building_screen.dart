@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +29,8 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
 
   bool _isSubmitted = false;
   bool _updateBTNPressed = false;
+  bool _isValidApartmentNumber = false;
+  bool _isValidBuildingCode = false;
 
   @override
   void dispose() {
@@ -88,7 +92,8 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
                       onSubmitCodeBuilding(
                           buildingIDController.text, currentUser!.uid);
                     } catch (error) {
-                      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
+                      customToast.showCustomToast(
+                          error.toString(), Colors.white, Colors.red);
                     }
                   },
                   child: const Text(
@@ -125,11 +130,13 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     // Set buildID's tenant
     await setBuildingToUser(buildingCode, userID);
 
-    // Set apartment number
-    _updateApartmentNumberDialog(buildingCode, userID);
+    if (_isValidBuildingCode) {
+      // Set apartment number
+      _updateApartmentNumberDialog(buildingCode, userID);
+    }
   }
 
-    void _updateApartmentNumberDialog(String joinID, String userID) {
+  void _updateApartmentNumberDialog(String joinID, String userID) {
     String inputNumber = "";
     showDialog(
       context: context,
@@ -141,24 +148,44 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
             elevation: 0.0,
             child: Column(
               children: [
-                TextField(
+                TextFormField(
                   controller: apartmentInputController,
                   decoration: InputDecoration(
                     labelText: "Enter Apartment Number",
                     filled: true,
                     fillColor: Colors.grey.shade50,
                   ),
-                  onSubmitted: (value) async {
-                    inputNumber = value;
-                    setState(() {
-                      _isSubmitted = true;
-                    });
+                  validator: (userInput) {
+                    RegExp numericRegex = RegExp(r'^-?[0-9]+$');
+                    if (userInput!.isEmpty) {
+                      return 'Please Enter Apartment Number';
+                    }
+                    if (!numericRegex.hasMatch(userInput)) {
+                      return 'Apartment Number Must be Only Numbers';
+                    } else {
+                      // userInput contains only numbers
+                      int userInputAsInteger = int.parse(userInput);
+                      if (userInputAsInteger > 100) {
+                        return 'Apartment Number Must be Equal or Less than 100';
+                      }
+                    }
+                    return null;
                   },
                 ),
                 CupertinoDialogAction(
                   child: const Text("Update"),
                   onPressed: () async {
-                    _congratulationsDialog(userID, joinID, apartmentInputController.text);
+                    checkValidApartmentNumber(
+                        joinID, apartmentInputController.text);
+                    if (_isValidApartmentNumber) {
+                      _congratulationsDialog(
+                          userID, joinID, apartmentInputController.text);
+                    } else {
+                      customToast.showCustomToast(
+                          'The apartment number is already in use ⛔️',
+                          Colors.white,
+                          Colors.red);
+                    }
                   },
                 ),
               ],
@@ -169,6 +196,37 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     );
   }
 
+  void checkValidApartmentNumber(String joinID, String apartmentInput) async {
+    // 1. get building id with the help of joinID
+    try {
+      await FirebaseFirestore.instance
+          .collection('Buildings')
+          .where('joinID', isEqualTo: joinID)
+          .get()
+          .then((buildingDocs) {
+        String buildingID = buildingDocs.docs.first.data()['buildingID'];
+        // 2. check if there is not user with same buildingID AND apartment number
+        FirebaseFirestore.instance
+            .collection('users')
+            .where('buildingID', isEqualTo: buildingID)
+            .where('joinID', isEqualTo: joinID)
+            .get()
+            .then((result) {
+          setState(() {
+            // 3. if there is not one there continue flow, otherwise error number -> 'The apartment number is already in use'
+            if (result.docs.isNotEmpty) {
+              _isValidApartmentNumber = false;
+            } else {
+              _isValidApartmentNumber = true;
+            }
+          });
+        });
+      });
+    } on Exception catch (e) {
+      customToast.showCustomToast(e.toString(), Colors.white, Colors.red);
+    }
+  }
+
   Future<void> _congratulationsDialog(
       String userID, String joinID, String inputNumber) async {
     await showDialog(
@@ -176,20 +234,12 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
       builder: (context) {
         return CupertinoAlertDialog(
           title: const Text('Congratulations!'),
-          content: const Text(
-              'You have join a new building'),
+          content: const Text('You have join a new building'),
           actions: [
             CupertinoDialogAction(
               child: const Text("Got it!"),
               onPressed: () async {
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userID)
-                    .update({'apartmentNumber': inputNumber});
-                    _updateBTNPressed = true;
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacementNamed(
-                    context, OverviewTenantScreen.routeName);
+                await updateApartmentNumber(userID, inputNumber, context);
               },
             ),
           ],
@@ -198,18 +248,42 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     );
   }
 
-  Future<void> setBuildingToUser(String buildingCode, String userID) async {
+  Future<void> updateApartmentNumber(
+      String userID, String inputNumber, BuildContext context) async {
     await FirebaseFirestore.instance
-        .collection('Buildings')
-        .where('joinID', isEqualTo: buildingCode)
-        .get()
-        .then((buildingDocs) {
-      String buildingID = buildingDocs.docs.first.data()['buildingID'];
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userID)
-          .update({'buildingID': buildingID});
-    });
+        .collection('users')
+        .doc(userID)
+        .update({'apartmentNumber': inputNumber});
+    _updateBTNPressed = true;
+    Navigator.of(context).pop();
+    Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+  }
+
+  Future<void> setBuildingToUser(String buildingCode, String userID) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Buildings')
+          .where('joinID', isEqualTo: buildingCode)
+          .get()
+          .then((buildingDocs) {
+        setState(() {
+          if (buildingDocs.docs.isEmpty) {
+            customToast.showCustomToast(
+                'Invalid Building Code', Colors.white, Colors.red);
+            _isValidBuildingCode = false;
+          } else {
+            String buildingID = buildingDocs.docs.first.data()['buildingID'];
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(userID)
+                .update({'buildingID': buildingID});
+            _isValidBuildingCode = true;
+          }
+        });
+      });
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> updateTenantsArrayOfBuilding(

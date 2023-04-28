@@ -33,21 +33,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   var _isLoading = false;
 
-  void _onSubmit() {
-    setState(() => _isLoading = true);
-    Future.delayed(
-      const Duration(seconds: 2),
-      () => setState(() => _isLoading = false),
-    );
-  }
-
   void _trySubmit(BuildContext context) {
     final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
-    _onSubmit();
-
     if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
       _formkey.currentState!.save();
       _submitAuthForm(
         context,
@@ -88,10 +81,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await userCredential.user!.updateDisplayName(firstName);
       await userCredential.user!.reload();
 
-      customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+      setState(() {
+        _isLoading = false;
+      });
+
+      customToast.showCustomToast(
+          'Login successfully 🥳', Colors.white, Colors.green);
 
       Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
-
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
 
@@ -100,8 +97,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
 
       customToast.showCustomToast(message, Colors.white, Colors.red);
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
+
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
