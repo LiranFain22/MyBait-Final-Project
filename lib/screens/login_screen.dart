@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
+import '../widgets/custom_toast.dart';
 
 import '../widgets/signInWithGoogle.dart';
 import 'forgot_password_screen.dart';
@@ -27,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
   var _userPassword = '';
   var _isLoading = false;
   var _userType = '';
+
+  var customToast = CustomToast();
 
   void _trySubmit() {
     final isValid = _formkey.currentState!.validate();
@@ -62,6 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
           });
         });
 
+        customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+
         if (_userType == 'MANAGER') {
           Navigator.pushReplacementNamed(
               context, OverviewManagerScreen.routeName);
@@ -69,13 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(
               context, OverviewTenantScreen.routeName);
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successfully 🥳'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: email,
@@ -90,14 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
           'uid': userCredential.user!.uid,
           'userType': 'TENANT',
         });
-        await ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successfully'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
+
+        customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+
         Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+
       }
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
@@ -106,29 +102,17 @@ class _LoginScreenState extends State<LoginScreen> {
         message = error.message!;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(message, Colors.white, Colors.red);
+
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
-      print(error);
       setState(() {
         _isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast('An error occurred, please check your credentials!', Colors.white, Colors.red);
     }
   }
 

@@ -6,6 +6,8 @@ import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 
 import 'package:mybait/screens/welcome_screen.dart';
 
+import '../widgets/custom_toast.dart';
+
 class JoinBuildingScreen extends StatefulWidget {
   static const routeName = '/joinBuilding';
   const JoinBuildingScreen({super.key});
@@ -15,6 +17,7 @@ class JoinBuildingScreen extends StatefulWidget {
 }
 
 class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
+  var customToast = CustomToast();
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final buildingIDController = TextEditingController();
@@ -85,13 +88,7 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
                       onSubmitCodeBuilding(
                           buildingIDController.text, currentUser!.uid);
                     } catch (error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(error.toString()),
-                          backgroundColor: Theme.of(context).errorColor,
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
+                      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
                     }
                   },
                   child: const Text(
@@ -236,13 +233,7 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
         });
       }
     }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
       debugPrint("Failed to fetch documents: $error");
     });
   }

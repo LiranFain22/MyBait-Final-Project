@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
+import '../widgets/custom_toast.dart';
+
 class CreateBuildingScreen extends StatefulWidget {
   static const routeName = '/registerBuilding';
 
@@ -17,6 +19,7 @@ class CreateBuildingScreen extends StatefulWidget {
 }
 
 class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
+  var customToast = CustomToast();
   final chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
@@ -167,11 +170,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
 
       _updateApartmentNumberDialog(user.uid, joinID);
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Theme.of(context).errorColor,
-        duration: const Duration(seconds: 2),
-      ));
+      customToast.showCustomToast(error.toString(), Colors.white, Colors.green);
       debugPrint(error.toString());
     }
   }

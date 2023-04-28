@@ -7,6 +7,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mybait/screens/TENANT/payment_history_screen.dart';
 
 import '../../widgets/app_drawer.dart';
+import '../../widgets/custom_toast.dart';
 
 class PaymentScreen extends StatelessWidget {
   static const routeName = '/payment';
@@ -41,6 +42,7 @@ class PaymentScreen extends StatelessWidget {
 
   void _showDialog(BuildContext context, String title, String amount,
       QueryDocumentSnapshot<Map<String, dynamic>> docId) {
+    var customToast = CustomToast();
     showDialog(
       context: context,
       builder: (context) {
@@ -52,9 +54,10 @@ class PaymentScreen extends StatelessWidget {
                   CupertinoDialogAction(
                     child: const Text("Pay Now"),
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'Payment for $title was successfully made 🙏🏻')));
+                      customToast.showCustomToast(
+                          'Payment for $title was successfully made 🙏🏻',
+                          Colors.white,
+                          Colors.grey[800]!);
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -81,9 +84,10 @@ class PaymentScreen extends StatelessWidget {
                   CupertinoDialogAction(
                     child: const Text("Pay Now"),
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'Payment for $title was successfully made 🙏🏻')));
+                      customToast.showCustomToast(
+                          'Payment for $title was successfully made 🙏🏻',
+                          Colors.white,
+                          Colors.grey[800]!);
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -140,6 +144,7 @@ class PaymentScreen extends StatelessWidget {
   }
 
   Widget getUserPayments() {
+    var customToast = CustomToast();
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('users')
@@ -175,9 +180,10 @@ class PaymentScreen extends StatelessWidget {
                             onPressed: (context) {
                               String paymentTitle =
                                   paymentDocuments[index]['title'];
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'Payment for $paymentTitle was successfully made 🙏🏻')));
+                              customToast.showCustomToast(
+                                  'Payment for $paymentTitle was successfully made 🙏🏻',
+                                  Colors.white,
+                                  Colors.grey[800]!);
                               FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(FirebaseAuth.instance.currentUser!.uid)

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../screens/MANAGER/overview_manager_screen.dart';
 import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/welcome_screen.dart';
+import 'custom_toast.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   final String userType;
@@ -16,6 +17,7 @@ class GoogleSignInButton extends StatefulWidget {
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
+  var customToast = CustomToast();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -110,13 +112,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       'email': userCredential.user!.email,
       'userName': userCredential.user!.displayName,
     });
-    await ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Login successfully'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
     Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
   }
 }

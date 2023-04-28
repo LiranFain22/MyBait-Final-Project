@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
+import '../widgets/custom_toast.dart';
 import '../widgets/signInWithGoogle.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
+  var customToast = CustomToast();
 
   final _formkey = GlobalKey<FormState>();
 
@@ -86,14 +88,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await userCredential.user!.updateDisplayName(firstName);
       await userCredential.user!.reload();
 
-      await ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+
       Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
 
@@ -101,21 +99,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         message = error.message!;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(message, Colors.white, Colors.red);
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
     }
   }
 

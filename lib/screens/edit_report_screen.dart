@@ -6,7 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mybait/screens/reports_screen.dart';
-import 'package:mybait/widgets/customButton.dart';
+import 'package:mybait/widgets/custom_Button.dart';
+import 'package:mybait/widgets/custom_toast.dart';
 
 import '../models/reports.dart';
 import '../models/report.dart';
@@ -60,6 +61,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
     imageUrl: '',
     createBy: '',
   );
+  var customToast = CustomToast();
 
   @override
   void initState() {
@@ -223,12 +225,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                             .collection('Reports')
                             .doc();
                         reports.addReportToReview(_editedReport, buildingID);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                'Your report send to manager building for review.'),
-                          ),
-                        );
+                        customToast.showCustomToast('Your report send to manager building for review.', Colors.white, Colors.grey[800]!);
                         Navigator.of(context)
                             .pushReplacementNamed(ReportsScreen.routeName);
                       }

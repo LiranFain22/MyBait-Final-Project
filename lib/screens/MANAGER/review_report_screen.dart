@@ -6,8 +6,11 @@ import 'package:mybait/models/report.dart';
 
 import 'package:mybait/models/reports.dart';
 
+import '../../widgets/custom_toast.dart';
+
 class ReviewReportScreen extends StatelessWidget {
   static const routeName = '/reviewReport';
+  var customToast = CustomToast();
   String buildingID;
   String reportID;
   ReviewReportScreen(this.buildingID, this.reportID, {super.key});
@@ -114,8 +117,7 @@ class ReviewReportScreen extends StatelessWidget {
           .runTransaction((Transaction myTransaction) async {
         myTransaction.delete(snapshot.data!.reference);
       });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('The report has been removed from review..')));
+      customToast.showCustomToast('The report has been removed from review..', Colors.white, Colors.grey[800]!);
       Navigator.of(context).pop();
     } on Exception catch (error) {
       print(error.toString());

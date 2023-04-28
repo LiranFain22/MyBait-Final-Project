@@ -5,10 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../widgets/custom_toast.dart';
 import 'report.dart';
 
 class Reports {
   List<Report> _reportList = [];
+
+  var customToast = CustomToast();
 
   Reports();
 
@@ -72,7 +75,7 @@ class Reports {
         );
       });
     } on PlatformException catch (e) {
-      print(e.message);
+      customToast.showCustomToast(e.message.toString(), Colors.white, Colors.red);
     }
   }
 
