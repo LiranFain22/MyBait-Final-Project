@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mybait/screens/MANAGER/review_report_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -71,7 +72,8 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
                             NetworkImage(documents[index]['imageURL']),
                       ),
                       title: Text(documents[index]['title']),
-                      subtitle: Text(documents[index]['description']),
+                      // subtitle: Text(documents[index]['description']),
+                      subtitle: showDateAsText(documents[index]['timestamp']),
                       trailing: IconButton(
                         icon: const Icon(Icons.info_outline),
                         onPressed: () async {
@@ -94,6 +96,15 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
           );
         },
       ),
+    );
+  }
+  
+  Widget showDateAsText(document) {
+    var timestamp = document as Timestamp;
+    DateTime date = timestamp.toDate();
+    String formatted = DateFormat.yMd().add_jm().format(date);
+    return Text(
+      formatted
     );
   }
 }

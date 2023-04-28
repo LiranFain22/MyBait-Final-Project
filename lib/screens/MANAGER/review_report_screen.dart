@@ -56,9 +56,16 @@ class ReviewReportScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${snapshot.data!['description']}',
+                    'Created By: ${snapshot.data!['createdBy']}',
                     style: const TextStyle(
                       fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '${snapshot.data!['description']}',
+                    style: const TextStyle(
+                      fontSize: 15,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -69,10 +76,6 @@ class ReviewReportScreen extends StatelessWidget {
                       ElevatedButton(
                           child: const Text('Approve'),
                           onPressed: () async {
-                            // todo: implement approve action
-                            // 1. Create a copy of the source document in the target collection, i.e. read it from the source collection,
-                            //    get the document fields and create a new document in the target collection with these fields,
-                            //    and then;
                             Reports reports = Reports();
                             Report report = Report(
                               id: snapshot.data!['id'],
@@ -80,7 +83,8 @@ class ReviewReportScreen extends StatelessWidget {
                               description: snapshot.data!['description'],
                               location: snapshot.data!['location'],
                               imageUrl: snapshot.data!['imageURL'],
-                              createBy: snapshot.data!['createdBy'],
+                              createdBy: snapshot.data!['createdBy'],
+                              dateTime: snapshot.data!['timestamp'],
                             );
                             var userDocument = await FirebaseFirestore.instance
                                 .collection('users')

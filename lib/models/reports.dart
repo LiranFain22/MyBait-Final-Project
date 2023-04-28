@@ -90,7 +90,7 @@ class Reports {
       'description': report.description,
       'location': report.location,
       'imageURL': report.imageUrl,
-      'createdBy': report.createBy,
+      'createdBy': report.createdBy,
       'status': 'INPROGRESS'
     }).then(
       (value) {
@@ -105,7 +105,7 @@ class Reports {
           'description': report.description,
           'location': report.location,
           'imageURL': report.imageUrl,
-          'createdBy': report.createBy,
+          'createdBy': report.createdBy,
           'status': 'INPROGRESS'
         });
       },

@@ -42,7 +42,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
       _editedReport.setImageUrl(_image!.path);
 
     } on PlatformException catch (e) {
-      print(e.message);
+      debugPrint(e.message);
     }
   }
 
@@ -51,7 +51,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
   final _descriptionFocusNode = FocusNode();
   final _locationFocusNode = FocusNode();
   final _imageFocusNode = FocusNode();
-  final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   var _editedReport = Report(
     id: null,
@@ -59,7 +58,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
     description: '',
     location: '',
     imageUrl: '',
-    createBy: '',
+    createdBy: FirebaseAuth.instance.currentUser!.displayName,
+    dateTime: DateTime.now(),
   );
   var customToast = CustomToast();
 
@@ -109,6 +109,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: _editedReport.description,
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
+                      dateTime: _editedReport.dateTime,
+                      createdBy: _editedReport.createdBy
                     );
                   },
                 ),
@@ -132,6 +134,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: value,
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
+                      dateTime: _editedReport.dateTime,
+                      createdBy: _editedReport.createdBy
                     );
                   },
                 ),
@@ -155,6 +159,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: _editedReport.description,
                       location: value,
                       imageUrl: _editedReport.imageUrl,
+                      dateTime: _editedReport.dateTime,
+                      createdBy: _editedReport.createdBy
                     );
                   },
                 ),

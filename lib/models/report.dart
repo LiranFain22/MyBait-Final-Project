@@ -6,7 +6,8 @@ class Report with ChangeNotifier{
   final String? description;
   final String? location;
   String imageUrl;
-  final String? createBy;
+  final String? createdBy;
+  final DateTime dateTime;
 
   Report({
     @required this.id,
@@ -14,7 +15,8 @@ class Report with ChangeNotifier{
     @required this.description,
     @required this.location,
     required this.imageUrl,
-    @required this.createBy,
+    @required this.createdBy,
+    required this.dateTime,
   });
 
   
