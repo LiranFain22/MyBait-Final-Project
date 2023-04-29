@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/screens/MANAGER/managing_fault_screen.dart';
+import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:provider/provider.dart';
 

@@ -111,10 +111,9 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       'userType': 'TENANT',
       'email': userCredential.user!.email,
       'userName': userCredential.user!.displayName,
-    }).then((value) {
+    });
       customToast.showCustomToast(
           'Login successfully 🥳', Colors.white, Colors.green);
       Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
-    });
   }
 }
