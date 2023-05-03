@@ -52,7 +52,7 @@ class MaintenancePaymentScreen extends StatelessWidget {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('payments')
           .doc(currentYear.toString())
-          .collection('Maintenance payments')
+          .collection('Maintenance Payments')
           .where('isPaid', isEqualTo: false)
           .snapshots(),
       builder: (context, snapshot) {
@@ -61,18 +61,19 @@ class MaintenancePaymentScreen extends StatelessWidget {
         }
         if (snapshot.hasData) {
           return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: snapshot.data!.docs.isNotEmpty
-                  ? Text(
-                      "You have ${snapshot.data!.docs.length} payments",
-                      style: const TextStyle(fontSize: 20),
-                    )
-                  : const Center(
-                      child: Text(
-                        'You Don\'t Have Payments 😇',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ));
+            padding: const EdgeInsets.all(8.0),
+            child: snapshot.data!.docs.isNotEmpty
+                ? Text(
+                    "You have ${snapshot.data!.docs.length} payments",
+                    style: const TextStyle(fontSize: 20),
+                  )
+                : const Center(
+                    child: Text(
+                      'You Don\'t Have Payments 😇',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+          );
         }
         return const Text('No Data');
       },
@@ -89,7 +90,7 @@ class MaintenancePaymentScreen extends StatelessWidget {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('payments')
           .doc(currentYear.toString())
-          .collection("Maintenance payments")
+          .collection("Maintenance Payments")
           .where('isPaid', isEqualTo: false)
           .snapshots(),
       builder: (context, snapshot) {
@@ -99,7 +100,8 @@ class MaintenancePaymentScreen extends StatelessWidget {
         if (snapshot.hasData) {
           var paymentDocuments = snapshot.data!.docs;
           // Sort paymentDocuments by the "monthNumber" field in ascending order
-          paymentDocuments.sort((a, b) => a['monthNumber'].compareTo(b['monthNumber']));
+          paymentDocuments
+              .sort((a, b) => a['monthNumber'].compareTo(b['monthNumber']));
           return ListView.builder(
             itemCount: paymentDocuments.length,
             padding: const EdgeInsets.all(5),

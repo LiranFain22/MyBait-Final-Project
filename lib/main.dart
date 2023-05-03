@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:mybait/screens/TENANT/maintenance_payment_screen.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:mybait/screens/create_building_screen.dart';
@@ -10,7 +12,7 @@ import 'package:mybait/screens/edit_report_screen.dart';
 import 'package:mybait/screens/forgot_password_screen.dart';
 import 'package:mybait/screens/join_building_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/MANAGER/managing_fault_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_report_screen.dart';
 import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/TENANT/home_committee_payment_history_screen.dart';
@@ -90,7 +92,7 @@ class MyApp extends StatelessWidget {
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
         EditReportScreen.routeName: (context) => EditReportScreen(),
-        ManagingFaultScreen.routeName: (context) => ManagingFaultScreen(),
+        ManagingReportScreen.routeName: (context) => ManagingReportScreen(),
         ReportsScreen.routeName: (context) => ReportsScreen(),
         SplashScreen.routeName: (context) => SplashScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
@@ -106,6 +108,8 @@ class MyApp extends StatelessWidget {
         PaymentScreen.routeName: (context) => const PaymentScreen(),
         MaintenancePaymentScreen.routeName:(context) => MaintenancePaymentScreen(),
         MaintenancePaymentHistoryScreen.routeName:(context) => MaintenancePaymentHistoryScreen(),
+        ManagingPaymentScreen.routeName:(context) => ManagingPaymentScreen(),
+        EditPaymentScreen.routeName:(context) => EditPaymentScreen(),
       },
     );
   }

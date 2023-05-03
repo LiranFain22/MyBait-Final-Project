@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:share/share.dart';
 
+import '../TENANT/payment_screen.dart';
 import '../login_screen.dart';
 import '../reports_screen.dart';
-import 'managing_fault_screen.dart';
+import 'managing_report_screen.dart';
 
 import '../../widgets/app_drawer.dart';
 
@@ -30,9 +32,10 @@ class OverviewManagerScreen extends StatelessWidget {
   OverviewManagerScreen({super.key});
 
   List menuList = [
-    MenuItem(Icons.error_outline, 'Managing Fault'),
-    MenuItem(Icons.monetization_on_outlined, 'Cash Register'),
+    MenuItem(Icons.error_outline, 'Managing Reports'),
+    MenuItem(Icons.monetization_on_outlined, 'Managing Payment'),
     MenuItem(Icons.info_outline, 'Reports'),
+    MenuItem(Icons.payment_outlined, 'Payment'),
     MenuItem(Icons.account_circle_outlined, 'Information'),
   ];
 
@@ -144,20 +147,25 @@ class OverviewManagerScreen extends StatelessWidget {
                   itemBuilder: (context, position) {
                     return InkWell(
                       onTap: () {
-                        if (menuList[position].getTitle == 'Managing Fault') {
+                        if (menuList[position].getTitle == 'Managing Reports') {
                           Navigator.of(context).pushReplacementNamed(
-                              ManagingFaultScreen.routeName);
+                              ManagingReportScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Reports') {
                           Navigator.of(context)
                               .pushReplacementNamed(ReportsScreen.routeName);
                         }
-                        if (menuList[position].getTitle == 'Cash Register') {
-                          // todo: implement Cash Register screen
+                        if (menuList[position].getTitle == 'Managing Payment') {
+                          Navigator.of(context)
+                              .pushReplacementNamed(ManagingPaymentScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Information') {
                           // todo: implement Information screen
                         }
+                        if (menuList[position].getTitle == 'Payment') {
+                            Navigator.of(context)
+                                .pushReplacementNamed(PaymentScreen.routeName);
+                          }
                       },
                       child: Center(
                         child: Column(

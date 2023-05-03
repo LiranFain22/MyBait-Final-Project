@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mybait/screens/MANAGER/managing_fault_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_report_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,8 @@ class _AppDrawerState extends State<AppDrawer> {
 
   var _userType = '';
 
-  _fetchUserType() {
-    FirebaseFirestore.instance
+  _fetchUserType() async {
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get()
@@ -63,18 +64,19 @@ class _AppDrawerState extends State<AppDrawer> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.error_outline),
-            title: const Text('Managing Fault'),
+            title: const Text('Managing Report'),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(ManagingFaultScreen.routeName);
+                  .pushReplacementNamed(ManagingReportScreen.routeName);
             },
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.attach_money_outlined),
-            title: const Text('Cash Register'),
+            title: const Text('Managing Payment'),
             onTap: () {
-              // todo: implement Cash Register Page
+              Navigator.of(context)
+                  .pushReplacementNamed(ManagingPaymentScreen.routeName);
             },
           ),
           const Divider(),
@@ -84,6 +86,15 @@ class _AppDrawerState extends State<AppDrawer> {
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ReportsScreen.routeName);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.payment_outlined),
+            title: const Text('Payment'),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(PaymentScreen.routeName);
             },
           ),
           const Divider(),

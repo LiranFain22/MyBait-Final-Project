@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
@@ -48,6 +49,32 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
     super.dispose();
   }
 
+  Future<void> updateUserPayments(String userID) async {
+    var now = DateTime.now();
+    var currentMonth = now.month;
+    var currentYear = now.year;
+
+    // Loop through the remaining months of the year, starting from the current month
+    for (var i = currentMonth; i <= 12; i++) {
+      var month = DateFormat('MMMM').format(DateTime(currentYear, i));
+
+      await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('payments')
+        .doc(currentYear.toString())
+        .collection('House committee payments')
+        .doc(month)
+        .set({
+          'title': 'Month Payment: $month',
+          'paymentType': 'month',
+          'amount': '30',
+          'isPaid': false,
+          'monthNumber': i,
+        });
+    }
+  }
+
   Future<void> _congratulationsDialog(
       String userID, String joinID, String inputNumber) async {
     await showDialog(
@@ -77,8 +104,8 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
     );
   }
 
-  void _updateApartmentNumberDialog(String userID, String joinID) {
-    showDialog(
+  Future<void> _updateApartmentNumberDialog(String userID, String joinID) async {
+    await showDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -105,6 +132,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                   child: const Text("Update"),
                   onPressed: () async {
                     _congratulationsDialog(userID, joinID, apartmentInputController.text);
+                    updateUserPayments(userID);
                   },
                 ),
               ],

@@ -14,16 +14,16 @@ enum SelectedOptions {
   delete,
 }
 
-class ManagingFaultScreen extends StatefulWidget {
+class ManagingReportScreen extends StatefulWidget {
   static const routeName = '/managing-fault';
 
-  ManagingFaultScreen({super.key});
+  ManagingReportScreen({super.key});
 
   @override
-  State<ManagingFaultScreen> createState() => _ManagingFaultScreenState();
+  State<ManagingReportScreen> createState() => _ManagingReportScreenState();
 }
 
-class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
+class _ManagingReportScreenState extends State<ManagingReportScreen> {
   List<Report> reportList = Reports().getReportList;
 
   Future<String> fetchBuildingID() async {
@@ -52,7 +52,7 @@ class _ManagingFaultScreenState extends State<ManagingFaultScreen> {
                 .collection('Buildings')
                 .doc(buildingID)
                 .collection('Reports')
-                .where('status', isEqualTo: 'WAITING')
+                // .where('status', isEqualTo: 'WAITING')
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

@@ -45,66 +45,68 @@ class ReviewReportScreen extends StatelessWidget {
                 ),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              return Column(
-                children: [
-                  Image.network(snapshot.data!['imageURL']),
-                  Text(
-                    snapshot.data!['title'],
-                    style: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Created By: ${snapshot.data!['createdBy']}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '${snapshot.data!['description']}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                          child: const Text('Approve'),
-                          onPressed: () async {
-                            Reports reports = Reports();
-                            Report report = Report(
-                              id: snapshot.data!['id'],
-                              title: snapshot.data!['title'],
-                              description: snapshot.data!['description'],
-                              location: snapshot.data!['location'],
-                              imageUrl: snapshot.data!['imageURL'],
-                              createdBy: snapshot.data!['createdBy'],
-                              dateTime: snapshot.data!['timestamp'],
-                            );
-                            var userDocument = await FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .get();
-                            var data = userDocument.data();
-                            var buildingID = data!['buildingID'] as String;
-                            reports.addReportToReports(report, buildingID);
-                            // 2. Delete the document from the source collection.
-                            deleteDocument(snapshot, context);
-                          }),
-                      ElevatedButton(
-                        child: const Text('Cancel'),
-                        onPressed: () async {
-                          await deleteDocument(snapshot, context);
-                        },
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Image.network(snapshot.data!['imageURL']),
+                    Text(
+                      snapshot.data!['title'],
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Text(
+                      'Created By: ${snapshot.data!['createdBy']}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${snapshot.data!['description']}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                            child: const Text('Approve'),
+                            onPressed: () async {
+                              Reports reports = Reports();
+                              Report report = Report(
+                                id: snapshot.data!['id'],
+                                title: snapshot.data!['title'],
+                                description: snapshot.data!['description'],
+                                location: snapshot.data!['location'],
+                                imageUrl: snapshot.data!['imageURL'],
+                                createdBy: snapshot.data!['createdBy'],
+                                dateTime: snapshot.data!['timestamp'],
+                              );
+                              var userDocument = await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                                  .get();
+                              var data = userDocument.data();
+                              var buildingID = data!['buildingID'] as String;
+                              reports.addReportToReports(report, buildingID);
+                              // 2. Delete the document from the source collection.
+                              deleteDocument(snapshot, context);
+                            }),
+                        ElevatedButton(
+                          child: const Text('Cancel'),
+                          onPressed: () async {
+                            await deleteDocument(snapshot, context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               );
             }
             return const CircularProgressIndicator();
