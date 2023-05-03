@@ -120,6 +120,7 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
       var buildingID = data!['buildingID'] as String;
       var now = DateTime.now();
       var currentYear = now.year;
+      var currentMonth = now.month;
       final DocumentSnapshot buildingDoc = await FirebaseFirestore.instance
           .collection('Buildings')
           .doc(buildingID)
@@ -145,7 +146,8 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
           'amount': newExpense.amount,
           'isPaid': false,
           'createdBy': newExpense.createdBy,
-          'timestamp': newExpense.dateTime
+          'timestamp': newExpense.dateTime,
+          'monthNumber': currentMonth,
         });
       }
       await customToast.showCustomToast(
