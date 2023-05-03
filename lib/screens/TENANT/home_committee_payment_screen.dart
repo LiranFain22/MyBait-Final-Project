@@ -4,30 +4,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mybait/screens/payment_history_screen.dart';
+import 'package:mybait/screens/TENANT/home_committee_payment_history_screen.dart';
 
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
+import '../../widgets/custom_toast.dart';
 
-class PaymentScreen extends StatelessWidget {
-  static const routeName = '/payment';
+class HomeCommitteePaymentScreen extends StatelessWidget {
+  static const routeName = '/HomeCommitteePayment';
 
-  const PaymentScreen({super.key});
+  const HomeCommitteePaymentScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment'),
+        title: const Text(
+          'Home Committee Payment',
+          style: TextStyle(fontSize: 19),
+        ),
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, PaymentHistoryScreen.routeName);
+              Navigator.pushNamed(
+                  context, HomeCommitteePaymentHistoryScreen.routeName);
             },
             icon: const Icon(Icons.history),
           ),
         ],
       ),
-      drawer: AppDrawer(),
       body: Column(
         children: [
           getDocsNum(),
@@ -41,6 +45,9 @@ class PaymentScreen extends StatelessWidget {
 
   void _showDialog(BuildContext context, String title, String amount,
       QueryDocumentSnapshot<Map<String, dynamic>> docId) {
+    var customToast = CustomToast();
+    var now = DateTime.now();
+    var currentYear = now.year;
     showDialog(
       context: context,
       builder: (context) {
@@ -51,18 +58,21 @@ class PaymentScreen extends StatelessWidget {
                 actions: [
                   CupertinoDialogAction(
                     child: const Text("Pay Now"),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'Payment for $title was successfully made 🙏🏻')));
-                      FirebaseFirestore.instance
+                    onPressed: () async {
+                      await FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .collection('payments')
+                          .doc(currentYear.toString())
+                          .collection('House committee payments')
                           .doc(docId.id)
                           .update({
                         'isPaid': true,
                       });
+                      customToast.showCustomToast(
+                          'Payment for $title was successfully made 🙏🏻',
+                          Colors.white,
+                          Colors.grey[800]!);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -80,18 +90,21 @@ class PaymentScreen extends StatelessWidget {
                 actions: [
                   CupertinoDialogAction(
                     child: const Text("Pay Now"),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                              'Payment for $title was successfully made 🙏🏻')));
-                      FirebaseFirestore.instance
+                    onPressed: () async {
+                      await FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .collection('payments')
+                          .doc(currentYear.toString())
+                          .collection('House committee payments')
                           .doc(docId.id)
                           .update({
                         'isPaid': true,
                       });
+                      customToast.showCustomToast(
+                          'Payment for $title was successfully made 🙏🏻',
+                          Colors.white,
+                          Colors.grey[800]!);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -108,11 +121,15 @@ class PaymentScreen extends StatelessWidget {
   }
 
   Widget getDocsNum() {
+    var now = DateTime.now();
+    var currentYear = now.year;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('payments')
+          .doc(currentYear.toString())
+          .collection('House committee payments')
           .where('isPaid', isEqualTo: false)
           .snapshots(),
       builder: (context, snapshot) {
@@ -140,11 +157,16 @@ class PaymentScreen extends StatelessWidget {
   }
 
   Widget getUserPayments() {
+    var customToast = CustomToast();
+    var now = DateTime.now();
+    var currentYear = now.year;
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('payments')
+          .doc(currentYear.toString())
+          .collection("House committee payments")
           .where('isPaid', isEqualTo: false)
           .snapshots(),
       builder: (context, snapshot) {
@@ -153,6 +175,9 @@ class PaymentScreen extends StatelessWidget {
         }
         if (snapshot.hasData) {
           var paymentDocuments = snapshot.data!.docs;
+          // Sort paymentDocuments by the "monthNumber" field in ascending order
+          paymentDocuments
+              .sort((a, b) => a['monthNumber'].compareTo(b['monthNumber']));
           return ListView.builder(
             itemCount: paymentDocuments.length,
             padding: const EdgeInsets.all(5),
@@ -172,20 +197,23 @@ class PaymentScreen extends StatelessWidget {
                         motion: const ScrollMotion(),
                         children: [
                           SlidableAction(
-                            onPressed: (context) {
+                            onPressed: (context) async {
                               String paymentTitle =
                                   paymentDocuments[index]['title'];
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'Payment for $paymentTitle was successfully made 🙏🏻')));
-                              FirebaseFirestore.instance
+                              await FirebaseFirestore.instance
                                   .collection('users')
                                   .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .collection('payments')
+                                  .doc(currentYear.toString())
+                                  .collection('House committee payments')
                                   .doc(paymentDocuments[index].id)
                                   .update({
                                 'isPaid': true,
                               });
+                              customToast.showCustomToast(
+                                  'Payment for $paymentTitle was successfully made 🙏🏻',
+                                  Colors.white,
+                                  Colors.grey[800]!);
                             },
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,

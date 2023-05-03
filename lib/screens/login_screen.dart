@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mybait/screens/overview_manager_screen.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
+import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
-import 'package:mybait/widgets/app_drawer.dart';
+import '../widgets/custom_toast.dart';
+
+import '../widgets/signInWithGoogle.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -24,6 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
   var _userName = '';
   var _userPassword = '';
   var _isLoading = false;
+  var _userType = '';
+
+  var customToast = CustomToast();
 
   void _trySubmit() {
     final isValid = _formkey.currentState!.validate();
@@ -49,20 +56,25 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
-        if (email.contains('manager')) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .get()
+            .then((value) {
+          setState(() {
+            _userType = value.data()!['userType'];
+          });
+        });
+
+        customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+
+        if (_userType == 'MANAGER') {
           Navigator.pushReplacementNamed(
               context, OverviewManagerScreen.routeName);
         } else {
           Navigator.pushReplacementNamed(
               context, OverviewTenantScreen.routeName);
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successfully 🥳'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
       } else {
         userCredential = await _auth.createUserWithEmailAndPassword(
           email: email,
@@ -77,14 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
           'uid': userCredential.user!.uid,
           'userType': 'TENANT',
         });
-        await ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successfully'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
+
+        customToast.showCustomToast('Login successfully 🥳', Colors.white, Colors.green);
+
         Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+
       }
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
@@ -93,29 +102,17 @@ class _LoginScreenState extends State<LoginScreen> {
         message = error.message!;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(message, Colors.white, Colors.red);
+
       setState(() {
         _isLoading = false;
       });
     } catch (error) {
-      print(error);
       setState(() {
         _isLoading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast('An error occurred, please check your credentials!', Colors.white, Colors.red);
     }
   }
 
@@ -221,8 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
               ),
-              Container(
-                height: 50,
+              const SizedBox(
+                height: 15,
               ),
               if (_isLoading) const CircularProgressIndicator.adaptive(),
               if (!_isLoading)
@@ -237,28 +234,38 @@ class _LoginScreenState extends State<LoginScreen> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // TextButton(
-                    //   child: Text(
-                    //     _isLogin
-                    //         ? 'Create new account'
-                    //         : 'I already have an account',
-                    //     style: TextStyle(fontSize: 20),
-                    //   ),
-                    //   onPressed: () {
-                    //     setState(() {
-                    //       _isLogin = !_isLogin;
-                    //     });
-                    //   },
-                    // ),
                     TextButton(
                       child: const Text(
                         'Create new account',
                         style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushNamed(RegisterScreen.routeName);
+                        Navigator.of(context)
+                            .pushNamed(RegisterScreen.routeName);
                       },
                     ),
+                    TextButton(
+                      child: const Text(
+                        'Forgot Password?',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(ForgotPasswordScreen.routeName);
+                      },
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: const [
+                        Expanded(child: Divider()),
+                        Text("Or continue with"),
+                        Expanded(child: Divider()),
+                      ]),
+                    ),
+                    GoogleSignInButton(_userType),
                   ],
                 ),
             ],

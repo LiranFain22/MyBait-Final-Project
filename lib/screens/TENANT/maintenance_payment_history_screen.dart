@@ -2,14 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class PaymentHistoryScreen extends StatelessWidget {
-  static const routeName = '/payment_history';
-  const PaymentHistoryScreen({super.key});
+class MaintenancePaymentHistoryScreen extends StatelessWidget {
+  static const routeName = '/MaintenancePaymentHistory';
+
+  const MaintenancePaymentHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var now = DateTime.now();
+    var currentYear = now.year;
     return Scaffold(
-      appBar: AppBar(
+       appBar: AppBar(
         title: const Text(
           'Payment History',
         ),
@@ -19,6 +22,8 @@ class PaymentHistoryScreen extends StatelessWidget {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('payments')
+            .doc(currentYear.toString())
+            .collection('Maintenance payments')
             .where('isPaid', isEqualTo: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -58,11 +63,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
                   Text(
-                    'No history',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  Text(
-                    'have a good day 🙏🏻',
+                    'No history\nhave a good day 🙏🏻',
                     style: TextStyle(fontSize: 24),
                   ),
                 ],

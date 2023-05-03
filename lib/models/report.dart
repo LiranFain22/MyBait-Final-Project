@@ -5,15 +5,22 @@ class Report with ChangeNotifier{
   final String? title;
   final String? description;
   final String? location;
-  final String? imageUrl;
-  final String? createBy;
+  String imageUrl;
+  final String? createdBy;
+  final DateTime dateTime;
 
   Report({
     @required this.id,
     @required this.title,
     @required this.description,
     @required this.location,
-    @required this.imageUrl,
-    @required this.createBy,
+    required this.imageUrl,
+    @required this.createdBy,
+    required this.dateTime,
   });
+
+  
+  void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
 }

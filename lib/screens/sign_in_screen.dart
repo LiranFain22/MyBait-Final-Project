@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'overview_tenant_screen.dart';
+import './TENANT/overview_tenant_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signIn';

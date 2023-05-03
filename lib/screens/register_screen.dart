@@ -3,31 +3,44 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/overview_tenant_screen.dart';
+import 'package:mybait/screens/welcome_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+import '../widgets/custom_toast.dart';
+import '../widgets/signInWithGoogle.dart';
+
+class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
 
   RegisterScreen({super.key});
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
+  var customToast = CustomToast();
 
   final _formkey = GlobalKey<FormState>();
 
   var _email = '';
+
   var _password = '';
+
   var _firstName = '';
+
   var _lastName = '';
-  var _city = '';
-  var _street = '';
-  var _buildingNumber = '';
-  var _apartmentNumber = '';
+
+  var _isLoading = false;
 
   void _trySubmit(BuildContext context) {
     final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
       _formkey.currentState!.save();
       _submitAuthForm(
         context,
@@ -35,10 +48,7 @@ class RegisterScreen extends StatelessWidget {
         _password.trim(),
         _firstName,
         _lastName,
-        _city,
-        _street,
-        _buildingNumber,
-        _apartmentNumber,
+        _isLoading,
       );
     }
   }
@@ -49,10 +59,7 @@ class RegisterScreen extends StatelessWidget {
     String password,
     String firstName,
     String lastName,
-    String city,
-    String street,
-    String buildingNumber,
-    String apartmentNumber,
+    bool isLoading,
   ) async {
     try {
       UserCredential userCredential;
@@ -67,27 +74,21 @@ class RegisterScreen extends StatelessWidget {
         'uid': userCredential.user!.uid,
         'userType': 'TENANT',
         'email': email,
-        'password': password,
-        'firstName': firstName,
-        'lastName': lastName,
-        'city': city,
-        'street': street,
-        'buildingNumber': buildingNumber,
-        'apartmentNumber': apartmentNumber,
+        'userName': firstName,
       });
-      
+
       // Update user display name
       await userCredential.user!.updateDisplayName(firstName);
       await userCredential.user!.reload();
 
-      await ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
-      Navigator.pushReplacementNamed(context, OverviewTenantScreen.routeName);
+      setState(() {
+        _isLoading = false;
+      });
+
+      customToast.showCustomToast(
+          'Login successfully 🥳', Colors.white, Colors.green);
+
+      Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
     } on PlatformException catch (error) {
       var message = 'An error occurred, please check your credentials!';
 
@@ -95,22 +96,17 @@ class RegisterScreen extends StatelessWidget {
         message = error.message!;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(message, Colors.white, Colors.red);
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
-      print(error);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Theme.of(context).errorColor,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
+
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -154,9 +150,9 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: TextFormField(
-                  key: ValueKey('email'),
+                  key: const ValueKey('email'),
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.email_outlined),
@@ -177,7 +173,7 @@ class RegisterScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextFormField(
-                  key: ValueKey('password'),
+                  key: const ValueKey('password'),
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.lock_outline),
                     labelText: 'Password',
@@ -237,142 +233,37 @@ class RegisterScreen extends StatelessWidget {
                   },
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('City'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.location_city_outlined),
-                    labelText: 'City',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter City';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _city = value!;
-                  },
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      child: const Text('Back'),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushReplacementNamed(LoginScreen.routeName);
+                      },
+                    ),
+                    ElevatedButton.icon(
+                      icon: _isLoading
+                          ? Container(
+                              width: 24,
+                              height: 24,
+                              padding: const EdgeInsets.all(2.0),
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : const Icon(Icons.add_circle_outline_outlined),
+                      label: const Text('Submit'),
+                      onPressed: () {
+                        _isLoading ? null : _trySubmit(context);
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Street'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.store_mall_directory_outlined),
-                    labelText: 'Street',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Street';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _street = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Build Number'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.numbers_outlined),
-                    labelText: 'Building Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Build number';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _buildingNumber = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('Apartment Number'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.numbers_outlined),
-                    labelText: 'Apartment Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Apartment Number';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _apartmentNumber = value!;
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    child: const Text('Back'),
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(LoginScreen.routeName);
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Submit'),
-                    onPressed: () {
-                      _trySubmit(context);
-                      // try {
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(
-                      //       content: Text('Register Successfully! 🤩'),
-                      //       backgroundColor: Colors.green,
-                      //       duration: Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      //   Navigator.of(context).pushReplacementNamed(
-                      //       OverviewTenantScreen.routeName);
-                      // } on PlatformException catch (error) {
-                      //   var message =
-                      //       'An error occurred, please check your credentials!';
-
-                      //   if (error.message != null) {
-                      //     message = error.message!;
-                      //   }
-
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       content: Text(message),
-                      //       backgroundColor: Theme.of(context).errorColor,
-                      //       duration: const Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      // } catch (error) {
-                      //   print(error);
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       content: Text(error.toString()),
-                      //       backgroundColor: Theme.of(context).errorColor,
-                      //       duration: const Duration(seconds: 2),
-                      //     ),
-                      //   );
-                      // }
-                    },
-                  ),
-                ],
               ),
             ],
           ),
