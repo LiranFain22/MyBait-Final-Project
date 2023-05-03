@@ -79,6 +79,16 @@ class _ReportsScreenState extends State<ReportsScreen> {
               }
               if (snapshot.hasData) {
                 var documents = snapshot.data!.docs;
+                if (documents.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No reports, have a good day 🙏🏻',
+                      style: TextStyle(
+                        fontSize: 16
+                      ),
+                    ),
+                  );
+                }
                 return ListView.builder(
                   itemCount: documents.length,
                   padding: const EdgeInsets.all(10),

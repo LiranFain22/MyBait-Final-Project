@@ -40,7 +40,7 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Managing Fault'),
+        title: const Text('Managing Reports'),
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
@@ -61,6 +61,16 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
                 );
               }
               var documents = snapshot.data!.docs;
+              if (documents.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No reports, have a good day 🙏🏻',
+                      style: TextStyle(
+                        fontSize: 16
+                      ),
+                    ),
+                  );
+                }
               return ListView.builder(
                 itemCount: documents.length,
                 padding: const EdgeInsets.all(10),
