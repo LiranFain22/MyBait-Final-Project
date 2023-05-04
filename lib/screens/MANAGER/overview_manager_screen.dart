@@ -148,23 +148,23 @@ class OverviewManagerScreen extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         if (menuList[position].getTitle == 'Managing Reports') {
-                          Navigator.of(context).pushReplacementNamed(
+                          Navigator.of(context).pushNamed(
                               ManagingReportScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Reports') {
                           Navigator.of(context)
-                              .pushReplacementNamed(ReportsScreen.routeName);
+                              .pushNamed(ReportsScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Managing Payment') {
                           Navigator.of(context)
-                              .pushReplacementNamed(ManagingPaymentScreen.routeName);
+                              .pushNamed(ManagingPaymentScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Information') {
                           // todo: implement Information screen
                         }
                         if (menuList[position].getTitle == 'Payment') {
                             Navigator.of(context)
-                                .pushReplacementNamed(PaymentScreen.routeName);
+                                .pushNamed(PaymentScreen.routeName);
                           }
                       },
                       child: Center(

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
-import 'package:mybait/widgets/custom_Button.dart';
-import 'package:mybait/widgets/custom_toast.dart';
 
 enum ListType {
   houseCommitteePaymentsFiltter,
@@ -124,8 +122,10 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
         String? buildingID = snapshot.data;
         var now = DateTime.now();
         var currentYear = now.year;
+        var currentMonth = now.month;
         return StreamBuilder(
-          stream: fetchNotPaidMonthList(buildingID, currentYear).asStream(),
+          stream: fetchNotPaidMonthList(buildingID, currentYear, currentMonth)
+              .asStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -140,10 +140,18 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
               );
             }
             var notPaidList = snapshot.data;
+            if (notPaidList!.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No payments, have a good day 🙏🏻',
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            }
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: notPaidList.length,
               itemBuilder: (context, index) {
-                Map<String, dynamic> userMap = notPaidList![index];
+                Map<String, dynamic> userMap = notPaidList[index];
                 return GestureDetector(
                   onTap: () => _showDialog(
                     context,
@@ -211,6 +219,14 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                 child: CircularProgressIndicator(),
               );
             }
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No Payments 😇',
+                  style: TextStyle(fontSize: 20),
+                ),
+              );
+            }
             var notPaidList = snapshot.data;
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -251,7 +267,10 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
   }
 
   Future<List<Map<String, dynamic>>> fetchNotPaidMonthList(
-      buildingID, currentYear) async {
+    buildingID,
+    currentYear,
+    currentMonth,
+  ) async {
     List<Map<String, dynamic>> notPaidList = [];
 
     QuerySnapshot usersDocByBuildingID = await FirebaseFirestore.instance
@@ -266,8 +285,10 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
               'users/${userDoc.id}/payments/$currentYear/House committee payments');
 
       // Get the documents in the payments
-      QuerySnapshot paymentsCollectionSnapshot =
-          await paymentsCollection.where('isPaid', isEqualTo: false).get();
+      QuerySnapshot paymentsCollectionSnapshot = await paymentsCollection
+          // .where('monthNumber', isLessThanOrEqualTo: currentMonth)
+          .where('isPaid', isEqualTo: false)
+          .get();
 
       // Iterate through the payments in the payments-collection
       for (var paymentDoc in paymentsCollectionSnapshot.docs) {
@@ -277,8 +298,10 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
 
         var username = userDoc.get('userName') as String;
         Map<String, dynamic> notPaidUser = {username: paymentDocData};
-        // Append the payment data to the list
-        notPaidList.add(notPaidUser);
+        if (paymentDocData['monthNumber'] <= currentMonth) {
+          // Append the payment data to the list
+          notPaidList.add(notPaidUser);
+        }
       }
     }
     return notPaidList;

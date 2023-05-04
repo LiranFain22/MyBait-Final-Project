@@ -19,8 +19,7 @@ class JoinBuildingScreen extends StatefulWidget {
 
 class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
   var customToast = CustomToast();
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
+  final _formKey = GlobalKey<FormState>();
   final buildingIDController = TextEditingController();
   User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -123,9 +122,6 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
   }
 
   Future<void> onSubmitCodeBuilding(String buildingCode, String userID) async {
-    // Update tenants array of the building
-    await updateTenantsArrayOfBuilding(buildingCode, userID);
-
     // Set buildID's tenant
     await setBuildingToUser(buildingCode, userID);
 
@@ -133,6 +129,9 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
       // Set apartment number
       _updateApartmentNumberDialog(buildingCode, userID);
     }
+
+    // Update tenants array of the building
+    await updateTenantsArrayOfBuilding(buildingCode, userID);
 
     // Update user's payments
     await updateUserPayments(userID);
@@ -148,24 +147,23 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
       var month = DateFormat('MMMM').format(DateTime(currentYear, i));
 
       await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('payments')
-        .doc(currentYear.toString())
-        .collection('House committee payments')
-        .doc(month)
-        .set({
-          'title': 'Month Payment: $month',
-          'paymentType': 'month',
-          'amount': '30',
-          'isPaid': false,
-          'monthNumber': i,
-        });
+          .collection('users')
+          .doc(userID)
+          .collection('payments')
+          .doc(currentYear.toString())
+          .collection('House committee payments')
+          .doc(month)
+          .set({
+        'title': 'Month Payment: $month',
+        'paymentType': 'month',
+        'amount': 30,
+        'isPaid': false,
+        'monthNumber': i,
+      });
     }
   }
 
   void _updateApartmentNumberDialog(String joinID, String userID) {
-    String inputNumber = "";
     showDialog(
       context: context,
       builder: (context) {
@@ -183,36 +181,20 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
                     filled: true,
                     fillColor: Colors.grey.shade50,
                   ),
-                  validator: (userInput) {
-                    RegExp numericRegex = RegExp(r'^-?[0-9]+$');
-                    if (userInput!.isEmpty) {
-                      return 'Please Enter Apartment Number';
-                    }
-                    if (!numericRegex.hasMatch(userInput)) {
-                      return 'Apartment Number Must be Only Numbers';
-                    } else {
-                      // userInput contains only numbers
-                      int userInputAsInteger = int.parse(userInput);
-                      if (userInputAsInteger > 100) {
-                        return 'Apartment Number Must be Equal or Less than 100';
-                      }
-                    }
-                    return null;
-                  },
                 ),
                 CupertinoDialogAction(
                   child: const Text("Update"),
                   onPressed: () async {
-                    checkValidApartmentNumber(
-                        joinID, apartmentInputController.text);
-                    if (_isValidApartmentNumber) {
-                      _congratulationsDialog(
-                          userID, joinID, apartmentInputController.text);
-                    } else {
-                      customToast.showCustomToast(
-                          'The apartment number is already in use ⛔️',
-                          Colors.white,
-                          Colors.red);
+                    var userInputAsInteger =
+                        checkUserInputValidation(apartmentInputController.text);
+                    if (userInputAsInteger != -1) {
+                      apartmentInputController.text = userInputAsInteger.toString();
+                      checkValidApartmentNumber(
+                          joinID, apartmentInputController.text);
+                      if (_isValidApartmentNumber == true) {
+                        _congratulationsDialog(
+                            userID, joinID, apartmentInputController.text);
+                      }
                     }
                   },
                 ),
@@ -224,35 +206,69 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     );
   }
 
-  void checkValidApartmentNumber(String joinID, String apartmentInput) async {
-    // 1. get building id with the help of joinID
-    try {
-      await FirebaseFirestore.instance
-          .collection('Buildings')
-          .where('joinID', isEqualTo: joinID)
-          .get()
-          .then((buildingDocs) {
-        String buildingID = buildingDocs.docs.first.data()['buildingID'];
-        // 2. check if there is not user with same buildingID AND apartment number
-        FirebaseFirestore.instance
-            .collection('users')
-            .where('buildingID', isEqualTo: buildingID)
-            .where('joinID', isEqualTo: joinID)
-            .get()
-            .then((result) {
-          setState(() {
-            // 3. if there is not one there continue flow, otherwise error number -> 'The apartment number is already in use'
-            if (result.docs.isNotEmpty) {
-              _isValidApartmentNumber = false;
-            } else {
-              _isValidApartmentNumber = true;
-            }
-          });
-        });
-      });
-    } on Exception catch (e) {
-      customToast.showCustomToast(e.toString(), Colors.white, Colors.red);
+  // -1 : invalid input
+  // 0 or higher : correct input
+  int checkUserInputValidation(String userInput) {
+    RegExp numericRegex = RegExp(r'^-?[0-9]+$');
+    if (userInput.isEmpty) {
+      customToast.showCustomToast(
+          'Please Enter Apartment Number', Colors.white, Colors.red);
+      return -1;
     }
+    if (!numericRegex.hasMatch(userInput)) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Only Numbers', Colors.white, Colors.red);
+      return -1;
+    }
+    // userInput contains only numbers
+    int userInputAsInteger = int.parse(userInput);
+    if (userInputAsInteger > 100) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Equal or Less than 100',
+          Colors.white,
+          Colors.red);
+      return -1;
+    }
+    if (userInputAsInteger.isNegative) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Equal or Greater than 0',
+          Colors.white,
+          Colors.red);
+      return -1;
+    }
+    return userInputAsInteger;
+  }
+
+  void checkValidApartmentNumber(String joinID, String apartmentInput) async {
+    var buildingDoc = await FirebaseFirestore.instance
+        .collection('Buildings')
+        .where('joinID', isEqualTo: joinID)
+        .get();
+    if (buildingDoc.docs.isNotEmpty) {
+      String buildingID = buildingDoc.docs.first.data()['buildingID'];
+      QuerySnapshot buildingDocWithJoinID = await FirebaseFirestore.instance
+          .collection('users')
+          .where('buildingID', isEqualTo: buildingID)
+          .where('apartmentNumber', isEqualTo: apartmentInput)
+          .get();
+      if (buildingDocWithJoinID.docs.isNotEmpty) {
+        customToast.showCustomToast('The apartment number is already in use ⛔️',
+            Colors.white, Colors.red);
+        // Number apartment already exists!
+        setStateIsValidApartmentNumber(false);
+      } else {
+        // Number apartment new!
+        setStateIsValidApartmentNumber(true);
+      }
+    } else {
+      debugPrint('*** Something went wrong ***');
+      customToast.showCustomToast(
+          '*** Something went wrong ***', Colors.white, Colors.red);
+    }
+  }
+
+  void setStateIsValidApartmentNumber(bool state) {
+    _isValidApartmentNumber = state;
   }
 
   Future<void> _congratulationsDialog(
@@ -298,20 +314,26 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
           if (buildingDocs.docs.isEmpty) {
             customToast.showCustomToast(
                 'Invalid Building Code', Colors.white, Colors.red);
-            _isValidBuildingCode = false;
+            setStateIsValidBuildingCode(false);
           } else {
             String buildingID = buildingDocs.docs.first.data()['buildingID'];
             FirebaseFirestore.instance
                 .collection('users')
                 .doc(userID)
                 .update({'buildingID': buildingID});
-            _isValidBuildingCode = true;
+            setStateIsValidBuildingCode(true);
           }
         });
       });
     } on Exception catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  void setStateIsValidBuildingCode(bool state) {
+    setState(() {
+      _isValidBuildingCode = state;
+    });
   }
 
   Future<void> updateTenantsArrayOfBuilding(

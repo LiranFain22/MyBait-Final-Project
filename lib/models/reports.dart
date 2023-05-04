@@ -54,7 +54,7 @@ class Reports {
           'location': report.location,
           'imageURL': imageAsString,
           'status': 'WAITING',
-          'createdBy': FirebaseAuth.instance.currentUser!.uid,
+          'createdBy': FirebaseAuth.instance.currentUser!.displayName,
         }).then(
           (value) {
             FirebaseFirestore.instance
@@ -69,7 +69,8 @@ class Reports {
               'location': report.location,
               'imageURL': imageAsString,
               'status': 'WAITING',
-              'createdBy': FirebaseAuth.instance.currentUser!.uid,
+              'createdBy': FirebaseAuth.instance.currentUser!.displayName,
+              'timestamp': DateTime.now()
             });
           },
         );
@@ -80,36 +81,44 @@ class Reports {
   }
 
   void addReportToReports(Report report, String buildingID) {
+    // FirebaseFirestore.instance
+    //     .collection('Buildings')
+    //     .doc(buildingID)
+    //     .collection('Reports')
+    //     .add({
+    //   'id': 'documentRef.id',
+    //   'title': report.title,
+    //   'description': report.description,
+    //   'location': report.location,
+    //   'imageURL': report.imageUrl,
+    //   'createdBy': report.createdBy,
+    //   'status': 'INPROGRESS'
+    // }).then(
+    //   (value) {
+    //     FirebaseFirestore.instance
+    //         .collection('Buildings')
+    //         .doc(buildingID)
+    //         .collection('Reports')
+    //         .doc(value.id)
+    //         .set({
+    //       'id': value.id,
+    //       'title': report.title,
+    //       'description': report.description,
+    //       'location': report.location,
+    //       'imageURL': report.imageUrl,
+    //       'createdBy': report.createdBy,
+    //       'status': 'INPROGRESS'
+    //     });
+    //   },
+    // );
     FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
-        .add({
-      'id': 'documentRef.id',
-      'title': report.title,
-      'description': report.description,
-      'location': report.location,
-      'imageURL': report.imageUrl,
-      'createdBy': report.createdBy,
-      'status': 'INPROGRESS'
-    }).then(
-      (value) {
-        FirebaseFirestore.instance
-            .collection('Buildings')
-            .doc(buildingID)
-            .collection('Reports')
-            .doc(value.id)
-            .set({
-          'id': value.id,
-          'title': report.title,
-          'description': report.description,
-          'location': report.location,
-          'imageURL': report.imageUrl,
-          'createdBy': report.createdBy,
+        .doc(report.id)
+        .update({
           'status': 'INPROGRESS'
         });
-      },
-    );
   }
 
   void removeReportFromReportList(String reportId) {

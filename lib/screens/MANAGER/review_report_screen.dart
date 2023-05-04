@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/models/report.dart';
@@ -15,13 +14,14 @@ class ReviewReportScreen extends StatelessWidget {
   String reportID;
   ReviewReportScreen(this.buildingID, this.reportID, {super.key});
 
-  Future<DocumentSnapshot> getDocument(String buildingID, String reportID) async {
+  Future<DocumentSnapshot> getDocument(
+      String buildingID, String reportID) async {
     return FirebaseFirestore.instance
-    .collection('Buildings')
-    .doc(buildingID)
-    .collection('Reports')
-    .doc(reportID)
-    .get();
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(reportID)
+        .get();
   }
 
   @override
@@ -48,7 +48,11 @@ class ReviewReportScreen extends StatelessWidget {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    Image.network(snapshot.data!['imageURL']),
+                    Image.network(
+                      snapshot.data!['imageURL'],
+                      height: 300,
+                      width: 300,
+                    ),
                     Text(
                       snapshot.data!['title'],
                       style: const TextStyle(
@@ -56,20 +60,78 @@ class ReviewReportScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      'Created By: ${snapshot.data!['createdBy']}',
-                      style: const TextStyle(
-                        fontSize: 20,
+                    const Text(
+                      'Description: ',
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
                     Text(
                       '${snapshot.data!['description']}',
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 20,
                         fontWeight: FontWeight.w300,
                       ),
+                      maxLines: 20,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    const Divider(),
+                    Row(
+                      children: [
+                        const Text(
+                          'Created By: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          '${snapshot.data!['createdBy']}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Date: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          getTimeAndDate(snapshot.data!['timestamp']),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Status: ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          '${snapshot.data!['status']}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -85,17 +147,21 @@ class ReviewReportScreen extends StatelessWidget {
                                 location: snapshot.data!['location'],
                                 imageUrl: snapshot.data!['imageURL'],
                                 createdBy: snapshot.data!['createdBy'],
-                                dateTime: snapshot.data!['timestamp'],
+                                timestamp: snapshot.data!['timestamp'],
                               );
-                              var userDocument = await FirebaseFirestore.instance
+                              var userDocument = await FirebaseFirestore
+                                  .instance
                                   .collection('users')
                                   .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .get();
                               var data = userDocument.data();
                               var buildingID = data!['buildingID'] as String;
                               reports.addReportToReports(report, buildingID);
-                              // 2. Delete the document from the source collection.
-                              deleteDocument(snapshot, context);
+                              customToast.showCustomToast(
+                                  'Report: ${snapshot.data!['title']} is in progress! 💪🏻',
+                                  Colors.white,
+                                  Colors.green);
+                              Navigator.pop(context);
                             }),
                         ElevatedButton(
                           child: const Text('Cancel'),
@@ -104,6 +170,9 @@ class ReviewReportScreen extends StatelessWidget {
                           },
                         ),
                       ],
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                   ],
                 ),
@@ -123,10 +192,17 @@ class ReviewReportScreen extends StatelessWidget {
           .runTransaction((Transaction myTransaction) async {
         myTransaction.delete(snapshot.data!.reference);
       });
-      customToast.showCustomToast('The report has been removed from review..', Colors.white, Colors.grey[800]!);
+      customToast.showCustomToast('The report has been removed from review..',
+          Colors.white, Colors.grey[800]!);
       Navigator.of(context).pop();
     } on Exception catch (error) {
       print(error.toString());
     }
+  }
+
+  String getTimeAndDate(timestamp) {
+    // Convert the timestamp to a DateTime object and format it
+    DateTime dateTime = timestamp.toDate().toLocal();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
   }
 }
