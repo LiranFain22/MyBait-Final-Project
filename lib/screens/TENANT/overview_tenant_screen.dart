@@ -105,11 +105,11 @@ class OverviewTenantScreen extends StatelessWidget {
                         onTap: () {
                           if (menuList[position].getTitle == 'Report') {
                             Navigator.of(context)
-                                .pushReplacementNamed(ReportsScreen.routeName);
+                                .pushNamed(ReportsScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Payment') {
                             Navigator.of(context)
-                                .pushReplacementNamed(PaymentScreen.routeName);
+                                .pushNamed(PaymentScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Information') {
                             // todo: implement information screen

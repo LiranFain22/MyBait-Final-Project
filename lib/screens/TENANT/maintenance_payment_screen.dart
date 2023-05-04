@@ -205,7 +205,7 @@ class MaintenancePaymentScreen extends StatelessWidget {
                           .collection('payments')
                           .doc(currentYear.toString())
                           .collection('Maintenance payments')
-                          .doc(docId.id)
+                          .doc(title)
                           .update({
                         'isPaid': true,
                       });

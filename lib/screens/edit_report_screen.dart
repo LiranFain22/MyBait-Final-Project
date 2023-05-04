@@ -59,7 +59,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
     location: '',
     imageUrl: '',
     createdBy: FirebaseAuth.instance.currentUser!.displayName,
-    dateTime: DateTime.now(),
+    timestamp: Timestamp.now(),
   );
   var customToast = CustomToast();
 
@@ -109,7 +109,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: _editedReport.description,
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
-                      dateTime: _editedReport.dateTime,
+                      timestamp: _editedReport.timestamp,
                       createdBy: _editedReport.createdBy
                     );
                   },
@@ -134,7 +134,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: value,
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
-                      dateTime: _editedReport.dateTime,
+                      timestamp: _editedReport.timestamp,
                       createdBy: _editedReport.createdBy
                     );
                   },
@@ -159,7 +159,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       description: _editedReport.description,
                       location: value,
                       imageUrl: _editedReport.imageUrl,
-                      dateTime: _editedReport.dateTime,
+                      timestamp: _editedReport.timestamp,
                       createdBy: _editedReport.createdBy
                     );
                   },

@@ -119,6 +119,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       documents[index]['imageURL']),
                                 ),
                                 title: Text(documents[index]['title']),
+                                subtitle: Text(documents[index]['createdBy']),
                                 trailing: const Text(
                                   'Waiting',
                                   style: TextStyle(color: Colors.redAccent),

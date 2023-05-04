@@ -82,8 +82,8 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
                             NetworkImage(documents[index]['imageURL']),
                       ),
                       title: Text(documents[index]['title']),
-                      // subtitle: Text(documents[index]['description']),
-                      subtitle: showDateAsText(documents[index]['timestamp']),
+                      subtitle: Text(documents[index]['createdBy']),
+                      // subtitle: showDateAsText(documents[index]['timestamp']),
                       trailing: IconButton(
                         icon: const Icon(Icons.info_outline),
                         onPressed: () async {

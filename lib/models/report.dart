@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Report with ChangeNotifier{
@@ -7,7 +8,7 @@ class Report with ChangeNotifier{
   final String? location;
   String imageUrl;
   final String? createdBy;
-  final DateTime dateTime;
+  final Timestamp timestamp;
 
   Report({
     @required this.id,
@@ -16,7 +17,7 @@ class Report with ChangeNotifier{
     @required this.location,
     required this.imageUrl,
     @required this.createdBy,
-    required this.dateTime,
+    required this.timestamp,
   });
 
   
