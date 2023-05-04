@@ -28,12 +28,14 @@ class OverviewTenantScreen extends StatelessWidget {
 
   OverviewTenantScreen({super.key});
 
-  final currentUser = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser;  //??
 
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
     _MenuItem(Icons.payment_outlined, 'Payment'),
     _MenuItem(Icons.info_outline, 'Information'),
+    _MenuItem(Icons.insert_chart, 'Surveys'),
+    _MenuItem(Icons.assignment, 'Summary'),
   ];
 
   @override
@@ -100,7 +102,7 @@ class OverviewTenantScreen extends StatelessWidget {
                   itemCount: menuList.length,
                   itemBuilder: (context, position) {
                     return Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(0),
                       child: InkWell(
                         onTap: () {
                           if (menuList[position].getTitle == 'Report') {
@@ -114,6 +116,12 @@ class OverviewTenantScreen extends StatelessWidget {
                           if (menuList[position].getTitle == 'Information') {
                             // todo: implement information screen
                           }
+                          if (menuList[position].getTitle == 'Surveys') {
+                            // todo: implement Information screen
+                          }
+                          if (menuList[position].getTitle == 'Summary') {
+                            // todo: implement Information screen
+                          }
                         },
                         child: Center(
                           child: Column(
@@ -122,7 +130,7 @@ class OverviewTenantScreen extends StatelessWidget {
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(100.0)),
-                                  elevation: 10,
+                                  elevation: 5,
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
                                     child: Icon(
