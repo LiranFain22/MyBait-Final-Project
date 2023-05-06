@@ -29,7 +29,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) {
         // Set default image => 'No Image Available'
-        _editedReport.setImageUrl('https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png');
+        _editedReport.setImageUrl('https://upload.wikimedia.org/wikipedia/commons/'
+            'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png');
         return;
       }
 
@@ -183,7 +184,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       child: _image == null
                           // ? const Text('Enter a URL')
                           ? Image.network(
-                              'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
+                              'https://upload.wikimedia.org/wikipedia/commons/'
+                                  'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
                           : FittedBox(
                               fit: BoxFit.contain,
                               child: Image.file(_image!),
