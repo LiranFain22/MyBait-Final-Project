@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:share/share.dart';
-
-import '../TENANT/payment_screen.dart';
 import '../login_screen.dart';
+import '../TENANT/payment_screen.dart';
+import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
 import 'managing_report_screen.dart';
 
@@ -162,7 +162,8 @@ class OverviewManagerScreen extends StatelessWidget {
                               .pushNamed(ManagingPaymentScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Information') {
-                          // todo: implement Information screen
+                          Navigator.of(context).pushNamed(
+                              PeronalInformationScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Payment') {
                             Navigator.of(context)

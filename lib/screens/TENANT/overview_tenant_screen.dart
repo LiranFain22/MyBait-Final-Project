@@ -4,6 +4,7 @@ import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 
+import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
 
 import '../../widgets/app_drawer.dart';
@@ -114,7 +115,8 @@ class OverviewTenantScreen extends StatelessWidget {
                                 .pushNamed(PaymentScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Information') {
-                            // todo: implement information screen
+                            Navigator.of(context)
+                                .pushReplacementNamed(PeronalInformationScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Surveys') {
                             // todo: implement Information screen

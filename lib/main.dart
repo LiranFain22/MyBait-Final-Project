@@ -22,6 +22,7 @@ import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/screens/splash_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
+import 'package:mybait/screens/personal_Information_screen.dart';
 
 import 'screens/TENANT/maintenance_payment_history_screen.dart';
 
@@ -89,6 +90,7 @@ class MyApp extends StatelessWidget {
             return const LoginScreen();
           }),
       routes: {
+        PeronalInformationScreen.routeName: (context) => PeronalInformationScreen(),
         OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
         OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
         EditReportScreen.routeName: (context) => EditReportScreen(),

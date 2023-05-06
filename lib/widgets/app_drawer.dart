@@ -6,7 +6,7 @@ import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:provider/provider.dart';
-
+import '../screens/personal_Information_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/MANAGER/overview_manager_screen.dart';
 import '../screens/TENANT/overview_tenant_screen.dart';
@@ -114,7 +114,8 @@ class _AppDrawerState extends State<AppDrawer> {
             dense: true,
             visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
-              // todo: implement Information Page
+              Navigator.of(context)
+                  .pushReplacementNamed(PeronalInformationScreen.routeName);
             },
           ),
           const Divider(),
@@ -218,7 +219,8 @@ class _AppDrawerState extends State<AppDrawer> {
           //dense: true,
           //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
-            // todo: implement Information Page
+            Navigator.of(context)
+                .pushReplacementNamed(PeronalInformationScreen.routeName);
           },
         ),
         const Divider(),
