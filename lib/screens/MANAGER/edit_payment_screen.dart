@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mybait/models/payment.dart';
 import 'package:mybait/widgets/custom_Button.dart';
 
+import '../../widgets/custom_popupMenuButton.dart';
 import '../../widgets/custom_toast.dart';
 
 class EditPaymentScreen extends StatefulWidget {
@@ -37,7 +38,10 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Payment'),
+        title: const Text('Add Payment'),
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -11,6 +11,7 @@ import 'package:mybait/widgets/custom_toast.dart';
 
 import '../models/reports.dart';
 import '../models/report.dart';
+import '../widgets/custom_popupMenuButton.dart';
 
 class EditReportScreen extends StatefulWidget {
   static const routeName = '/edit-report';
@@ -82,7 +83,10 @@ class _EditReportScreenState extends State<EditReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Report'),
+        title: const Text('Add Report'),
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -182,7 +186,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
                         ),
                       ),
                       child: _image == null
-                          // ? const Text('Enter a URL')
                           ? Image.network(
                               'https://upload.wikimedia.org/wikipedia/commons/'
                                   'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
@@ -220,7 +223,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
                         _formKey.currentState!
                             .save(); // saves all onSaved in each textFormField
                         Reports reports = Reports();
-                        // String buildingID = fetchBuildingID() as String;
                         var userDocument = await FirebaseFirestore.instance
                             .collection('users')
                             .doc(FirebaseAuth.instance.currentUser!.uid)

@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../widgets/custom_toast.dart';
 import 'report.dart';
@@ -19,15 +20,18 @@ class Reports {
     return _reportList;
   }
 
-  Future<String> _uploadImageToFirestore(String imagePath) async {
+  Future<String> _uploadImageToFirestore(
+      String imagePath, String? imageTitle) async {
     // Get the image file from the image path
     File imageFile = File(imagePath);
 
     // Create a unique file name for the image in Firebase Storage
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
+
     // Reference to Firebase Storage
-    Reference storageRef = FirebaseStorage.instance.ref('/userUploads');
+    Reference storageRef =
+        FirebaseStorage.instance.ref('/userUploads').child(DateTime.now().toString());
 
     UploadTask uploadTask;
 
@@ -40,9 +44,11 @@ class Reports {
     return imageUrl;
   }
 
+
   Future<void> addReportToReview(Report report, String buildID) async {
     try {
-      await _uploadImageToFirestore(report.imageUrl).then((imageAsString) {
+      await _uploadImageToFirestore(report.imageUrl, report.title)
+          .then((imageAsString) {
         FirebaseFirestore.instance
             .collection('Buildings')
             .doc(buildID)
@@ -76,49 +82,18 @@ class Reports {
         );
       });
     } on PlatformException catch (e) {
-      customToast.showCustomToast(e.message.toString(), Colors.white, Colors.red);
+      customToast.showCustomToast(
+          e.message.toString(), Colors.white, Colors.red);
     }
   }
 
   void addReportToReports(Report report, String buildingID) {
-    // FirebaseFirestore.instance
-    //     .collection('Buildings')
-    //     .doc(buildingID)
-    //     .collection('Reports')
-    //     .add({
-    //   'id': 'documentRef.id',
-    //   'title': report.title,
-    //   'description': report.description,
-    //   'location': report.location,
-    //   'imageURL': report.imageUrl,
-    //   'createdBy': report.createdBy,
-    //   'status': 'INPROGRESS'
-    // }).then(
-    //   (value) {
-    //     FirebaseFirestore.instance
-    //         .collection('Buildings')
-    //         .doc(buildingID)
-    //         .collection('Reports')
-    //         .doc(value.id)
-    //         .set({
-    //       'id': value.id,
-    //       'title': report.title,
-    //       'description': report.description,
-    //       'location': report.location,
-    //       'imageURL': report.imageUrl,
-    //       'createdBy': report.createdBy,
-    //       'status': 'INPROGRESS'
-    //     });
-    //   },
-    // );
     FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(report.id)
-        .update({
-          'status': 'INPROGRESS'
-        });
+        .update({'status': 'INPROGRESS'});
   }
 
   void removeReportFromReportList(String reportId) {
