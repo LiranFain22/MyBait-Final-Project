@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../models/reports.dart';
 import '../../models/report.dart';
 import '../../widgets/app_drawer.dart';
+import '../../widgets/custom_popupMenuButton.dart';
 
 enum SelectedOptions {
   approve,
@@ -41,6 +42,9 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Managing Reports'),
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
