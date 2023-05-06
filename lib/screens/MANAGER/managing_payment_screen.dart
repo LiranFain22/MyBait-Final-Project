@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
 
+import '../../widgets/custom_popupMenuButton.dart';
+
 enum ListType {
   houseCommitteePaymentsFiltter,
   maintenancePaymentsFilter,
@@ -26,7 +28,12 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Managing Payment'),
+        title: const Text(
+          'Managing Payment',
+          style: TextStyle(
+            fontSize: 17,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_alt_outlined),
@@ -75,6 +82,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
             onPressed: () => sendNotificationToAllUsers(
                 'MyBait 🏠\nThere are payments waiting 🔔'),
           ),
+          CustomPopupMenuButton(),
         ],
       ),
       drawer: const AppDrawer(),

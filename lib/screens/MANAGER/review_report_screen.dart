@@ -60,6 +60,7 @@ class ReviewReportScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const Divider(),
                     const Text(
                       'Description: ',
                       style: TextStyle(

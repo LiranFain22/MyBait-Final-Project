@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/app_drawer.dart';
+import '../../widgets/custom_popupMenuButton.dart';
 import 'home_committee_payment_screen.dart';
 import 'maintenance_payment_screen.dart';
 
@@ -14,6 +15,9 @@ class PaymentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payments'),
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
       ),
       drawer: const AppDrawer(),
       body: Center(

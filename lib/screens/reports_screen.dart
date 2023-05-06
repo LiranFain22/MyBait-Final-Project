@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../widgets/custom_popupMenuButton.dart';
 import 'edit_report_screen.dart';
 import '../widgets/app_drawer.dart';
 
@@ -59,6 +60,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
@@ -83,9 +87,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   return const Center(
                     child: Text(
                       'No reports, have a good day 🙏🏻',
-                      style: TextStyle(
-                        fontSize: 16
-                      ),
+                      style: TextStyle(fontSize: 16),
                     ),
                   );
                 }
