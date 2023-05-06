@@ -37,6 +37,8 @@ class OverviewManagerScreen extends StatelessWidget {
     MenuItem(Icons.info_outline, 'Reports'),
     MenuItem(Icons.payment_outlined, 'Payment'),
     MenuItem(Icons.account_circle_outlined, 'Information'),
+    MenuItem(Icons.insert_chart, 'Surveys'),
+    MenuItem(Icons.assignment, 'Summary'),
   ];
 
   @override
@@ -166,6 +168,12 @@ class OverviewManagerScreen extends StatelessWidget {
                             Navigator.of(context)
                                 .pushNamed(PaymentScreen.routeName);
                           }
+                        if (menuList[position].getTitle == 'Surveys') {
+                          // todo: implement Information screen
+                        }
+                        if (menuList[position].getTitle == 'Summary') {
+                          // todo: implement Information screen
+                        }
                       },
                       child: Center(
                         child: Column(

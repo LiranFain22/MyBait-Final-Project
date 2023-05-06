@@ -56,6 +56,8 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(OverviewManagerScreen.routeName);
@@ -65,6 +67,8 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.error_outline),
             title: const Text('Managing Report'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ManagingReportScreen.routeName);
@@ -74,6 +78,8 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.attach_money_outlined),
             title: const Text('Managing Payment'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ManagingPaymentScreen.routeName);
@@ -83,6 +89,8 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.report_gmailerrorred),
             title: const Text('Reports'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(ReportsScreen.routeName);
@@ -92,6 +100,8 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.payment_outlined),
             title: const Text('Payment'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               Navigator.of(context)
                   .pushReplacementNamed(PaymentScreen.routeName);
@@ -101,14 +111,38 @@ class _AppDrawerState extends State<AppDrawer> {
           ListTile(
             leading: const Icon(Icons.account_circle_outlined),
             title: const Text('Information'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               // todo: implement Information Page
             },
           ),
           const Divider(),
           ListTile(
+            leading: const Icon(Icons.insert_chart),
+            title: const Text('Surveys'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
+            onTap: () {
+              // todo: implement Surveys Page
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.assignment),
+            title: const Text('Summary'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
+            onTap: () {
+              // todo: implement Summary Page
+            },
+          ),
+          const Divider(),
+          ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
               showDialog(
                 context: context,
@@ -150,6 +184,8 @@ class _AppDrawerState extends State<AppDrawer> {
         ListTile(
           leading: const Icon(Icons.home),
           title: const Text('Home'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
             Navigator.of(context)
                 .pushReplacementNamed(OverviewTenantScreen.routeName);
@@ -159,6 +195,8 @@ class _AppDrawerState extends State<AppDrawer> {
         ListTile(
           leading: const Icon(Icons.report_gmailerrorred),
           title: const Text('Reports'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
             Navigator.of(context).pushReplacementNamed(ReportsScreen.routeName);
           },
@@ -167,6 +205,8 @@ class _AppDrawerState extends State<AppDrawer> {
         ListTile(
           leading: const Icon(Icons.payment_outlined),
           title: const Text('Payment'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
             Navigator.of(context).pushReplacementNamed(PaymentScreen.routeName);
           },
@@ -175,14 +215,38 @@ class _AppDrawerState extends State<AppDrawer> {
         ListTile(
           leading: const Icon(Icons.info_outline),
           title: const Text('Information'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
             // todo: implement Information Page
           },
         ),
         const Divider(),
         ListTile(
+          leading: const Icon(Icons.insert_chart),
+          title: const Text('Surveys'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
+          onTap: () {
+            // todo: implement Surveys Page
+          },
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.assignment),
+          title: const Text('Summary'),
+          //dense: true,
+          //visualDensity: VisualDensity(vertical: -0.01),
+          onTap: () {
+            // todo: implement Summary Page
+          },
+        ),
+        const Divider(),
+        ListTile(
           leading: const Icon(Icons.exit_to_app),
           title: const Text('Logout'),
+          dense: true,
+          visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
             showDialog(
               context: context,
