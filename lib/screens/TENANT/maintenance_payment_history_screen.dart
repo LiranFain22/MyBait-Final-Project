@@ -23,7 +23,7 @@ class MaintenancePaymentHistoryScreen extends StatelessWidget {
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('payments')
             .doc(currentYear.toString())
-            .collection('Maintenance payments')
+            .collection('Maintenance Payments')
             .where('isPaid', isEqualTo: true)
             .snapshots(),
         builder: (context, snapshot) {

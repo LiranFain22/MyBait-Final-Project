@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
+import 'package:mybait/widgets/custom_toast.dart';
 
 import '../../widgets/custom_popupMenuButton.dart';
 
@@ -82,7 +84,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
             onPressed: () => sendNotificationToAllUsers(
                 'MyBait 🏠\nThere are payments waiting 🔔'),
           ),
-          CustomPopupMenuButton(),
+          const CustomPopupMenuButton(),
         ],
       ),
       drawer: const AppDrawer(),
@@ -165,12 +167,14 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                     context,
                     userMap[userMap.keys.first]['title'],
                     userMap[userMap.keys.first]['amount'],
+                    notPaidList[index].keys.first,
                     // userMap[userMap.keys.first]['timestamp'],
                   ),
                   child: Card(
                     child: ListTile(
                       leading: const Icon(Icons.person_outline),
                       title: Text(notPaidList[index].keys.first),
+                      // title: Text('?'),
                       trailing: IconButton(
                         icon: const Icon(
                           Icons.notifications_none_outlined,
@@ -180,7 +184,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                           context,
                           userMap[userMap.keys.first]['title'],
                           userMap[userMap.keys.first]['amount'],
-                          // userMap[userMap.keys.first]['timestamp'],
+                          notPaidList[index].keys.first
                         ),
                       ),
                     ),
@@ -245,7 +249,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                     context,
                     userMap[userMap.keys.first]['title'],
                     userMap[userMap.keys.first]['amount'],
-                    // userMap[userMap.keys.first]['timestamp'],
+                    notPaidList[index].keys.first,
                   ),
                   child: Card(
                     child: ListTile(
@@ -260,7 +264,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                           context,
                           userMap[userMap.keys.first]['title'],
                           userMap[userMap.keys.first]['amount'],
-                          // userMap[userMap.keys.first]['timestamp'],
+                          notPaidList[index].keys.first,
                         ),
                       ),
                     ),
@@ -359,7 +363,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     return notPaidList;
   }
 
-  _showDialog(BuildContext context, String title, int amount) {
+  _showDialog(BuildContext context, String title, int amount, String userName) {
     showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -377,22 +381,12 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                   ),
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text('From Date: '),
-              //     Text(
-              //       getTimeAndDate,
-              //       style: const TextStyle(fontWeight: FontWeight.bold),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
           actions: [
             CupertinoButton(
               onPressed: () =>
-                  sendNotificationToUser('REMINDER!\nPlease Pay for: $title'),
+                  sendNotificationToUser('REMINDER!\nPlease Pay for: $title', userName),
               child: const Text('Remind'),
             ),
             CupertinoButton(
@@ -419,7 +413,23 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     return DateFormat.yMd().add_jm().format(dateTime);
   }
 
-  sendNotificationToUser(String message) {}
+  sendNotificationToUser(String message, String username) async {
+    CustomToast customToast = CustomToast();
+    var userData = await FirebaseFirestore.instance
+        .collection('users')
+        .where('userName', isEqualTo: username)
+        .get();
+    // final String? userToken = userData.data()!['token'];
+    final String? userToken = userData.docs.first.data()['token'];
+    if (userToken == null) return;
+    FirebaseHelper.sendNotification(
+      title: 'MyBait 🏠',
+      body: message,
+      token: userToken,
+    );
+    Navigator.pop(context);
+    customToast.showCustomToast('Reminder sended to $username 🔔', Colors.white, Colors.grey[800]!);
+  }
 
   sendNotificationToAllUsers(String message) {}
 }

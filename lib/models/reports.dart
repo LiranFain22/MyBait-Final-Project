@@ -25,9 +25,6 @@ class Reports {
     // Get the image file from the image path
     File imageFile = File(imagePath);
 
-    // Create a unique file name for the image in Firebase Storage
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
 
     // Reference to Firebase Storage
     Reference storageRef =
