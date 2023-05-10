@@ -1,8 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
-import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 
 import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
@@ -24,19 +24,27 @@ class _MenuItem {
   }
 }
 
-class OverviewTenantScreen extends StatelessWidget {
+class OverviewTenantScreen extends StatefulWidget {
   static const routeName = '/menu-tenant';
 
   OverviewTenantScreen({super.key});
 
-  final currentUser = FirebaseAuth.instance.currentUser;  //??
+  @override
+  State<OverviewTenantScreen> createState() => _OverviewTenantScreenState();
+}
+
+class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
+
+
+
+  final currentUser = FirebaseAuth.instance.currentUser;  
 
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
     _MenuItem(Icons.payment_outlined, 'Payment'),
     _MenuItem(Icons.info_outline, 'Information'),
     _MenuItem(Icons.insert_chart, 'Surveys'),
-    _MenuItem(Icons.assignment, 'Summary'),
+    _MenuItem(Icons.assignment, 'Summary'), 
   ];
 
   @override
@@ -69,7 +77,9 @@ class OverviewTenantScreen extends StatelessWidget {
                       child: const Text('Yes'),
                     ),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final String? token = await FirebaseMessaging.instance.getToken();
+                        print(token);
                         Navigator.of(context, rootNavigator: true).pop(
                             false); // dismisses only the dialog and returns false
                       },

@@ -25,9 +25,6 @@ class Reports {
     // Get the image file from the image path
     File imageFile = File(imagePath);
 
-    // Create a unique file name for the image in Firebase Storage
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
 
     // Reference to Firebase Storage
     Reference storageRef =
@@ -87,13 +84,22 @@ class Reports {
     }
   }
 
-  void addReportToReports(Report report, String buildingID) {
+  static void changeReportStatusToINPROGRESS(Report report, String buildingID) {
     FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(report.id)
         .update({'status': 'INPROGRESS'});
+  }
+
+  static void changeReportStatusToCOMPLETE(Report report, String buildingID) {
+    FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(report.id)
+        .update({'status': 'COMPLETE'});
   }
 
   void removeReportFromReportList(String reportId) {

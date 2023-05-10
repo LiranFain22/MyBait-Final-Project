@@ -48,10 +48,28 @@ dependencies:
   firebase_storage: ^11.1.1
   fluttertoast: ^8.2.1
   intl: ^0.17.0
+  firebase_messaging: ^14.5.0
+  overlay_support: ^2.1.0
+  flutter_local_notifications: ^14.0.0+1
+  cloud_functions: ^4.2.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.2.18
+  flutter_launcher_icons: ^0.13.1
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/home_icon.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo_house.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/logo_house.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

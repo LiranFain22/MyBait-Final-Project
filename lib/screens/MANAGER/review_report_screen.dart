@@ -1,28 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/models/report.dart';
 
 import 'package:mybait/models/reports.dart';
+import 'package:mybait/widgets/custom_Button.dart';
 
 import '../../widgets/custom_toast.dart';
 
 class ReviewReportScreen extends StatelessWidget {
   static const routeName = '/reviewReport';
-  var customToast = CustomToast();
   String buildingID;
   String reportID;
   ReviewReportScreen(this.buildingID, this.reportID, {super.key});
 
-  Future<DocumentSnapshot> getDocument(
-      String buildingID, String reportID) async {
-    return FirebaseFirestore.instance
-        .collection('Buildings')
-        .doc(buildingID)
-        .collection('Reports')
-        .doc(reportID)
-        .get();
-  }
+  var customToast = CustomToast();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +26,7 @@ class ReviewReportScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(
-          future: getDocument(buildingID, reportID),
+          future: FirebaseHelper.getReportDoc(buildingID, reportID),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Center(
@@ -133,44 +126,20 @@ class ReviewReportScreen extends StatelessWidget {
                       ],
                     ),
                     const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                            child: const Text('Approve'),
-                            onPressed: () async {
-                              Reports reports = Reports();
-                              Report report = Report(
-                                id: snapshot.data!['id'],
-                                title: snapshot.data!['title'],
-                                description: snapshot.data!['description'],
-                                location: snapshot.data!['location'],
-                                imageUrl: snapshot.data!['imageURL'],
-                                createdBy: snapshot.data!['createdBy'],
-                                timestamp: snapshot.data!['timestamp'],
-                              );
-                              var userDocument = await FirebaseFirestore
-                                  .instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                                  .get();
-                              var data = userDocument.data();
-                              var buildingID = data!['buildingID'] as String;
-                              reports.addReportToReports(report, buildingID);
-                              customToast.showCustomToast(
-                                  'Report: ${snapshot.data!['title']} is in progress! 💪🏻',
-                                  Colors.white,
-                                  Colors.green);
-                              Navigator.pop(context);
-                            }),
-                        ElevatedButton(
-                          child: const Text('Cancel'),
-                          onPressed: () async {
-                            await deleteDocument(snapshot, context);
-                          },
-                        ),
-                      ],
+                    FutureBuilder(
+                      future: showButtonsBaseReportStatus(snapshot, context),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return snapshot.data!;
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -184,6 +153,58 @@ class ReviewReportScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> addReportToReportsList(
+      AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
+      BuildContext context) async {
+    Report report = Report(
+      id: snapshot.data!['id'],
+      title: snapshot.data!['title'],
+      description: snapshot.data!['description'],
+      location: snapshot.data!['location'],
+      imageUrl: snapshot.data!['imageURL'],
+      createdBy: snapshot.data!['createdBy'],
+      timestamp: snapshot.data!['timestamp'],
+    );
+    var userDocument = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    var data = userDocument.data();
+    var buildingID = data!['buildingID'] as String;
+    Reports.changeReportStatusToINPROGRESS(report, buildingID);
+    customToast.showCustomToast(
+        'Report: ${snapshot.data!['title']} is in progress! 💪🏻',
+        Colors.white,
+        Colors.green);
+    Navigator.pop(context);
+  }
+
+  Future<void> addReportToCompleteList(
+      AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
+      BuildContext context) async {
+    Report report = Report(
+      id: snapshot.data!['id'],
+      title: snapshot.data!['title'],
+      description: snapshot.data!['description'],
+      location: snapshot.data!['location'],
+      imageUrl: snapshot.data!['imageURL'],
+      createdBy: snapshot.data!['createdBy'],
+      timestamp: snapshot.data!['timestamp'],
+    );
+    var userDocument = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    var data = userDocument.data();
+    var buildingID = data!['buildingID'] as String;
+    Reports.changeReportStatusToCOMPLETE(report, buildingID);
+    customToast.showCustomToast(
+        'Report: ${snapshot.data!['title']} Completed! 💪🏻',
+        Colors.white,
+        Colors.green);
+    Navigator.pop(context);
   }
 
   Future<void> deleteDocument(AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
@@ -205,5 +226,39 @@ class ReviewReportScreen extends StatelessWidget {
     // Convert the timestamp to a DateTime object and format it
     DateTime dateTime = timestamp.toDate().toLocal();
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+  }
+
+  Future<Widget> showButtonsBaseReportStatus(
+      AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
+      BuildContext context) async {
+    var reportDoc = await FirebaseHelper.getReportDoc(buildingID, reportID);
+    String status = reportDoc.get('status');
+    if (status == 'WAITING') {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          customButton(
+              title: 'Approve',
+              icon: Icons.done_outline_outlined,
+              onClick: () => addReportToReportsList(snapshot, context)),
+          customButton(
+              title: 'Cancel',
+              icon: Icons.cancel_outlined,
+              onClick: () => deleteDocument(snapshot, context)),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          customButton(
+              title: 'Done',
+              icon: Icons.task_outlined,
+              onClick: () => addReportToCompleteList(snapshot, context)),
+        ],
+      );
+    }
   }
 }
