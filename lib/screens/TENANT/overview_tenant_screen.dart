@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:mybait/screens/login_screen.dart';
 
+import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
 
 import '../../widgets/app_drawer.dart';
@@ -124,7 +125,8 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
                                 .pushNamed(PaymentScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Information') {
-                            // todo: implement information screen
+                            Navigator.of(context)
+                                .pushReplacementNamed(PeronalInformationScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Surveys') {
                             // todo: implement Information screen

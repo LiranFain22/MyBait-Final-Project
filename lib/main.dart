@@ -23,6 +23,7 @@ import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:mybait/screens/personal_Information_screen.dart';
 
 import 'screens/TENANT/maintenance_payment_history_screen.dart';
 
@@ -125,6 +126,7 @@ class MyApp extends StatelessWidget {
               MaintenancePaymentHistoryScreen(),
           ManagingPaymentScreen.routeName: (context) => ManagingPaymentScreen(),
           EditPaymentScreen.routeName: (context) => EditPaymentScreen(),
+          PeronalInformationScreen.routeName: (context) => PeronalInformationScreen(),
         },
       ),
     );
