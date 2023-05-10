@@ -26,7 +26,6 @@ class NotificationService {
         importance: Importance.max,
         priority: Priority.max,
         playSound: true,
-        icon: '@mipmap/ic_launcher',
       ),
       iOS: const DarwinNotificationDetails(),
     );
