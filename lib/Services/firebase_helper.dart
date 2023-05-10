@@ -60,7 +60,6 @@ class FirebaseHelper {
     }
   }
 
-
   // todo: implement navigation!
   static Stream<QuerySnapshot<Map<String, dynamic>>> get buildViews =>
       _db.collection('users').snapshots();
@@ -82,5 +81,56 @@ class FirebaseHelper {
     if (response.data != null) {
       print(response.data);
     }
+  }
+
+  static updateToken() async {
+    final String? currentToken = await FirebaseMessaging.instance.getToken();
+    if (currentToken == null) return;
+    final userData =
+        await _db.collection('users').doc(_auth.currentUser!.uid).get();
+    final String? userToken = userData.data()!['token'];
+
+    // Check if need to update token for push notification
+    if (currentToken != userToken) {
+      debugPrint('Current Token = $currentToken');
+      debugPrint('User Token = $userToken');
+      try {
+        await _db
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .update({'token': currentToken});
+        debugPrint('User Token Updated!');
+      } on Exception catch (e) {
+        debugPrint('Failed to update user token');
+        debugPrint(e.toString());
+      }
+    }
+  }
+
+  static Future<String> fetchBuildingID() async {
+    var userDocument =
+        await _db.collection('users').doc(_auth.currentUser!.uid).get();
+    var data = userDocument.data();
+    var buildingID = data!['buildingID'] as String;
+    return buildingID;
+  }
+
+  static Future<String> fetchToken(String username) async {
+    var userDoc = await _db
+        .collection('users')
+        .where('userName', isEqualTo: username)
+        .get();
+    String token = userDoc.docs.first.data()['token'];
+    return token;
+  }
+
+  static Future<DocumentSnapshot> getReportDoc(
+      String buildingID, String reportID) async {
+    return FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(reportID)
+        .get();
   }
 }

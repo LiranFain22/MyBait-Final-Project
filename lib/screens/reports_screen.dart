@@ -100,34 +100,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         _showDialog(documents[index]['title'],
                             documents[index]['imageURL']);
                       },
-                      child: documents[index]['status'] == 'INPROGRESS'
-                          ? Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      documents[index]['imageURL']),
-                                ),
-                                title: Text(documents[index]['title']),
-                                trailing: const Text(
-                                  'In Progress',
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                              ),
-                            )
-                          : Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      documents[index]['imageURL']),
-                                ),
-                                title: Text(documents[index]['title']),
-                                subtitle: Text(documents[index]['createdBy']),
-                                trailing: const Text(
-                                  'Waiting',
-                                  style: TextStyle(color: Colors.redAccent),
-                                ),
-                              ),
-                            ),
+                      child: cardReportBaseStatus(documents, index),
                     );
                   },
                 );
@@ -143,6 +116,52 @@ class _ReportsScreenState extends State<ReportsScreen> {
         onPressed: () {
           Navigator.of(context).pushNamed(EditReportScreen.routeName);
         },
+      ),
+    );
+  }
+
+  Widget cardReportBaseStatus(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> documents, int index) {
+    switch (documents[index]['status']) {
+      case 'INPROGRESS':
+        return Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(documents[index]['imageURL']),
+            ),
+            title: Text(documents[index]['title']),
+            trailing: const Text(
+              'In Progress',
+              style: TextStyle(color: Colors.orange),
+            ),
+          ),
+        );
+      case 'WAITING':
+        return Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(documents[index]['imageURL']),
+            ),
+            title: Text(documents[index]['title']),
+            subtitle: Text(documents[index]['createdBy']),
+            trailing: const Text(
+              'Waiting',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        );
+    }
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(documents[index]['imageURL']),
+        ),
+        title: Text(documents[index]['title']),
+        subtitle: Text(documents[index]['createdBy']),
+        trailing: const Text(
+          'Done',
+          style: TextStyle(color: Colors.green),
+        ),
       ),
     );
   }

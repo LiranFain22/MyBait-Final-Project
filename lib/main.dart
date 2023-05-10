@@ -51,12 +51,16 @@ class MyApp extends StatelessWidget {
           if (userDoc.data()!.containsKey('userType')) {
             final String userType = userDoc.get('userType');
             if (userType == 'MANAGER') {
+              // Update token if needed
+              FirebaseHelper.updateToken();
               // Navigate to manager screen
               Navigator.pushReplacementNamed(
                   context, OverviewManagerScreen.routeName);
             } else {
               if (userDoc.data()!.containsKey('buildingID') &&
                   userDoc.data()!.containsKey('apartmentNumber')) {
+                // Update token if needed
+                FirebaseHelper.updateToken();
                 // Navigate to tenant user screen
                 Navigator.pushReplacementNamed(
                     context, OverviewTenantScreen.routeName);

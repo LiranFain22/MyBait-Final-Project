@@ -84,13 +84,22 @@ class Reports {
     }
   }
 
-  void addReportToReports(Report report, String buildingID) {
+  static void changeReportStatusToINPROGRESS(Report report, String buildingID) {
     FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(report.id)
         .update({'status': 'INPROGRESS'});
+  }
+
+  static void changeReportStatusToCOMPLETE(Report report, String buildingID) {
+    FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(report.id)
+        .update({'status': 'COMPLETE'});
   }
 
   void removeReportFromReportList(String reportId) {

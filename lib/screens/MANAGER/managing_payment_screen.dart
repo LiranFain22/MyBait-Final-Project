@@ -40,43 +40,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           IconButton(
             icon: const Icon(Icons.filter_alt_outlined),
             onPressed: () {
-              showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: const Text('Which Paymet Type?'),
-                    content: const Text('Select paymet type to show'),
-                    actions: [
-                      CupertinoButton(
-                        child: const Text('House committee payments'),
-                        onPressed: () {
-                          setState(() {
-                            selectedOption(
-                                ListType.houseCommitteePaymentsFiltter);
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                      CupertinoButton(
-                        child: const Text('Maintenance Payments'),
-                        onPressed: () {
-                          selectedOption(ListType.maintenancePaymentsFilter);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoButton(
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              _showFilterDialog(context);
             },
           ),
           IconButton(
@@ -96,6 +60,45 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           Navigator.of(context).pushNamed(EditPaymentScreen.routeName);
         },
       ),
+    );
+  }
+
+  void _showFilterDialog(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('Which Paymet Type?'),
+          content: const Text('Select paymet type to show'),
+          actions: [
+            CupertinoButton(
+              child: const Text('House committee payments'),
+              onPressed: () {
+                setState(() {
+                  selectedOption(ListType.houseCommitteePaymentsFiltter);
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            CupertinoButton(
+              child: const Text('Maintenance Payments'),
+              onPressed: () {
+                selectedOption(ListType.maintenancePaymentsFilter);
+                Navigator.pop(context);
+              },
+            ),
+            CupertinoButton(
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -181,11 +184,10 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                           color: Colors.red,
                         ),
                         onPressed: () => _showDialog(
-                          context,
-                          userMap[userMap.keys.first]['title'],
-                          userMap[userMap.keys.first]['amount'],
-                          notPaidList[index].keys.first
-                        ),
+                            context,
+                            userMap[userMap.keys.first]['title'],
+                            userMap[userMap.keys.first]['amount'],
+                            notPaidList[index].keys.first),
                       ),
                     ),
                   ),
@@ -385,8 +387,8 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           ),
           actions: [
             CupertinoButton(
-              onPressed: () =>
-                  sendNotificationToUser('REMINDER!\nPlease Pay for: $title', userName),
+              onPressed: () => sendNotificationToUser(
+                  'REMINDER!\nPlease Pay for: $title', userName),
               child: const Text('Remind'),
             ),
             CupertinoButton(
@@ -428,8 +430,62 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
       token: userToken,
     );
     Navigator.pop(context);
-    customToast.showCustomToast('Reminder sended to $username 🔔', Colors.white, Colors.grey[800]!);
+    customToast.showCustomToast(
+        'Reminder sended to $username 🔔', Colors.white, Colors.grey[800]!);
   }
 
-  sendNotificationToAllUsers(String message) {}
+  sendNotificationToAllUsers(String message) async {
+    Future<String> buildingID = FirebaseHelper.fetchBuildingID();
+    DateTime now = DateTime.now();
+    var currentYear = now.year;
+    var currentMonth = now.month;
+
+    Set<String> usersSet = <String>{};
+
+    switch (_selectedOption.name) {
+      case 'houseCommitteePaymentsFiltter':
+        // Get List of users base filter
+        List<Map<String, dynamic>> userList =
+            await fetchNotPaidList(buildingID, currentYear);
+        for (Map<String, dynamic> user in userList) {
+          Set<String> keys = user.keys.toSet();
+
+          // add all unique users to the usersSet
+          for (String key in keys) {
+            if (!usersSet.contains(key)) {
+              usersSet.add(key);
+            }
+          }
+        }
+        break;
+      case 'maintenancePaymentsFilter':
+        // Get List of users base filter
+        List<Map<String, dynamic>> userList =
+            await fetchNotPaidMonthList(buildingID, currentYear, currentMonth);
+        for (Map<String, dynamic> user in userList) {
+          Set<String> keys = user.keys.toSet();
+
+          // add all unique users to the usersSet
+          for (String key in keys) {
+            if (!usersSet.contains(key)) {
+              usersSet.add(key);
+            }
+          }
+        }
+        break;
+    }
+
+    // List of users to send notifications
+    List<String> usersList = usersSet.toList();
+
+    // send each user notification
+    for (String user in usersList) {
+      var userToken = await FirebaseHelper.fetchToken(user);
+      FirebaseHelper.sendNotification(
+        title: 'MyBait 🏠',
+        body: message,
+        token: userToken,
+      );
+    }
+  }
 }
