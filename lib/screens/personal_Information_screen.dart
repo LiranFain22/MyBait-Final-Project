@@ -74,20 +74,29 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              Text(
-                '${firstName!} ${lastName!}',
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black54,
-                ),
-              ),
+              firstName != null
+                  ? Text(
+                      '${firstName!} ${lastName!}',
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black54,
+                      ),
+                    )
+                  : Text(
+                      '${FirebaseAuth.instance.currentUser!.displayName}',
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black54,
+                      ),
+                    ),
               const SizedBox(
                 height: 30.0,
               ),
@@ -103,7 +112,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                 height: 10.0,
               ),
               Text(
-                '${userType?.toLowerCase()!}',
+                '${userType?.toLowerCase()}',
                 style: const TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.normal,
@@ -176,10 +185,13 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                   color: Colors.black54,
                 ),
               ),
-            ].map((widget) => Padding(
-              padding: const EdgeInsets.only(left: 60.0,),
-              child: widget,
-            ))
+            ]
+                .map((widget) => Padding(
+                      padding: const EdgeInsets.only(
+                        left: 60.0,
+                      ),
+                      child: widget,
+                    ))
                 .toList(),
           ),
         ],

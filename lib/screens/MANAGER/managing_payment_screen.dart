@@ -46,7 +46,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           IconButton(
             icon: const Icon(Icons.notifications_on_sharp),
             onPressed: () => sendNotificationToAllUsers(
-                'MyBait 🏠\nThere are payments waiting 🔔'),
+                'There are payments waiting 🔔'),
           ),
           const CustomPopupMenuButton(),
         ],
@@ -388,7 +388,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           actions: [
             CupertinoButton(
               onPressed: () => sendNotificationToUser(
-                  'REMINDER!\nPlease Pay for: $title', userName),
+                  'REMINDER 🔔\n$title', userName),
               child: const Text('Remind'),
             ),
             CupertinoButton(
@@ -435,18 +435,21 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
   }
 
   sendNotificationToAllUsers(String message) async {
-    Future<String> buildingID = FirebaseHelper.fetchBuildingID();
+    String buildingID = await FirebaseHelper.fetchBuildingID();
     DateTime now = DateTime.now();
     var currentYear = now.year;
     var currentMonth = now.month;
+    CustomToast customToast = CustomToast();
 
     Set<String> usersSet = <String>{};
+
+    print(_selectedOption.name);
 
     switch (_selectedOption.name) {
       case 'houseCommitteePaymentsFiltter':
         // Get List of users base filter
         List<Map<String, dynamic>> userList =
-            await fetchNotPaidList(buildingID, currentYear);
+            await fetchNotPaidMonthList(buildingID, currentYear, currentMonth);
         for (Map<String, dynamic> user in userList) {
           Set<String> keys = user.keys.toSet();
 
@@ -461,7 +464,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
       case 'maintenancePaymentsFilter':
         // Get List of users base filter
         List<Map<String, dynamic>> userList =
-            await fetchNotPaidMonthList(buildingID, currentYear, currentMonth);
+            await fetchNotPaidList(buildingID, currentYear);
         for (Map<String, dynamic> user in userList) {
           Set<String> keys = user.keys.toSet();
 
@@ -477,15 +480,27 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
 
     // List of users to send notifications
     List<String> usersList = usersSet.toList();
+    List<String> usersToken = [];
 
-    // send each user notification
+    print(usersList.toString());
+
     for (String user in usersList) {
-      var userToken = await FirebaseHelper.fetchToken(user);
-      FirebaseHelper.sendNotification(
-        title: 'MyBait 🏠',
-        body: message,
-        token: userToken,
-      );
+      try {
+        var userToken = await FirebaseHelper.fetchToken(user);
+        usersToken.add(userToken);
+      } on Exception catch (e) {
+        debugPrint('HAHAHAHAH');
+        debugPrint(e.toString());
+      }
     }
+    
+    // send each user notification
+    await FirebaseHelper.sendGroupNotifications(
+      title: 'MyBait 🏠',
+      body: message,
+      tokens: usersToken,
+    );
+    
+    customToast.showCustomToast('Sent Reminder to All Users 🔔', Colors.white, Colors.grey[800]!);
   }
 }

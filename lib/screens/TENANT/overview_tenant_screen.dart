@@ -126,7 +126,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
                           }
                           if (menuList[position].getTitle == 'Information') {
                             Navigator.of(context)
-                                .pushReplacementNamed(PeronalInformationScreen.routeName);
+                                .pushNamed(PeronalInformationScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Surveys') {
                             // todo: implement Information screen

@@ -60,6 +60,32 @@ class FirebaseHelper {
     }
   }
 
+  static Future<bool> sendGroupNotifications({
+    required String title,
+    required String body,
+    required List<String> tokens,
+    String? image,
+  }) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('sendGroupNotify');
+
+    try {
+      final response = await callable.call(<String, dynamic>{
+        'title': title,
+        'body': body,
+        'tokens': tokens,
+      });
+
+      debugPrint('result is ${response.data ?? 'No data came back'}');
+
+      if (response.data == null) return false;
+      return true;
+    } catch (e) {
+      debugPrint('There was an error $e');
+      return false;
+    }
+  }
+
   // todo: implement navigation!
   static Stream<QuerySnapshot<Map<String, dynamic>>> get buildViews =>
       _db.collection('users').snapshots();
@@ -116,12 +142,17 @@ class FirebaseHelper {
   }
 
   static Future<String> fetchToken(String username) async {
-    var userDoc = await _db
-        .collection('users')
-        .where('userName', isEqualTo: username)
-        .get();
-    String token = userDoc.docs.first.data()['token'];
-    return token;
+    try {
+      var userDoc = await _db
+          .collection('users')
+          .where('userName', isEqualTo: username)
+          .get();
+      String token = userDoc.docs.first.data()['token'];
+      return token;
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return '';
+    }
   }
 
   static Future<DocumentSnapshot> getReportDoc(
