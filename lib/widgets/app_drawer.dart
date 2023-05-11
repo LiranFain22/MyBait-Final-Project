@@ -6,11 +6,14 @@ import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/TENANT/payment_screen.dart';
 import 'package:provider/provider.dart';
+import '../screens/MANAGER/create_a_survey_screen.dart';
 import '../screens/personal_Information_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/MANAGER/overview_manager_screen.dart';
 import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
+import '../screens/summary_screen.dart';
+import '../screens/surveys_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   static const routeName = '/drawer';
@@ -125,7 +128,19 @@ class _AppDrawerState extends State<AppDrawer> {
             dense: true,
             visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
-              // todo: implement Surveys Page
+              Navigator.of(context)
+                  .pushReplacementNamed(SurveysScreen.routeName);
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Creat a Survey'),
+            dense: true,
+            visualDensity: VisualDensity(vertical: -0.01),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(CreateSurveyScreen.routeName);
             },
           ),
           const Divider(),
@@ -135,7 +150,8 @@ class _AppDrawerState extends State<AppDrawer> {
             dense: true,
             visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
-              // todo: implement Summary Page
+              Navigator.of(context)
+                  .pushReplacementNamed(SummeryScreen.routeName);
             },
           ),
           const Divider(),
@@ -230,7 +246,8 @@ class _AppDrawerState extends State<AppDrawer> {
           //dense: true,
           //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
-            // todo: implement Surveys Page
+            Navigator.of(context)
+                .pushReplacementNamed(SurveysScreen.routeName);
           },
         ),
         const Divider(),
@@ -240,7 +257,8 @@ class _AppDrawerState extends State<AppDrawer> {
           //dense: true,
           //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
-            // todo: implement Summary Page
+            Navigator.of(context)
+                .pushReplacementNamed(SummeryScreen.routeName);
           },
         ),
         const Divider(),

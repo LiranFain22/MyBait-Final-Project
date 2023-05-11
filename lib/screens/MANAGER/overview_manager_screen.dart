@@ -7,6 +7,9 @@ import '../login_screen.dart';
 import '../TENANT/payment_screen.dart';
 import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
+import '../summary_screen.dart';
+import '../surveys_screen.dart';
+import 'create_a_survey_screen.dart';
 import 'managing_report_screen.dart';
 
 import '../../widgets/app_drawer.dart';
@@ -39,6 +42,7 @@ class OverviewManagerScreen extends StatelessWidget {
     MenuItem(Icons.account_circle_outlined, 'Information'),
     MenuItem(Icons.insert_chart, 'Surveys'),
     MenuItem(Icons.assignment, 'Summary'),
+    MenuItem(Icons.edit, 'Creat a Survey'),
   ];
 
   @override
@@ -170,10 +174,16 @@ class OverviewManagerScreen extends StatelessWidget {
                                 .pushNamed(PaymentScreen.routeName);
                           }
                         if (menuList[position].getTitle == 'Surveys') {
-                          // todo: implement Information screen
+                          Navigator.of(context)
+                              .pushNamed(SurveysScreen.routeName);
+                        }
+                        if (menuList[position].getTitle == 'Creat a Survey') {
+                          Navigator.of(context)
+                              .pushNamed(CreateSurveyScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Summary') {
-                          // todo: implement Information screen
+                          Navigator.of(context)
+                              .pushNamed(SummeryScreen.routeName);
                         }
                       },
                       child: Center(
