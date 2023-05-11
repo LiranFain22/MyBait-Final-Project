@@ -87,17 +87,6 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.report_gmailerrorred),
-            title: const Text('Reports'),
-            dense: true,
-            visualDensity: VisualDensity(vertical: -0.01),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(ReportsScreen.routeName);
-            },
-          ),
-          const Divider(),
-          ListTile(
             leading: const Icon(Icons.payment_outlined),
             title: const Text('Payment'),
             dense: true,

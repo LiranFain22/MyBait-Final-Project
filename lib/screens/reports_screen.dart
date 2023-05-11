@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 
 import '../widgets/custom_popupMenuButton.dart';
 import 'edit_report_screen.dart';
@@ -47,15 +48,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future<String> fetchBuildingID() async {
-      var userDocument = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential!.uid)
-          .get();
-      var data = userDocument.data();
-      var buildingID = data!['buildingID'] as String;
-      return buildingID;
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +58,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
-        future: fetchBuildingID(),
+        future: FirebaseHelper.fetchBuildingID(),
         builder: (context, snapshot) {
           String? buildingID = snapshot.data;
           return StreamBuilder(

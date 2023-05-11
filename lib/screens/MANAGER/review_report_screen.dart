@@ -26,7 +26,7 @@ class ReviewReportScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(
-          future: FirebaseHelper.getReportDoc(buildingID, reportID),
+          future: FirebaseHelper.fetchReportDoc(buildingID, reportID),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Center(
@@ -231,7 +231,7 @@ class ReviewReportScreen extends StatelessWidget {
   Future<Widget> showButtonsBaseReportStatus(
       AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
       BuildContext context) async {
-    var reportDoc = await FirebaseHelper.getReportDoc(buildingID, reportID);
+    var reportDoc = await FirebaseHelper.fetchReportDoc(buildingID, reportID);
     String status = reportDoc.get('status');
     if (status == 'WAITING') {
       return Row(

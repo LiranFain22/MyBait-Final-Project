@@ -8,6 +8,7 @@ import '../../models/reports.dart';
 import '../../models/report.dart';
 import '../../widgets/app_drawer.dart';
 import '../../widgets/custom_popupMenuButton.dart';
+import '../edit_report_screen.dart';
 
 enum SelectedOptions {
   approve,
@@ -108,6 +109,13 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
               );
             },
           );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushNamed(EditReportScreen.routeName);
         },
       ),
     );
