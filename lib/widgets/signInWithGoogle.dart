@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -103,6 +104,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
   Future<void> createNewUser(
       UserCredential userCredential, BuildContext context) async {
+    final String? token = await FirebaseMessaging.instance.getToken();
+    if (token == null) return;
     await FirebaseFirestore.instance
         .collection("users")
         .doc(userCredential.user!.uid)
@@ -111,9 +114,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       'userType': 'TENANT',
       'email': userCredential.user!.email,
       'userName': userCredential.user!.displayName,
+      'token': token,
     });
-      customToast.showCustomToast(
-          'Login successfully 🥳', Colors.white, Colors.green);
-      Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+    customToast.showCustomToast(
+        'Login successfully 🥳', Colors.white, Colors.green);
+    Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
   }
 }

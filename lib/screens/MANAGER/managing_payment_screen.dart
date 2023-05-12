@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
+import 'package:mybait/widgets/custom_toast.dart';
 
 import '../../widgets/custom_popupMenuButton.dart';
 
@@ -38,51 +40,15 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           IconButton(
             icon: const Icon(Icons.filter_alt_outlined),
             onPressed: () {
-              showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: const Text('Which Paymet Type?'),
-                    content: const Text('Select paymet type to show'),
-                    actions: [
-                      CupertinoButton(
-                        child: const Text('House committee payments'),
-                        onPressed: () {
-                          setState(() {
-                            selectedOption(
-                                ListType.houseCommitteePaymentsFiltter);
-                            Navigator.pop(context);
-                          });
-                        },
-                      ),
-                      CupertinoButton(
-                        child: const Text('Maintenance Payments'),
-                        onPressed: () {
-                          selectedOption(ListType.maintenancePaymentsFilter);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoButton(
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              _showFilterDialog(context);
             },
           ),
           IconButton(
             icon: const Icon(Icons.notifications_on_sharp),
             onPressed: () => sendNotificationToAllUsers(
-                'MyBait 🏠\nThere are payments waiting 🔔'),
+                'There are payments waiting 🔔'),
           ),
-          CustomPopupMenuButton(),
+          const CustomPopupMenuButton(),
         ],
       ),
       drawer: const AppDrawer(),
@@ -94,6 +60,45 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           Navigator.of(context).pushNamed(EditPaymentScreen.routeName);
         },
       ),
+    );
+  }
+
+  void _showFilterDialog(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text('Which Paymet Type?'),
+          content: const Text('Select paymet type to show'),
+          actions: [
+            CupertinoButton(
+              child: const Text('House committee payments'),
+              onPressed: () {
+                setState(() {
+                  selectedOption(ListType.houseCommitteePaymentsFiltter);
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            CupertinoButton(
+              child: const Text('Maintenance Payments'),
+              onPressed: () {
+                selectedOption(ListType.maintenancePaymentsFilter);
+                Navigator.pop(context);
+              },
+            ),
+            CupertinoButton(
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -165,23 +170,24 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                     context,
                     userMap[userMap.keys.first]['title'],
                     userMap[userMap.keys.first]['amount'],
+                    notPaidList[index].keys.first,
                     // userMap[userMap.keys.first]['timestamp'],
                   ),
                   child: Card(
                     child: ListTile(
                       leading: const Icon(Icons.person_outline),
                       title: Text(notPaidList[index].keys.first),
+                      // title: Text('?'),
                       trailing: IconButton(
                         icon: const Icon(
                           Icons.notifications_none_outlined,
                           color: Colors.red,
                         ),
                         onPressed: () => _showDialog(
-                          context,
-                          userMap[userMap.keys.first]['title'],
-                          userMap[userMap.keys.first]['amount'],
-                          // userMap[userMap.keys.first]['timestamp'],
-                        ),
+                            context,
+                            userMap[userMap.keys.first]['title'],
+                            userMap[userMap.keys.first]['amount'],
+                            notPaidList[index].keys.first),
                       ),
                     ),
                   ),
@@ -245,7 +251,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                     context,
                     userMap[userMap.keys.first]['title'],
                     userMap[userMap.keys.first]['amount'],
-                    // userMap[userMap.keys.first]['timestamp'],
+                    notPaidList[index].keys.first,
                   ),
                   child: Card(
                     child: ListTile(
@@ -260,7 +266,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                           context,
                           userMap[userMap.keys.first]['title'],
                           userMap[userMap.keys.first]['amount'],
-                          // userMap[userMap.keys.first]['timestamp'],
+                          notPaidList[index].keys.first,
                         ),
                       ),
                     ),
@@ -359,7 +365,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     return notPaidList;
   }
 
-  _showDialog(BuildContext context, String title, int amount) {
+  _showDialog(BuildContext context, String title, int amount, String userName) {
     showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -377,22 +383,12 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                   ),
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     const Text('From Date: '),
-              //     Text(
-              //       getTimeAndDate,
-              //       style: const TextStyle(fontWeight: FontWeight.bold),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
           actions: [
             CupertinoButton(
-              onPressed: () =>
-                  sendNotificationToUser('REMINDER!\nPlease Pay for: $title'),
+              onPressed: () => sendNotificationToUser(
+                  'REMINDER 🔔\n$title', userName),
               child: const Text('Remind'),
             ),
             CupertinoButton(
@@ -419,7 +415,92 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     return DateFormat.yMd().add_jm().format(dateTime);
   }
 
-  sendNotificationToUser(String message) {}
+  sendNotificationToUser(String message, String username) async {
+    CustomToast customToast = CustomToast();
+    var userData = await FirebaseFirestore.instance
+        .collection('users')
+        .where('userName', isEqualTo: username)
+        .get();
+    // final String? userToken = userData.data()!['token'];
+    final String? userToken = userData.docs.first.data()['token'];
+    if (userToken == null) return;
+    FirebaseHelper.sendNotification(
+      title: 'MyBait 🏠',
+      body: message,
+      token: userToken,
+    );
+    Navigator.pop(context);
+    customToast.showCustomToast(
+        'Reminder sended to $username 🔔', Colors.white, Colors.grey[800]!);
+  }
 
-  sendNotificationToAllUsers(String message) {}
+  sendNotificationToAllUsers(String message) async {
+    String buildingID = await FirebaseHelper.fetchBuildingID();
+    DateTime now = DateTime.now();
+    var currentYear = now.year;
+    var currentMonth = now.month;
+    CustomToast customToast = CustomToast();
+
+    Set<String> usersSet = <String>{};
+
+    print(_selectedOption.name);
+
+    switch (_selectedOption.name) {
+      case 'houseCommitteePaymentsFiltter':
+        // Get List of users base filter
+        List<Map<String, dynamic>> userList =
+            await fetchNotPaidMonthList(buildingID, currentYear, currentMonth);
+        for (Map<String, dynamic> user in userList) {
+          Set<String> keys = user.keys.toSet();
+
+          // add all unique users to the usersSet
+          for (String key in keys) {
+            if (!usersSet.contains(key)) {
+              usersSet.add(key);
+            }
+          }
+        }
+        break;
+      case 'maintenancePaymentsFilter':
+        // Get List of users base filter
+        List<Map<String, dynamic>> userList =
+            await fetchNotPaidList(buildingID, currentYear);
+        for (Map<String, dynamic> user in userList) {
+          Set<String> keys = user.keys.toSet();
+
+          // add all unique users to the usersSet
+          for (String key in keys) {
+            if (!usersSet.contains(key)) {
+              usersSet.add(key);
+            }
+          }
+        }
+        break;
+    }
+
+    // List of users to send notifications
+    List<String> usersList = usersSet.toList();
+    List<String> usersToken = [];
+
+    print(usersList.toString());
+
+    for (String user in usersList) {
+      try {
+        var userToken = await FirebaseHelper.fetchToken(user);
+        usersToken.add(userToken);
+      } on Exception catch (e) {
+        debugPrint('HAHAHAHAH');
+        debugPrint(e.toString());
+      }
+    }
+    
+    // send each user notification
+    await FirebaseHelper.sendGroupNotifications(
+      title: 'MyBait 🏠',
+      body: message,
+      tokens: usersToken,
+    );
+    
+    customToast.showCustomToast('Sent Reminder to All Users 🔔', Colors.white, Colors.grey[800]!);
+  }
 }

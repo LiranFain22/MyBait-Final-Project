@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mybait/screens/login_screen.dart';
@@ -67,6 +68,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         password: password,
       );
+      final String? token = await FirebaseMessaging.instance.getToken();
+      if (token == null) return;
       await FirebaseFirestore.instance
           .collection("users")
           .doc(userCredential.user!.uid)
@@ -75,6 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'userType': 'TENANT',
         'email': email,
         'userName': firstName,
+        'token': token,
       });
 
       // Update user display name

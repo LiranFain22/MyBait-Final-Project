@@ -29,10 +29,16 @@ class MenuItem {
   }
 }
 
-class OverviewManagerScreen extends StatelessWidget {
+class OverviewManagerScreen extends StatefulWidget {
   static const routeName = '/menu-manager';
 
   OverviewManagerScreen({super.key});
+
+  @override
+  State<OverviewManagerScreen> createState() => _OverviewManagerScreenState();
+}
+
+class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
 
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Reports'),
