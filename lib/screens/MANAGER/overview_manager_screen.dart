@@ -43,7 +43,6 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
   List menuList = [
     MenuItem(Icons.error_outline, 'Managing Reports'),
     MenuItem(Icons.monetization_on_outlined, 'Managing Payment'),
-    MenuItem(Icons.info_outline, 'Reports'),
     MenuItem(Icons.payment_outlined, 'Payment'),
     MenuItem(Icons.account_circle_outlined, 'Information'),
     MenuItem(Icons.insert_chart, 'Surveys'),
@@ -162,10 +161,6 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                         if (menuList[position].getTitle == 'Managing Reports') {
                           Navigator.of(context).pushNamed(
                               ManagingReportScreen.routeName);
-                        }
-                        if (menuList[position].getTitle == 'Reports') {
-                          Navigator.of(context)
-                              .pushNamed(ReportsScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Managing Payment') {
                           Navigator.of(context)
