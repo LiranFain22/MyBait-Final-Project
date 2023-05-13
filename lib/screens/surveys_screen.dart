@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:survey_kit/survey_kit.dart';
 import '../models/survey.dart';
 import '../models/surveys.dart';
 import '../widgets/custom_popupMenuButton.dart';
