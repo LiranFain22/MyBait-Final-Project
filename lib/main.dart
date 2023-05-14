@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/Services/notification_service.dart';
+import 'package:mybait/screens/MANAGER/create_a_survey_screen.dart';
 import 'package:mybait/screens/MANAGER/edit_payment_screen.dart';
 import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
 import 'package:mybait/screens/TENANT/maintenance_payment_screen.dart';
@@ -20,6 +21,7 @@ import 'package:mybait/screens/TENANT/home_committee_payment_history_screen.dart
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
+import 'package:mybait/screens/surveys_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -102,6 +104,8 @@ class MyApp extends StatelessWidget {
               return const LoginScreen();
             }),
         routes: {
+          SurveysScreen.routeName: (context) => SurveysScreen(),
+          createSurveyScreen.routeName: (context) => createSurveyScreen(),
           OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
           OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
           EditReportScreen.routeName: (context) => EditReportScreen(),

@@ -11,6 +11,7 @@ import '../screens/login_screen.dart';
 import '../screens/MANAGER/overview_manager_screen.dart';
 import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
+import '../screens/surveys_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   static const routeName = '/drawer';
@@ -114,7 +115,8 @@ class _AppDrawerState extends State<AppDrawer> {
             dense: true,
             visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
-              // todo: implement Surveys Page
+              Navigator.of(context)
+                  .pushNamed(SurveysScreen.routeName);
             },
           ),
           const Divider(),
@@ -219,7 +221,8 @@ class _AppDrawerState extends State<AppDrawer> {
           //dense: true,
           //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
-            // todo: implement Surveys Page
+            Navigator.of(context)
+                .pushNamed(SurveysScreen.routeName);
           },
         ),
         const Divider(),
