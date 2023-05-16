@@ -7,7 +7,6 @@ import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
 import '../widgets/custom_toast.dart';
-import '../widgets/signInWithGoogle.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const routeName = '/register';
@@ -106,8 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _isLoading = false;
       });
     } catch (error) {
-      customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
-
+      // customToast.showCustomToast(error.toString(), Colors.white, Colors.red);
+      debugPrint(error.toString());
       setState(() {
         _isLoading = false;
       });

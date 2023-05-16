@@ -9,13 +9,19 @@ import 'package:mybait/widgets/custom_Button.dart';
 
 import '../../widgets/custom_toast.dart';
 
-class ReviewReportScreen extends StatelessWidget {
+class ReviewReportScreen extends StatefulWidget {
   static const routeName = '/reviewReport';
   String buildingID;
   String reportID;
   ReviewReportScreen(this.buildingID, this.reportID, {super.key});
 
+  @override
+  State<ReviewReportScreen> createState() => _ReviewReportScreenState();
+}
+
+class _ReviewReportScreenState extends State<ReviewReportScreen> {
   var customToast = CustomToast();
+  TextEditingController _descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,8 @@ class ReviewReportScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(
-          future: FirebaseHelper.getReportDoc(buildingID, reportID),
+          future:
+              FirebaseHelper.fetchReportDoc(widget.buildingID, widget.reportID),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Center(
@@ -41,10 +48,13 @@ class ReviewReportScreen extends StatelessWidget {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    Image.network(
-                      snapshot.data!['imageURL'],
-                      height: 300,
-                      width: 300,
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Image.network(
+                        snapshot.data!['imageURL'],
+                        height: 300,
+                        width: 300,
+                      ),
                     ),
                     Text(
                       snapshot.data!['title'],
@@ -116,13 +126,7 @@ class ReviewReportScreen extends StatelessWidget {
                             fontSize: 20,
                           ),
                         ),
-                        Text(
-                          '${snapshot.data!['status']}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
+                        getTextColorBaseStatus(snapshot.data!['status']),
                       ],
                     ),
                     const Divider(),
@@ -166,6 +170,7 @@ class ReviewReportScreen extends StatelessWidget {
       imageUrl: snapshot.data!['imageURL'],
       createdBy: snapshot.data!['createdBy'],
       timestamp: snapshot.data!['timestamp'],
+      lastUpdate: Timestamp.now(),
     );
     var userDocument = await FirebaseFirestore.instance
         .collection('users')
@@ -192,6 +197,7 @@ class ReviewReportScreen extends StatelessWidget {
       imageUrl: snapshot.data!['imageURL'],
       createdBy: snapshot.data!['createdBy'],
       timestamp: snapshot.data!['timestamp'],
+      lastUpdate: Timestamp.now(),
     );
     var userDocument = await FirebaseFirestore.instance
         .collection('users')
@@ -231,7 +237,8 @@ class ReviewReportScreen extends StatelessWidget {
   Future<Widget> showButtonsBaseReportStatus(
       AsyncSnapshot<DocumentSnapshot<Object?>> snapshot,
       BuildContext context) async {
-    var reportDoc = await FirebaseHelper.getReportDoc(buildingID, reportID);
+    var reportDoc =
+        await FirebaseHelper.fetchReportDoc(widget.buildingID, widget.reportID);
     String status = reportDoc.get('status');
     if (status == 'WAITING') {
       return Row(
@@ -239,9 +246,10 @@ class ReviewReportScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           customButton(
-              title: 'Approve',
-              icon: Icons.done_outline_outlined,
-              onClick: () => addReportToReportsList(snapshot, context)),
+            title: 'Update Status',
+            icon: Icons.note_add_outlined,
+            onClick: () async => await _updateDescriptionDialog(context, snapshot),
+          ),
           customButton(
               title: 'Cancel',
               icon: Icons.cancel_outlined,
@@ -260,5 +268,79 @@ class ReviewReportScreen extends StatelessWidget {
         ],
       );
     }
+  }
+
+  Widget getTextColorBaseStatus(String status) {
+    if (status == 'WAITING') {
+      return Text(
+        status,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w300,
+          color: Colors.red,
+        ),
+      );
+    }
+    return Text(
+      status,
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w300,
+        color: Colors.amber,
+      ),
+    );
+  }
+
+  Future<void> _updateDescriptionDialog(
+      BuildContext context, AsyncSnapshot<DocumentSnapshot<Object?>> snapshot) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Update Description'),
+          content: TextField(
+            controller: _descriptionController,
+            decoration: InputDecoration(hintText: 'Enter new value'),
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Update'),
+              onPressed: () async {
+                Report report = Report(
+                  id: snapshot.data!['id'],
+                  title: snapshot.data!['title'],
+                  description: snapshot.data!['description'],
+                  location: snapshot.data!['location'],
+                  imageUrl: snapshot.data!['imageURL'],
+                  createdBy: snapshot.data!['createdBy'],
+                  timestamp: snapshot.data!['timestamp'],
+                  lastUpdate: Timestamp.now(),
+                );
+                String buildingID = await FirebaseHelper.fetchBuildingID();
+                // Get the entered value
+                String newDescription = _descriptionController.text;
+
+                // Update the field in the document
+                Reports.updateReportDescription(
+                    report, buildingID, newDescription);
+
+                Reports.changeReportStatusToINPROGRESS(report, buildingID);
+
+                addReportToReportsList(snapshot, context);
+
+                // Close the dialog
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

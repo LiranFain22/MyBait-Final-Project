@@ -25,10 +25,10 @@ class Reports {
     // Get the image file from the image path
     File imageFile = File(imagePath);
 
-
     // Reference to Firebase Storage
-    Reference storageRef =
-        FirebaseStorage.instance.ref('/userUploads').child(DateTime.now().toString());
+    Reference storageRef = FirebaseStorage.instance
+        .ref('/userUploads')
+        .child(DateTime.now().toString());
 
     UploadTask uploadTask;
 
@@ -40,7 +40,6 @@ class Reports {
 
     return imageUrl;
   }
-
 
   Future<void> addReportToReview(Report report, String buildID) async {
     try {
@@ -84,22 +83,38 @@ class Reports {
     }
   }
 
-  static void changeReportStatusToINPROGRESS(Report report, String buildingID) {
+  static void updateReportDescription(
+      Report report, String buildingID, String newDescription) {
     FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(report.id)
-        .update({'status': 'INPROGRESS'});
+        .update({'description': newDescription});
   }
 
-  static void changeReportStatusToCOMPLETE(Report report, String buildingID) {
-    FirebaseFirestore.instance
+  static Future<void> changeReportStatusToINPROGRESS(Report report, String buildingID) async {
+    await FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(report.id)
-        .update({'status': 'COMPLETE'});
+        .update({
+      'status': 'INPROGRESS',
+      'lastUpdate': Timestamp.now(),
+    });
+  }
+
+  static Future<void> changeReportStatusToCOMPLETE(Report report, String buildingID) async {
+    await FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Reports')
+        .doc(report.id)
+        .update({
+      'status': 'COMPLETE',
+      'lastUpdate': Timestamp.now(),
+    });
   }
 
   void removeReportFromReportList(String reportId) {

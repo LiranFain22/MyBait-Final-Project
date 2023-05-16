@@ -5,6 +5,7 @@ import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 
 import '../screens/login_screen.dart';
+import '../screens/personal_Information_screen.dart';
 
 class CustomPopupMenuButton extends StatefulWidget {
   const CustomPopupMenuButton({super.key});
@@ -23,7 +24,7 @@ class CustomPopupMenuButtonState extends State<CustomPopupMenuButton> {
             await navigateHomeByUserType(context);
             break;
           case 'Profile':
-            // todo: implemet Profile Screen
+            Navigator.pushReplacementNamed(context, PeronalInformationScreen.routeName);
             break;
           case 'Logout':
             showLogoutDialog(context);

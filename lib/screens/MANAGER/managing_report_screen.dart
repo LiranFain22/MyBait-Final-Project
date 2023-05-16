@@ -1,18 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mybait/screens/MANAGER/review_report_screen.dart';
 
 import '../../models/reports.dart';
 import '../../models/report.dart';
 import '../../widgets/app_drawer.dart';
 import '../../widgets/custom_popupMenuButton.dart';
-
-enum SelectedOptions {
-  approve,
-  delete,
-}
+import '../edit_report_screen.dart';
 
 class ManagingReportScreen extends StatefulWidget {
   static const routeName = '/managing-fault';
@@ -55,7 +50,6 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
                 .collection('Buildings')
                 .doc(buildingID)
                 .collection('Reports')
-                // .where('status', isEqualTo: 'WAITING')
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -78,45 +72,50 @@ class _ManagingReportScreenState extends State<ManagingReportScreen> {
                 itemBuilder: (context, index) {
                   if (documents[index]['status'] == 'WAITING' ||
                       documents[index]['status'] == 'INPROGRESS') {
-                    return Card(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(documents[index]['imageURL']),
-                        ),
-                        title: Text(documents[index]['title']),
-                        subtitle: Text(documents[index]['createdBy']),
-                        // subtitle: showDateAsText(documents[index]['timestamp']),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.info_outline),
-                          onPressed: () async {
-                            String documentId = documents[index].id;
-                            if (documentId.isNotEmpty) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ReviewReportScreen(
-                                      buildingID!, documentId)));
-                            } else {
-                              print('no document');
-                              const CircularProgressIndicator();
-                            }
-                          },
+                    return GestureDetector(
+                      onTap: () async {
+                        String documentId = documents[index].id;
+                        if (documentId.isNotEmpty) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  ReviewReportScreen(buildingID!, documentId)));
+                        } else {
+                          print('no document');
+                          const CircularProgressIndicator();
+                        }
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(documents[index]['imageURL']),
+                          ),
+                          title: Text(documents[index]['title']),
+                          subtitle: Text(documents[index]['createdBy']),
+                          trailing: Text(
+                            documents[index]['status'],
+                            style: documents[index]['status'] == 'WAITING'
+                                ? TextStyle(color: Colors.red)
+                                : TextStyle(color: Colors.amber),
+                          ),
                         ),
                       ),
                     );
                   }
+                  return SizedBox.shrink();
                 },
               );
             },
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushNamed(EditReportScreen.routeName);
+        },
+      ),
     );
-  }
-
-  Widget showDateAsText(document) {
-    var timestamp = document as Timestamp;
-    DateTime date = timestamp.toDate();
-    String formatted = DateFormat.yMd().add_jm().format(date);
-    return Text(formatted);
   }
 }

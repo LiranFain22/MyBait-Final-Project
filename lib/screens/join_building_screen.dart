@@ -283,7 +283,7 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
             CupertinoDialogAction(
               child: const Text("Got it!"),
               onPressed: () async {
-                await updateApartmentNumber(userID, inputNumber, context);
+                await updateTENANTApartmentNumber(userID, inputNumber, context);
               },
             ),
           ],
@@ -292,7 +292,7 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     );
   }
 
-  Future<void> updateApartmentNumber(
+  Future<void> updateTENANTApartmentNumber(
       String userID, String inputNumber, BuildContext context) async {
     await FirebaseFirestore.instance
         .collection('users')

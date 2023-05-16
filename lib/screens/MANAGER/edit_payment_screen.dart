@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mybait/Services/firebase_helper.dart';
+import 'package:mybait/Services/validator_helper.dart';
 import 'package:mybait/models/payment.dart';
 import 'package:mybait/widgets/custom_Button.dart';
 
@@ -58,7 +60,10 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                   },
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please Enter a Title';
+                      return 'Title is Empty, Please Enter a Title';
+                    }
+                    if (!ValidatorHelper.containsOnlyCharacters(value)) {
+                      return 'Title contain only numbers, Please Enter a Characters';
                     }
                     return null;
                   },
@@ -82,7 +87,14 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                   },
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please Enter a Cost';
+                      return 'Cost is Empty, Please Enter a Cost';
+                    }
+                    int valueAsInteger = int.parse(value);
+                    if (valueAsInteger.isNegative || valueAsInteger == 0) {
+                      return 'Cost Must Be Greater than Zero';
+                    }
+                    if (!ValidatorHelper.containsOnlyNumbers(value)) {
+                      return 'Cost contain only numbers, Please Enter a Numbers';
                     }
                     return null;
                   },
@@ -100,10 +112,20 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                customButton(
-                  title: 'Add Expense',
-                  icon: Icons.attach_money_sharp,
-                  onClick: () => addExpense(context, _editedPayment),
+                Container(
+                  height: 45,
+                  width: 170,
+                  child: customButton(
+                    title: 'Add Expense',
+                    icon: Icons.attach_money_sharp,
+                    onClick: () {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!
+                            .save(); // saves all onSaved in each textFormField
+                            addExpense(context, _editedPayment);
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
@@ -116,12 +138,7 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
   Future<void> addExpense(BuildContext context, Payment newExpense) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save(); // saves all onSaved in each textFormField
-      var userDocument = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      var data = userDocument.data();
-      var buildingID = data!['buildingID'] as String;
+      String buildingID = await FirebaseHelper.fetchBuildingID();
       var now = DateTime.now();
       var currentYear = now.year;
       var currentMonth = now.month;
@@ -135,27 +152,31 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
 
       // Convert the dynamic list to a list of strings
       final List<String> tenants = List<String>.from(arrayField);
-      
       for (var tenantID in tenants) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(tenantID)
-            .collection('payments')
-            .doc(currentYear.toString())
-            .collection('Maintenance Payments')
-            .doc(newExpense.title)
-            .set({
-          'title': newExpense.title,
-          'paymentType': newExpense.paymentType,
-          'amount': newExpense.amount,
-          'isPaid': false,
-          'createdBy': newExpense.createdBy,
-          'timestamp': newExpense.dateTime,
-          'monthNumber': currentMonth,
-        });
+        if (newExpense.title!.isNotEmpty) {
+          print(newExpense.title);
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(tenantID)
+              .collection('payments')
+              .doc(currentYear.toString())
+              .collection('Maintenance Payments')
+              .add({
+            'title': newExpense.title,
+            'paymentType': newExpense.paymentType,
+            'amount': newExpense.amount,
+            'isPaid': false,
+            'createdBy': newExpense.createdBy,
+            'timestamp': newExpense.dateTime,
+            'monthNumber': currentMonth,
+          });
+        } else {
+          await customToast.showCustomToast(
+              'Payment Title is Empty!', Colors.white, Colors.red);
+        }
       }
       await customToast.showCustomToast(
-          'Added New Expense 💲', Colors.white, Colors.grey[800]!);
+          'Added New Expense 💲', Colors.white, Colors.green);
       Navigator.pop(context);
     }
   }

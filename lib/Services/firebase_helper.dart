@@ -117,9 +117,9 @@ class FirebaseHelper {
     final String? userToken = userData.data()!['token'];
 
     // Check if need to update token for push notification
-    if (currentToken != userToken) {
-      debugPrint('Current Token = $currentToken');
+    if (currentToken != userToken || userToken == null) {
       debugPrint('User Token = $userToken');
+      debugPrint('Current Token = $currentToken');
       try {
         await _db
             .collection('users')
@@ -155,13 +155,20 @@ class FirebaseHelper {
     }
   }
 
-  static Future<DocumentSnapshot> getReportDoc(
+  static Future<DocumentSnapshot> fetchReportDoc(
       String buildingID, String reportID) async {
-    return FirebaseFirestore.instance
+    return _db
         .collection('Buildings')
         .doc(buildingID)
         .collection('Reports')
         .doc(reportID)
         .get();
+  }
+
+  static Future<String> fetchUserType() async {
+    var userDoc =
+        await _db.collection('users').doc(_auth.currentUser!.uid).get();
+    String userType = userDoc.data()!['userType'];
+    return userType;
   }
 }
