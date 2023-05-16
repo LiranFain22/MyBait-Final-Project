@@ -9,6 +9,7 @@ class Report with ChangeNotifier{
   String imageUrl;
   final String? createdBy;
   final Timestamp timestamp;
+  final Timestamp lastUpdate;
 
   Report({
     @required this.id,
@@ -18,6 +19,7 @@ class Report with ChangeNotifier{
     required this.imageUrl,
     @required this.createdBy,
     required this.timestamp,
+    required this.lastUpdate,
   });
 
   
