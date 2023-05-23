@@ -43,9 +43,7 @@ class Surveys {
           'id': 'documentRef.id',
           'title': survey.title,
           'description': survey.description,
-          'options': survey.options,
-          'results': survey.results,
-          'whoVoted': survey.whoVoted,
+          'result': survey.result,
           'timestamp': survey.timestamp,
           'dueDate': survey.dueDate,
         }).then(
@@ -59,9 +57,7 @@ class Surveys {
               'id': value.id,
               'title': survey.title,
               'description': survey.description,
-              'options': survey.options,
-              'results': survey.results,
-              'whoVoted': survey.whoVoted,
+              'result': survey.result,
               'timestamp': survey.timestamp,
               'dueDate': survey.dueDate,
             });

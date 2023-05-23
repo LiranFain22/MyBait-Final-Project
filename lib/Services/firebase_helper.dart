@@ -171,4 +171,13 @@ class FirebaseHelper {
     String userType = userDoc.data()!['userType'];
     return userType;
   }
+
+  static Future<DocumentSnapshot> fetchSurveyDoc(String buildingID, String surveyID) {
+    return _db
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Surveys')
+        .doc(surveyID)
+        .get();
+  }
 }

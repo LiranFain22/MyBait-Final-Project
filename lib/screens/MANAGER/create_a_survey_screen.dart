@@ -53,9 +53,10 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
     title: '',
     description: '',
     timestamp: DateTime.now(),
-    options: [],
-    results: [],
-    whoVoted: [],
+    result: {
+      'Yes': [],
+      'No': [],
+    },
     dueDate: DateTime.now().add(Duration(days: 3)),
   );
   var customToast = CustomToast();
@@ -112,9 +113,7 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       id: _createSurvey.id,
                       title: value,
                       description: _createSurvey.description,
-                      options: _createSurvey.options,
-                      results: _createSurvey.results,
-                      whoVoted: _createSurvey.whoVoted,
+                      result: _createSurvey.result,
                       timestamp: _createSurvey.timestamp,
                       dueDate: _createSurvey.dueDate,
                     );
@@ -140,66 +139,23 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       id: _createSurvey.id,
                       title: _createSurvey.title,
                       description: value,
-                      options: _createSurvey.options,
-                      results: _createSurvey.results,
-                      whoVoted: _createSurvey.whoVoted,
+                      result: _createSurvey.result,
                       timestamp: _createSurvey.timestamp,
                       dueDate: _createSurvey.dueDate,
                     );
                   },
                 ),
-                // options
-                //TODO: make enum {yes, no}
-                /* TextFormField(
-                  controller: _optionsController,
-                  decoration: InputDecoration(labelText: 'Enter comma-separated'
-                      ' options for answers to the survey:'),
-                  validator: (_optionsController) {
-                    if (_optionsController!.isEmpty) {
-                      return 'Please Enter a Options';
-                    }
-                    return null;
-                  },
-                  onSaved: (_descriptionController) {
-                    _array = _optionsController.text.split(",");
-                    _createSurvey = Survey(
-                      id: _createSurvey.id,
-                      title: _createSurvey.title,
-                      description: _createSurvey.description,
-                      options: _array,
-                      results: _createSurvey.results,
-                      whoVoted: _createSurvey.whoVoted,
-                      timestamp: _createSurvey.timestamp,
-                      dueDate: _createSurvey.dueDate,
-                    );
-                  },
-                ),*/
                 SizedBox(
                   height: 50,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    child: const Text('Submit'),
-                    onPressed: () async {
+                  child: customButton(
+                    title: 'Create',
+                    icon: Icons.add_chart,
+                    onClick: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!
                             .save(); // saves all onSaved in each textFormField
-                        Surveys surveys = Surveys();
-                        var userDocument = await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                            .get();
-                        var data = userDocument.data();
-                        var buildingID = data!['buildingID'] as String;
-                        /*var documentToCreate = FirebaseFirestore.instance
-                            .collection('Buildings')
-                            .doc(buildingID)
-                            .collection('Surveys')
-                            .doc();*/
-                        surveys.addSurveysToBuilding(_createSurvey, buildingID);
-                        customToast.showCustomToast('Your survey was created!.',
-                            Colors.white, Colors.grey[800]!);
-                        Navigator.of(context)
-                            .pushReplacementNamed(SurveysScreen.routeName);
+                        addSurveyToSurveys(context);
                       }
                     },
                   ),
@@ -210,5 +166,19 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> addSurveyToSurveys(BuildContext context) async {
+    Surveys surveys = Surveys();
+    var userDocument = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    var data = userDocument.data();
+    var buildingID = data!['buildingID'] as String;
+    surveys.addSurveysToBuilding(_createSurvey, buildingID);
+    customToast.showCustomToast(
+        'Your survey was created!.', Colors.white, Colors.grey[800]!);
+    Navigator.of(context).pushReplacementNamed(SurveysScreen.routeName);
   }
 }
