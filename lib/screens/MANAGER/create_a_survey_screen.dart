@@ -30,23 +30,51 @@ class createSurveyScreen extends StatefulWidget {
 }
 
 class _createSurveyScreenState extends State<createSurveyScreen> {
-  TextEditingController _textController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _optionsController = TextEditingController();
+
+  //TextEditingController _textController = TextEditingController();
   List<String> _array = [];
-  var customToast = CustomToast();
-  final _formKey = GlobalKey<FormState>();
   final _amountFocusNode = FocusNode();
+
+  /*
+  DateTime currentDate = DateTime.now(); // Get the current date and time
+  DateTime threeDaysLater = currentDate.add(Duration(days: 3)); // Add 3 days to the current date
+  int timestamp = threeDaysLater.millisecondsSinceEpoch; // Convert the date to a Unix timestamp in millisecondsSinceEpoch
+  */
+  User user = FirebaseAuth.instance.currentUser!;
+  final _formKey = GlobalKey<FormState>();
+  final _titleFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+  final _optionsFocusNode = FocusNode();
   var _createSurvey = Survey(
+    id: null,
     title: '',
     description: '',
-    timestamp: Timestamp.now(),
+    timestamp: DateTime.now(),
     options: [],
-    //results: [],
-   // whoVoted: [],
+    results: [],
+    whoVoted: [],
+    dueDate: DateTime.now().add(Duration(days: 3)),
   );
+  var customToast = CustomToast();
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _optionsController.dispose();
+    _titleFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    _titleFocusNode.dispose();
+    _optionsFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,11 +93,13 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                // Title
                 TextFormField(
+                  //controller: _titleController,
                   decoration: const InputDecoration(labelText: 'Title'),
-                  textInputAction: TextInputAction.done,
+                  textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_amountFocusNode);
+                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
                   },
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -83,21 +113,24 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       title: value,
                       description: _createSurvey.description,
                       options: _createSurvey.options,
-                      //results: _createSurvey.results,
-                      //whoVoted: _createSurvey.whoVoted,
+                      results: _createSurvey.results,
+                      whoVoted: _createSurvey.whoVoted,
                       timestamp: _createSurvey.timestamp,
+                      dueDate: _createSurvey.dueDate,
                     );
                   },
                 ),
-
+                // Description
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  textInputAction: TextInputAction.done,
+                  //controller: _descriptionController,
+                  decoration: InputDecoration(labelText: 'Description'),
+                  focusNode: _descriptionFocusNode,
+                  textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_amountFocusNode);
+                    FocusScope.of(context).requestFocus(_optionsFocusNode);
                   },
-                  validator: (value) {
-                    if (value!.isEmpty) {
+                  validator: (_descriptionController) {
+                    if (_descriptionController!.isEmpty) {
                       return 'Please Enter a Description';
                     }
                     return null;
@@ -108,28 +141,39 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       title: _createSurvey.title,
                       description: value,
                       options: _createSurvey.options,
-                      //results: _createSurvey.results,
-                      //whoVoted: _createSurvey.whoVoted,
+                      results: _createSurvey.results,
+                      whoVoted: _createSurvey.whoVoted,
                       timestamp: _createSurvey.timestamp,
+                      dueDate: _createSurvey.dueDate,
                     );
                   },
                 ),
-
-                TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(hintText: "Enter comma-separated values"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _array = _textController.text.split(",");
-                    });
+                // options
+                //TODO: make enum {yes, no}
+                /* TextFormField(
+                  controller: _optionsController,
+                  decoration: InputDecoration(labelText: 'Enter comma-separated'
+                      ' options for answers to the survey:'),
+                  validator: (_optionsController) {
+                    if (_optionsController!.isEmpty) {
+                      return 'Please Enter a Options';
+                    }
+                    return null;
                   },
-                  child: Text("Submit"),
-                ),
-                Text("Array: $_array"),
-                //TODO: implement save array
-
+                  onSaved: (_descriptionController) {
+                    _array = _optionsController.text.split(",");
+                    _createSurvey = Survey(
+                      id: _createSurvey.id,
+                      title: _createSurvey.title,
+                      description: _createSurvey.description,
+                      options: _array,
+                      results: _createSurvey.results,
+                      whoVoted: _createSurvey.whoVoted,
+                      timestamp: _createSurvey.timestamp,
+                      dueDate: _createSurvey.dueDate,
+                    );
+                  },
+                ),*/
                 SizedBox(
                   height: 50,
                   width: double.infinity,
@@ -146,13 +190,14 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                             .get();
                         var data = userDocument.data();
                         var buildingID = data!['buildingID'] as String;
-                        var documentToCreate = FirebaseFirestore.instance
+                        /*var documentToCreate = FirebaseFirestore.instance
                             .collection('Buildings')
                             .doc(buildingID)
                             .collection('Surveys')
-                            .doc();
-                        surveys.addReportToReview(_createSurvey, buildingID);
-                        customToast.showCustomToast('Your survey was created!.', Colors.white, Colors.grey[800]!);
+                            .doc();*/
+                        surveys.addSurveysToBuilding(_createSurvey, buildingID);
+                        customToast.showCustomToast('Your survey was created!.',
+                            Colors.white, Colors.grey[800]!);
                         Navigator.of(context)
                             .pushReplacementNamed(SurveysScreen.routeName);
                       }
@@ -166,4 +211,4 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
       ),
     );
   }
-  }
+}
