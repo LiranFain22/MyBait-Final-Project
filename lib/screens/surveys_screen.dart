@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/create_a_survey_screen.dart';
 import '../widgets/custom_popupMenuButton.dart';
-import 'edit_report_screen.dart';
 import '../widgets/app_drawer.dart';
+import 'review_survey_screen.dart';
 
 class SurveysScreen extends StatefulWidget {
   static const routeName = '/surveys';
@@ -74,9 +74,22 @@ class _SurveysScreenState extends State<SurveysScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        _showDialog(documents[index]['title'],
-                            documents[index]['description']);
+                        String documentId = documents[index].id;
+                        if (documentId.isNotEmpty) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  ReviewSurveyScreen(buildingID!, documentId)));
+                        } else {
+                          print('no document');
+                          const CircularProgressIndicator();
+                        }
                       },
+                      child: Card(
+                        child: ListTile(
+                          title: Text(documents[index]['title']),
+                          subtitle: Text(documents[index]['description']),
+                        ),
+                      ),
                     );
                   },
                 );
