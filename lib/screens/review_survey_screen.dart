@@ -72,13 +72,10 @@ class ReviewSurveyScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ElevatedButton.icon(
-                          icon: Icon(Icons.done),
-                          label: const Text('Yes'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () async {
+                        customButton(
+                          title: 'Yes',
+                          icon: Icons.done,
+                          onClick: () async {
                             await addUserChoiceToResult('Yes');
                             customToast.showCustomToast(
                               'Thank you for voting 😇',
@@ -87,17 +84,15 @@ class ReviewSurveyScreen extends StatelessWidget {
                             );
                             Navigator.of(context).pop();
                           },
+                          buttonColor: Colors.green,
                         ),
                         SizedBox(
                           width: 50,
                         ),
-                        ElevatedButton.icon(
-                          icon: Icon(Icons.close),
-                          label: const Text('No'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                          ),
-                          onPressed: () async {
+                        customButton(
+                          title: 'No',
+                          icon: Icons.close,
+                          onClick: () async {
                             await addUserChoiceToResult('No');
                             customToast.showCustomToast(
                               'Thank you for voting 😇',
@@ -106,6 +101,7 @@ class ReviewSurveyScreen extends StatelessWidget {
                             );
                             Navigator.of(context).pop();
                           },
+                          buttonColor: Colors.red,
                         ),
                       ],
                     )
@@ -131,7 +127,8 @@ class ReviewSurveyScreen extends StatelessWidget {
     final documentSnapshot = await documentRef.get();
     final currentMap =
         documentSnapshot.data()!['result'] as Map<String, dynamic>;
-    final currentList = documentSnapshot.data()!['result'][choice] as List<dynamic>;
+    final currentList =
+        documentSnapshot.data()!['result'][choice] as List<dynamic>;
     currentList.add(FirebaseAuth.instance.currentUser!.uid);
     currentMap[choice] = currentList;
     await documentRef.update({'result': currentMap});

@@ -248,11 +248,13 @@ class _ReviewReportScreenState extends State<ReviewReportScreen> {
           customButton(
             title: 'Update Status',
             icon: Icons.note_add_outlined,
+            buttonColor: Colors.blue,
             onClick: () async => await _updateDescriptionDialog(context, snapshot),
           ),
           customButton(
               title: 'Cancel',
               icon: Icons.cancel_outlined,
+              buttonColor: Colors.blue,
               onClick: () => deleteDocument(snapshot, context)),
         ],
       );
@@ -264,6 +266,7 @@ class _ReviewReportScreenState extends State<ReviewReportScreen> {
           customButton(
               title: 'Done',
               icon: Icons.task_outlined,
+              buttonColor: Colors.blue,
               onClick: () => addReportToCompleteList(snapshot, context)),
         ],
       );
