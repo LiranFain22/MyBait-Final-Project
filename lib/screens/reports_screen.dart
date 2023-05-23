@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/Services/firebase_helper.dart';
+import 'package:mybait/widgets/custom_Button.dart';
 
 import '../widgets/custom_popupMenuButton.dart';
 import 'edit_report_screen.dart';
@@ -25,21 +26,114 @@ class _ReportsScreenState extends State<ReportsScreen> {
     super.dispose();
   }
 
-  void _showDialog(String title, String imageUrl) {
+  void _showDialog(
+    String title,
+    String imageUrl,
+    String status,
+    String createdBy,
+    Timestamp lastUpdate,
+    String description,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text(title),
-          content: Image.network(
-            imageUrl,
-            cacheHeight: 200,
-            cacheWidth: 200,
-            loadingBuilder: (context, child, loadingProgress) {
-              return loadingProgress == null
-                  ? child
-                  : const LinearProgressIndicator();
-            },
+        return AlertDialog(
+          scrollable: true,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                height: 30,
+                width: 40,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'x',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(title),
+                ],
+              ),
+            ],
+          ),
+          content: Column(
+            children: [
+              Image.network(
+                imageUrl,
+                cacheHeight: 200,
+                cacheWidth: 200,
+                loadingBuilder: (context, child, loadingProgress) {
+                  return loadingProgress == null
+                      ? child
+                      : const LinearProgressIndicator();
+                },
+              ),
+              Divider(),
+              const Text(
+                'Created By: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                createdBy,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Divider(),
+              const Text(
+                'Last Update: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                getTimeAndDate(lastUpdate),
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Divider(),
+              const Text(
+                'Status: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                status,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+              Divider(),
+              const Text(
+                'Description: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -48,7 +142,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
@@ -85,12 +178,18 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 }
                 return ListView.builder(
                   itemCount: documents.length,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        _showDialog(documents[index]['title'],
-                            documents[index]['imageURL']);
+                        _showDialog(
+                          documents[index]['title'],
+                          documents[index]['imageURL'],
+                          documents[index]['status'],
+                          documents[index]['createdBy'],
+                          documents[index]['lastUpdate'],
+                          documents[index]['description'],
+                        );
                       },
                       child: cardReportBaseStatus(documents, index),
                     );
@@ -156,5 +255,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ),
       ),
     );
+  }
+
+  String getTimeAndDate(timestamp) {
+    // Convert the timestamp to a DateTime object and format it
+    DateTime dateTime = timestamp.toDate().toLocal();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
   }
 }

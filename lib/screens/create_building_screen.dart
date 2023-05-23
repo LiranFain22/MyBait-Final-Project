@@ -25,7 +25,6 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
 
-
   final apartmentInputController = TextEditingController();
   bool _isSubmitted = false;
   bool _updateBTNPressed = false;
@@ -39,6 +38,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
   var _city = '';
   var _street = '';
   var _buildingNumber = '';
+  bool _isValidApartmentNumber = false;
 
   final _auth = FirebaseAuth.instance;
 
@@ -59,19 +59,19 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
       var month = DateFormat('MMMM').format(DateTime(currentYear, i));
 
       await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userID)
-        .collection('payments')
-        .doc(currentYear.toString())
-        .collection('House committee payments')
-        .doc(month)
-        .set({
-          'title': 'Month Payment: $month',
-          'paymentType': 'month',
-          'amount': '30',
-          'isPaid': false,
-          'monthNumber': i,
-        });
+          .collection('users')
+          .doc(userID)
+          .collection('payments')
+          .doc(currentYear.toString())
+          .collection('House committee payments')
+          .doc(month)
+          .set({
+        'title': 'Month Payment: $month',
+        'paymentType': 'month',
+        'amount': '30',
+        'isPaid': false,
+        'monthNumber': i,
+      });
     }
   }
 
@@ -88,14 +88,8 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
             CupertinoDialogAction(
               child: const Text("Got it!"),
               onPressed: () async {
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userID)
-                    .update({'apartmentNumber': inputNumber});
-                    _updateBTNPressed = true;
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacementNamed(
-                    context, OverviewManagerScreen.routeName);
+                await updateMANAGERApartmentNumber(
+                    userID, inputNumber, context);
               },
             ),
           ],
@@ -104,7 +98,19 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
     );
   }
 
-  Future<void> _updateApartmentNumberDialog(String userID, String joinID) async {
+  Future<void> updateMANAGERApartmentNumber(
+      String userID, String inputNumber, BuildContext context) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .update({'apartmentNumber': inputNumber});
+    _updateBTNPressed = true;
+    Navigator.of(context).pop();
+    Navigator.pushReplacementNamed(context, OverviewManagerScreen.routeName);
+  }
+
+  Future<void> _updateApartmentNumberDialog(
+      String userID, String joinID) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -129,12 +135,23 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                   },
                 ),
                 CupertinoDialogAction(
-                  child: const Text("Update"),
-                  onPressed: () async {
-                    _congratulationsDialog(userID, joinID, apartmentInputController.text);
-                    updateUserPayments(userID);
-                  },
-                ),
+                    child: const Text("Update"),
+                    onPressed: () async {
+                      // _congratulationsDialog(userID, joinID, apartmentInputController.text);
+                      // updateUserPayments(userID);
+                      var userInputAsInteger = checkUserInputValidation(
+                          apartmentInputController.text);
+                      if (userInputAsInteger != -1) {
+                        // checkValidApartmentNumber(
+                        //     joinID, apartmentInputController.text);
+                        // if (_isValidApartmentNumber == true) {
+                        // }
+                        apartmentInputController.text =
+                            userInputAsInteger.toString();
+                          _congratulationsDialog(
+                              userID, joinID, apartmentInputController.text);
+                      }
+                    }),
               ],
             ),
           ),
@@ -231,7 +248,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
                       return 'Please Enter country name';
                     }
                     return null;
@@ -252,7 +269,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
                       return 'Please Enter City Name';
                     }
                     return null;
@@ -273,7 +290,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
                       return 'Please Enter Street Name';
                     }
                     return null;
@@ -294,9 +311,10 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value!.isEmpty || checkUserInputValidation(value) == -1) {
                       return 'Please Enter Building Number';
                     }
+
                     return null;
                   },
                   onSaved: (value) {
@@ -338,4 +356,74 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
       ),
     );
   }
+
+  // -1 : invalid input
+  // 0 or higher : correct input
+  int checkUserInputValidation(String userInput) {
+    RegExp numericRegex = RegExp(r'^-?[0-9]+$');
+    if (userInput.isEmpty) {
+      customToast.showCustomToast(
+          'Please Enter Apartment Number', Colors.white, Colors.red);
+      return -1;
+    }
+    if (!numericRegex.hasMatch(userInput)) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Only Numbers', Colors.white, Colors.red);
+      return -1;
+    }
+    // userInput contains only numbers
+    int userInputAsInteger = int.parse(userInput);
+    if (userInputAsInteger > 100) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Equal or Less than 100',
+          Colors.white,
+          Colors.red);
+      return -1;
+    }
+    if (userInputAsInteger.isNegative) {
+      customToast.showCustomToast(
+          'Apartment Number Must be Equal or Greater than 0',
+          Colors.white,
+          Colors.red);
+      return -1;
+    }
+    return userInputAsInteger;
+  }
+
+  void checkValidApartmentNumber(String joinID, String apartmentInput) async {
+    var buildingDoc = await FirebaseFirestore.instance
+        .collection('Buildings')
+        .where('joinID', isEqualTo: joinID)
+        .get();
+    if (buildingDoc.docs.isNotEmpty) {
+      String buildingID = buildingDoc.docs.first.data()['buildingID'];
+      QuerySnapshot buildingDocWithJoinID = await FirebaseFirestore.instance
+          .collection('users')
+          .where('buildingID', isEqualTo: buildingID)
+          .where('apartmentNumber', isEqualTo: apartmentInput)
+          .get();
+      if (buildingDocWithJoinID.docs.isNotEmpty) {
+        customToast.showCustomToast('The apartment number is already in use ⛔️',
+            Colors.white, Colors.red);
+        // Number apartment already exists!
+        setStateIsValidApartmentNumber(false);
+      } else {
+        // Number apartment new!
+        setStateIsValidApartmentNumber(true);
+      }
+    } else {
+      debugPrint('*** Something went wrong ***');
+      customToast.showCustomToast(
+          '*** Something went wrong ***', Colors.white, Colors.red);
+    }
+  }
+
+  void setStateIsValidApartmentNumber(bool state) {
+    _isValidApartmentNumber = state;
+  }
+
+  bool containsOnlyCharacters(String input) {
+  final RegExp regex = RegExp(r'^[a-zA-Z]+$');
+  return regex.hasMatch(input);
+}
 }
