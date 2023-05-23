@@ -45,8 +45,8 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.notifications_on_sharp),
-            onPressed: () => sendNotificationToAllUsers(
-                'There are payments waiting 🔔'),
+            onPressed: () =>
+                sendNotificationToAllUsers('There are payments waiting 🔔'),
           ),
           const CustomPopupMenuButton(),
         ],
@@ -119,7 +119,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
 
   Widget getHouseCommitteePaymentsList() {
     return FutureBuilder(
-      future: fetchBuildingID(),
+      future: FirebaseHelper.fetchBuildingID(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -171,17 +171,15 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                     userMap[userMap.keys.first]['title'],
                     userMap[userMap.keys.first]['amount'],
                     notPaidList[index].keys.first,
-                    // userMap[userMap.keys.first]['timestamp'],
                   ),
                   child: Card(
                     child: ListTile(
-                      leading: const Icon(Icons.person_outline),
-                      title: Text(notPaidList[index].keys.first),
-                      // title: Text('?'),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.notifications_none_outlined,
-                          color: Colors.red,
+                      title: Text(userMap[userMap.keys.first]['title']),
+                      subtitle: Text(notPaidList[index].keys.first),
+                      trailing: TextButton(
+                        child: Text(
+                          '${userMap[userMap.keys.first]['amount']}\$',
+                          style: TextStyle(color: Colors.red),
                         ),
                         onPressed: () => _showDialog(
                             context,
@@ -202,7 +200,7 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
 
   Widget getMaintenancePaymentsList() {
     return FutureBuilder(
-      future: fetchBuildingID(),
+      future: FirebaseHelper.fetchBuildingID(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -255,12 +253,12 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
                   ),
                   child: Card(
                     child: ListTile(
-                      leading: const Icon(Icons.person_outline),
-                      title: Text(notPaidList[index].keys.first),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.notifications_none_outlined,
-                          color: Colors.red,
+                      title: Text(userMap[userMap.keys.first]['title']),
+                      subtitle: Text(notPaidList[index].keys.first),
+                      trailing: TextButton(
+                        child: Text(
+                          '${userMap[userMap.keys.first]['amount']}\$',
+                          style: TextStyle(color: Colors.red),
                         ),
                         onPressed: () => _showDialog(
                           context,
@@ -321,15 +319,15 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     return notPaidList;
   }
 
-  Future<String> fetchBuildingID() async {
-    var userDocument = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    var data = userDocument.data();
-    var buildingID = data!['buildingID'] as String;
-    return buildingID;
-  }
+  // Future<String> fetchBuildingID() async {
+  //   var userDocument = await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .get();
+  //   var data = userDocument.data();
+  //   var buildingID = data!['buildingID'] as String;
+  //   return buildingID;
+  // }
 
   Future<List<Map<String, dynamic>>> fetchNotPaidList(
       buildingID, currentYear) async {
@@ -387,8 +385,8 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
           ),
           actions: [
             CupertinoButton(
-              onPressed: () => sendNotificationToUser(
-                  'REMINDER 🔔\n$title', userName),
+              onPressed: () =>
+                  sendNotificationToUser('REMINDER 🔔\n$title', userName),
               child: const Text('Remind'),
             ),
             CupertinoButton(
@@ -493,14 +491,15 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
         debugPrint(e.toString());
       }
     }
-    
+
     // send each user notification
     await FirebaseHelper.sendGroupNotifications(
       title: 'MyBait 🏠',
       body: message,
       tokens: usersToken,
     );
-    
-    customToast.showCustomToast('Sent Reminder to All Users 🔔', Colors.white, Colors.grey[800]!);
+
+    customToast.showCustomToast(
+        'Sent Reminder to All Users 🔔', Colors.white, Colors.grey[800]!);
   }
 }

@@ -29,22 +29,26 @@ class _AppDrawerState extends State<AppDrawer> {
 
   var _userType = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserType();
+  }
+
   _fetchUserType() async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get()
         .then((value) {
-      setState(() {
-        _userType = value.data()!['userType'];
-      });
+      changeUserType(value);
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _userType = '';
+  void changeUserType(DocumentSnapshot<Map<String, dynamic>> value) {
+    setState(() {
+      _userType = value.data()!['userType'];
+    });
   }
 
   Widget userDrawerToShow(BuildContext context) {
@@ -52,7 +56,7 @@ class _AppDrawerState extends State<AppDrawer> {
       return Column(
         children: [
           AppBar(
-            title: const Text('What you like to do?'),
+            title: const Text('What you like to do? 🤔'),
             automaticallyImplyLeading: false,
           ),
           const Divider(),
@@ -290,7 +294,6 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    _fetchUserType();
     return Drawer(child: userDrawerToShow(context));
   }
 }

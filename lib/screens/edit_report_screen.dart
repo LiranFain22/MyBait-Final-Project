@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
+import 'package:mybait/screens/MANAGER/managing_report_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
 import 'package:mybait/widgets/custom_Button.dart';
 import 'package:mybait/widgets/custom_toast.dart';
@@ -30,7 +32,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) {
         // Set default image => 'No Image Available'
-        _editedReport.setImageUrl('https://upload.wikimedia.org/wikipedia/commons/'
+        _editedReport.setImageUrl(
+            'https://upload.wikimedia.org/wikipedia/commons/'
             'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png');
         return;
       }
@@ -42,7 +45,6 @@ class _EditReportScreenState extends State<EditReportScreen> {
       });
 
       _editedReport.setImageUrl(_image!.path);
-
     } on PlatformException catch (e) {
       debugPrint(e.message);
     }
@@ -62,6 +64,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
     imageUrl: '',
     createdBy: FirebaseAuth.instance.currentUser!.displayName,
     timestamp: Timestamp.now(),
+    lastUpdate: Timestamp.now(),
   );
   var customToast = CustomToast();
 
@@ -115,7 +118,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
                       timestamp: _editedReport.timestamp,
-                      createdBy: _editedReport.createdBy
+                      createdBy: _editedReport.createdBy,
+                      lastUpdate: _editedReport.lastUpdate,
                     );
                   },
                 ),
@@ -140,7 +144,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       location: _editedReport.location,
                       imageUrl: _editedReport.imageUrl,
                       timestamp: _editedReport.timestamp,
-                      createdBy: _editedReport.createdBy
+                      createdBy: _editedReport.createdBy,
+                      lastUpdate: _editedReport.lastUpdate,
                     );
                   },
                 ),
@@ -165,7 +170,8 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       location: value,
                       imageUrl: _editedReport.imageUrl,
                       timestamp: _editedReport.timestamp,
-                      createdBy: _editedReport.createdBy
+                      createdBy: _editedReport.createdBy,
+                      lastUpdate: _editedReport.lastUpdate,
                     );
                   },
                 ),
@@ -188,7 +194,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
                       child: _image == null
                           ? Image.network(
                               'https://upload.wikimedia.org/wikipedia/commons/'
-                                  'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
+                              'thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png')
                           : FittedBox(
                               fit: BoxFit.contain,
                               child: Image.file(_image!),
@@ -235,9 +241,18 @@ class _EditReportScreenState extends State<EditReportScreen> {
                             .collection('Reports')
                             .doc();
                         reports.addReportToReview(_editedReport, buildingID);
-                        customToast.showCustomToast('Your report send to manager building for review.', Colors.white, Colors.grey[800]!);
-                        Navigator.of(context)
-                            .pushReplacementNamed(ReportsScreen.routeName);
+                        customToast.showCustomToast(
+                            'Your report send to manager building for review.',
+                            Colors.white,
+                            Colors.grey[800]!);
+                        var userType = data['userType'] as String;
+                        if (userType == 'MANAGER') {
+                          Navigator.of(context).pushReplacementNamed(
+                              ManagingReportScreen.routeName);
+                        } else {
+                          Navigator.of(context)
+                              .pushReplacementNamed(ReportsScreen.routeName);
+                        }
                       }
                     },
                   ),
