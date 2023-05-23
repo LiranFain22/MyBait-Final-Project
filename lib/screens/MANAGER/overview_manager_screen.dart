@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mybait/screens/MANAGER/managing_payment_screen.dart';
+import 'package:mybait/screens/surveys_screen.dart';
 import 'package:share/share.dart';
 import '../login_screen.dart';
 import '../TENANT/payment_screen.dart';
@@ -171,7 +172,8 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                                 .pushNamed(PaymentScreen.routeName);
                           }
                         if (menuList[position].getTitle == 'Surveys') {
-                          // todo: implement Information screen
+                          Navigator.of(context)
+                              .pushNamed(SurveysScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Summary') {
                           // todo: implement Information screen
