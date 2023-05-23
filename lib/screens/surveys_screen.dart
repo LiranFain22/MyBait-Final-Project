@@ -6,7 +6,7 @@ import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/create_a_survey_screen.dart';
 import '../widgets/custom_popupMenuButton.dart';
 import '../widgets/app_drawer.dart';
-import 'review_survey_screen.dart';
+import 'review_survey_screen_not_voted.dart';
 
 class SurveysScreen extends StatefulWidget {
   static const routeName = '/surveys';

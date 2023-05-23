@@ -1,23 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mybait/models/payment.dart';
 import 'package:mybait/models/survey.dart';
 import 'package:mybait/models/surveys.dart';
 import 'package:mybait/widgets/custom_Button.dart';
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mybait/screens/reports_screen.dart';
-import 'package:mybait/widgets/custom_Button.dart';
 import 'package:mybait/widgets/custom_toast.dart';
-
 import '../../widgets/custom_popupMenuButton.dart';
-import '../../widgets/custom_toast.dart';
 import '../surveys_screen.dart';
 
 class createSurveyScreen extends StatefulWidget {
@@ -34,15 +23,6 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
   final _descriptionController = TextEditingController();
   final _optionsController = TextEditingController();
 
-  //TextEditingController _textController = TextEditingController();
-  List<String> _array = [];
-  final _amountFocusNode = FocusNode();
-
-  /*
-  DateTime currentDate = DateTime.now(); // Get the current date and time
-  DateTime threeDaysLater = currentDate.add(Duration(days: 3)); // Add 3 days to the current date
-  int timestamp = threeDaysLater.millisecondsSinceEpoch; // Convert the date to a Unix timestamp in millisecondsSinceEpoch
-  */
   User user = FirebaseAuth.instance.currentUser!;
   final _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
@@ -52,12 +32,11 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
     id: null,
     title: '',
     description: '',
-    timestamp: DateTime.now(),
+    createdTime: DateTime.now(),
     result: {
       'Yes': [],
       'No': [],
     },
-    dueDate: DateTime.now().add(Duration(days: 3)),
   );
   var customToast = CustomToast();
 
@@ -113,9 +92,8 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       id: _createSurvey.id,
                       title: value,
                       description: _createSurvey.description,
+                      createdTime: _createSurvey.createdTime,
                       result: _createSurvey.result,
-                      timestamp: _createSurvey.timestamp,
-                      dueDate: _createSurvey.dueDate,
                     );
                   },
                 ),
@@ -140,8 +118,7 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                       title: _createSurvey.title,
                       description: value,
                       result: _createSurvey.result,
-                      timestamp: _createSurvey.timestamp,
-                      dueDate: _createSurvey.dueDate,
+                      createdTime: _createSurvey.createdTime,
                     );
                   },
                 ),

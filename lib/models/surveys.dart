@@ -44,8 +44,7 @@ class Surveys {
           'title': survey.title,
           'description': survey.description,
           'result': survey.result,
-          'timestamp': survey.timestamp,
-          'dueDate': survey.dueDate,
+          'createdTime': survey.createdTime,
         }).then(
           (value) {
             FirebaseFirestore.instance
@@ -58,8 +57,7 @@ class Surveys {
               'title': survey.title,
               'description': survey.description,
               'result': survey.result,
-              'timestamp': survey.timestamp,
-              'dueDate': survey.dueDate,
+              'createdTime': survey.createdTime,
             });
           },
         );
@@ -67,28 +65,6 @@ class Surveys {
       customToast.showCustomToast(
           e.message.toString(), Colors.white, Colors.red);
     }
-  }
-
-  void addVoteToSurvey(String surveyID, String userID, String optionVoted) {
-    //get surveyID and userID add userID to votes of this survey, under the option the user voted
-  }
-
-  void calcResult(String surveyID) {
-    //show votes percentage
-    // How many tenants voted in total, out of how many tenants there are in the building
-  }
-
-  bool checkIfVoted(String surveyID, String userID) {
-    //check if user alredy voted, if true - show survey result and show you voted option ___ messege
-    //if user didnt voted yet, let him vote
-    return false;
-  }
-
-  bool timeToVote(String surveyID) {
-    //check if due date to survey has passed if not
-    //return true(let user vote)
-    //else return false(don't let user vote)
-    return false;
   }
 }
 
