@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/create_a_survey_screen.dart';
+import 'package:mybait/screens/survey_result_screen.dart';
 import '../widgets/custom_popupMenuButton.dart';
 import '../widgets/app_drawer.dart';
-import 'review_survey_screen_not_voted.dart';
+import 'review_survey_screen.dart';
 
 class SurveysScreen extends StatefulWidget {
   static const routeName = '/surveys';
@@ -18,20 +19,6 @@ class SurveysScreen extends StatefulWidget {
 }
 
 class _SurveysScreenState extends State<SurveysScreen> {
-  User? userCredential = FirebaseAuth.instance.currentUser;
-
-  void _showDialog(String title, String description) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text(title),
-          content: Container(child: Text(description)),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,9 +63,7 @@ class _SurveysScreenState extends State<SurveysScreen> {
                       onTap: () {
                         String documentId = documents[index].id;
                         if (documentId.isNotEmpty) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  ReviewSurveyScreen(buildingID!, documentId)));
+                          checkUserVote(context, buildingID, documentId);
                         } else {
                           print('no document');
                           const CircularProgressIndicator();
@@ -107,5 +92,30 @@ class _SurveysScreenState extends State<SurveysScreen> {
         },
       ),
     );
+  }
+
+  Future<void> checkUserVote(
+      BuildContext context, String? buildingID, String surveyID) async {
+    final collectionRef = FirebaseFirestore.instance
+        .collection('Buildings')
+        .doc(buildingID)
+        .collection('Surveys');
+    final surveydocRef = collectionRef.doc(surveyID);
+    final surveydocSnapshot = await surveydocRef.get();
+    final currentMap =
+        surveydocSnapshot.data()!['result'] as Map<String, dynamic>;
+
+    for (var entry in currentMap.entries) {
+      List<dynamic> values = entry.value;
+      for (String value in values) {
+        if (value == FirebaseAuth.instance.currentUser!.uid) {
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => SurveyResultScreen(buildingID!, surveyID)));
+              return;
+        }
+      }
+    }
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ReviewSurveyScreen(buildingID!, surveyID)));
   }
 }
