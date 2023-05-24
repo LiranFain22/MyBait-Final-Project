@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mybait/Services/firebase_helper.dart';
-import 'package:mybait/models/survey.dart';
 import 'package:mybait/widgets/custom_Button.dart';
 import 'package:mybait/widgets/custom_toast.dart';
 
 class ReviewSurveyScreen extends StatelessWidget {
-  static const routeName = '/reviewSurvey';
   String buildingID;
   String surveyID;
   CustomToast customToast = CustomToast();
