@@ -6,15 +6,13 @@ class Survey with ChangeNotifier{
   final String? title;
   final String? description;
   final Map<String, List<String>> result;
-  final DateTime timestamp; // TODO: change to DateTime
-  final DateTime dueDate; // TODO: change to DateTime
+  final DateTime createdTime;
 
   Survey({
     @required this.id,
     @required this.title,
     @required this.description,
     required this.result,
-    required this.timestamp, // TODO: change to DateTime
-    required this.dueDate, // TODO: change to DateTime
+    required this.createdTime,
   });
 }

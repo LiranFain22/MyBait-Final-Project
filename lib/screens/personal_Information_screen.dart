@@ -82,6 +82,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  const Divider(),
                   const Text(
                     'Name:',
                     style: TextStyle(
@@ -91,7 +92,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10.0,
+                    height: 5.0,
                   ),
                   firstName != null
                       ? Text(
@@ -110,9 +111,11 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                             color: Colors.black54,
                           ),
                         ),
+                  const Divider(),
                   const SizedBox(
-                    height: 30.0,
+                    height: 0.0,
                   ),
+                  const Divider(),
                   const Text(
                     'user type:',
                     style: TextStyle(
@@ -122,7 +125,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10.0,
+                    height: 5.0,
                   ),
                   Text(
                     '${userType?.toLowerCase()}',
@@ -132,9 +135,11 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                       color: Colors.black54,
                     ),
                   ),
+                  const Divider(),
                   const SizedBox(
-                    height: 30.0,
+                    height: 0.0,
                   ),
+                  const Divider(),
                   const Text(
                     'email:',
                     style: TextStyle(
@@ -144,7 +149,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10.0,
+                    height: 5.0,
                   ),
                   Text(
                     email!,
@@ -154,9 +159,11 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                       color: Colors.black54,
                     ),
                   ),
+                  const Divider(),
                   const SizedBox(
-                    height: 30.0,
+                    height: 0.0,
                   ),
+                  const Divider(),
                   const Text(
                     'apartment number:',
                     style: TextStyle(
@@ -166,7 +173,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10.0,
+                    height: 5.0,
                   ),
                   Text(
                     apartmentNumber!,
@@ -176,9 +183,11 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                       color: Colors.black54,
                     ),
                   ),
+                  const Divider(),
                   const SizedBox(
-                    height: 30.0,
+                    height: 0.0,
                   ),
+                  const Divider(),
                   const Text(
                     'address:',
                     style: TextStyle(
@@ -188,7 +197,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10.0,
+                    height: 5.0,
                   ),
                   Text(
                     address!,
@@ -198,6 +207,7 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
                       color: Colors.black54,
                     ),
                   ),
+                  const Divider(),
                 ]),
           ],
         ),
