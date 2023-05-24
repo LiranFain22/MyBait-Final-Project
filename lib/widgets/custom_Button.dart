@@ -4,9 +4,13 @@ Widget customButton({
   required String title,
   required IconData icon,
   required VoidCallback onClick,
+  required Color? buttonColor,
 }) {
   return ElevatedButton(
     onPressed: onClick,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: buttonColor
+    ),
     child: Row(
       children: [
         Icon(icon),

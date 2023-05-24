@@ -205,11 +205,13 @@ class _EditReportScreenState extends State<EditReportScreen> {
                         customButton(
                           title: 'Pick From Gallery',
                           icon: Icons.image,
+                          buttonColor: Colors.blue,
                           onClick: () => getImage(ImageSource.gallery),
                         ),
                         customButton(
                           title: 'Pick From Camera',
                           icon: Icons.camera_alt,
+                          buttonColor: Colors.blue,
                           onClick: () => getImage(ImageSource.camera),
                         )
                       ],

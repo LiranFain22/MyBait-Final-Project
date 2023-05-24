@@ -25,9 +25,9 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
 
   User user = FirebaseAuth.instance.currentUser!;
   final _formKey = GlobalKey<FormState>();
-  final _titleFocusNode = FocusNode();
-  final _descriptionFocusNode = FocusNode();
-  final _optionsFocusNode = FocusNode();
+  // final _titleFocusNode = FocusNode();
+  // final _descriptionFocusNode = FocusNode();
+  // final _optionsFocusNode = FocusNode();
   var _createSurvey = Survey(
     id: null,
     title: '',
@@ -50,10 +50,10 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _optionsController.dispose();
-    _titleFocusNode.dispose();
-    _descriptionFocusNode.dispose();
-    _titleFocusNode.dispose();
-    _optionsFocusNode.dispose();
+    // _titleFocusNode.dispose();
+    // _descriptionFocusNode.dispose();
+    // _titleFocusNode.dispose();
+    // _optionsFocusNode.dispose();
     super.dispose();
   }
 
@@ -78,9 +78,6 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                   //controller: _titleController,
                   decoration: const InputDecoration(labelText: 'Title'),
                   textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
-                  },
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please Enter a Title';
@@ -101,11 +98,7 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                 TextFormField(
                   //controller: _descriptionController,
                   decoration: InputDecoration(labelText: 'Description'),
-                  focusNode: _descriptionFocusNode,
                   textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_optionsFocusNode);
-                  },
                   validator: (_descriptionController) {
                     if (_descriptionController!.isEmpty) {
                       return 'Please Enter a Description';
@@ -128,6 +121,7 @@ class _createSurveyScreenState extends State<createSurveyScreen> {
                   child: customButton(
                     title: 'Create',
                     icon: Icons.add_chart,
+                    buttonColor: Colors.blue,
                     onClick: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!

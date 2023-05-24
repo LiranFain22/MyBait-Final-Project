@@ -117,6 +117,7 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                   width: 170,
                   child: customButton(
                     title: 'Add Expense',
+                    buttonColor: Colors.blue,
                     icon: Icons.attach_money_sharp,
                     onClick: () {
                       if (_formKey.currentState!.validate()) {
