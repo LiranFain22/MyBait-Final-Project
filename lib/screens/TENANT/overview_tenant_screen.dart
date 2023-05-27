@@ -8,6 +8,7 @@ import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
 
 import '../../widgets/app_drawer.dart';
+import '../summary_screen.dart';
 import '../surveys_screen.dart';
 
 class _MenuItem {
@@ -134,7 +135,8 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
                                 .pushNamed(SurveysScreen.routeName);
                           }
                           if (menuList[position].getTitle == 'Summary') {
-                            // todo: implement Information screen
+                            Navigator.of(context)
+                                .pushNamed(SummaryScreen.routeName);
                           }
                         },
                         child: Center(

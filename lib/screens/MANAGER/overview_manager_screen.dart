@@ -8,6 +8,7 @@ import '../login_screen.dart';
 import '../TENANT/payment_screen.dart';
 import '../personal_Information_screen.dart';
 import '../reports_screen.dart';
+import '../summary_screen.dart';
 import 'managing_report_screen.dart';
 
 import '../../widgets/app_drawer.dart';
@@ -176,7 +177,8 @@ class _OverviewManagerScreenState extends State<OverviewManagerScreen> {
                               .pushNamed(SurveysScreen.routeName);
                         }
                         if (menuList[position].getTitle == 'Summary') {
-                          // todo: implement Information screen
+                          Navigator.of(context)
+                              .pushNamed(SummaryScreen.routeName);
                         }
                       },
                       child: Center(

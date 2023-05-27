@@ -21,6 +21,7 @@ import 'package:mybait/screens/TENANT/home_committee_payment_history_screen.dart
 import 'package:mybait/screens/TENANT/home_committee_payment_screen.dart';
 import 'package:mybait/screens/register_screen.dart';
 import 'package:mybait/screens/reports_screen.dart';
+import 'package:mybait/screens/summary_screen.dart';
 import 'package:mybait/screens/surveys_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 import 'package:mybait/widgets/app_drawer.dart';
@@ -104,6 +105,7 @@ class MyApp extends StatelessWidget {
               return const LoginScreen();
             }),
         routes: {
+          SummaryScreen.routeName: (context) => SummaryScreen(),
           SurveysScreen.routeName: (context) => SurveysScreen(),
           createSurveyScreen.routeName: (context) => createSurveyScreen(),
           OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),

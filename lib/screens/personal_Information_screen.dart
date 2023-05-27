@@ -24,8 +24,6 @@ class _PeronalInformationScreen extends State<PeronalInformationScreen> {
   String? apartmentNumber = '';
   String? address = '';
 
-  //TODO change to building info
-
   Future _getDataFromDatabase() async {
     String buildingID = await FirebaseHelper.fetchBuildingID();
     DocumentSnapshot<Map<String, dynamic>> buildingDoc = await FirebaseFirestore

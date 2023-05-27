@@ -11,6 +11,7 @@ import '../screens/login_screen.dart';
 import '../screens/MANAGER/overview_manager_screen.dart';
 import '../screens/TENANT/overview_tenant_screen.dart';
 import '../screens/reports_screen.dart';
+import '../screens/summary_screen.dart';
 import '../screens/surveys_screen.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -130,7 +131,8 @@ class _AppDrawerState extends State<AppDrawer> {
             dense: true,
             visualDensity: VisualDensity(vertical: -0.01),
             onTap: () {
-              // todo: implement Summary Page
+              Navigator.of(context)
+                  .pushNamed(SummaryScreen.routeName);
             },
           ),
           const Divider(),
@@ -236,7 +238,8 @@ class _AppDrawerState extends State<AppDrawer> {
           //dense: true,
           //visualDensity: VisualDensity(vertical: -0.01),
           onTap: () {
-            // todo: implement Summary Page
+            Navigator.of(context)
+                .pushNamed(SummaryScreen.routeName);
           },
         ),
         const Divider(),
