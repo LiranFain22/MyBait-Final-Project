@@ -61,7 +61,7 @@ class _EditReportScreenState extends State<EditReportScreen> {
     title: '',
     description: '',
     location: '',
-    imageUrl: '',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png',
     createdBy: FirebaseAuth.instance.currentUser!.displayName,
     timestamp: Timestamp.now(),
     lastUpdate: Timestamp.now(),
@@ -242,7 +242,11 @@ class _EditReportScreenState extends State<EditReportScreen> {
                             .doc(buildingID)
                             .collection('Reports')
                             .doc();
-                        reports.addReportToReview(_editedReport, buildingID);
+                        try {
+                          reports.addReportToReview(_editedReport, buildingID);
+                        } on Exception catch (e) {
+                          customToast.showCustomToast(e.toString(), Colors.white, Colors.red);
+                        }
                         customToast.showCustomToast(
                             'Your report send to manager building for review.',
                             Colors.white,
