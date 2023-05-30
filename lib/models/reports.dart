@@ -42,8 +42,8 @@ class Reports {
 
   Future<void> addReportToReview(Report report, String buildID) async {
     try {
-      await _uploadImageToFirestore(report.imageUrl, report.title)
-          .then((imageAsString) {
+      if (report.imageUrl ==
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png') {
         FirebaseFirestore.instance
             .collection('Buildings')
             .doc(buildID)
@@ -53,7 +53,7 @@ class Reports {
           'title': report.title,
           'description': report.description,
           'location': report.location,
-          'imageURL': imageAsString,
+          'imageURL': report.imageUrl,
           'status': 'WAITING',
           'createdBy': FirebaseAuth.instance.currentUser!.displayName,
         }).then(
@@ -68,14 +68,49 @@ class Reports {
               'title': report.title,
               'description': report.description,
               'location': report.location,
-              'imageURL': imageAsString,
+              'imageURL': report.imageUrl,
               'status': 'WAITING',
               'createdBy': FirebaseAuth.instance.currentUser!.displayName,
               'timestamp': DateTime.now()
             });
           },
         );
-      });
+      } else {
+        await _uploadImageToFirestore(report.imageUrl, report.title)
+            .then((imageAsString) {
+          FirebaseFirestore.instance
+              .collection('Buildings')
+              .doc(buildID)
+              .collection('Reports')
+              .add({
+            'id': 'documentRef.id',
+            'title': report.title,
+            'description': report.description,
+            'location': report.location,
+            'imageURL': imageAsString,
+            'status': 'WAITING',
+            'createdBy': FirebaseAuth.instance.currentUser!.displayName,
+          }).then(
+            (value) {
+              FirebaseFirestore.instance
+                  .collection('Buildings')
+                  .doc(buildID)
+                  .collection('Reports')
+                  .doc(value.id)
+                  .set({
+                'id': value.id,
+                'title': report.title,
+                'description': report.description,
+                'location': report.location,
+                'imageURL': imageAsString,
+                'status': 'WAITING',
+                'createdBy': FirebaseAuth.instance.currentUser!.displayName,
+                'timestamp': DateTime.now()
+              });
+            },
+          );
+        });
+      }
     } on PlatformException catch (e) {
       customToast.showCustomToast(
           e.message.toString(), Colors.white, Colors.red);
@@ -92,7 +127,8 @@ class Reports {
         .update({'description': newDescription});
   }
 
-  static Future<void> changeReportStatusToINPROGRESS(Report report, String buildingID) async {
+  static Future<void> changeReportStatusToINPROGRESS(
+      Report report, String buildingID) async {
     await FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
@@ -104,7 +140,8 @@ class Reports {
     });
   }
 
-  static Future<void> changeReportStatusToCOMPLETE(Report report, String buildingID) async {
+  static Future<void> changeReportStatusToCOMPLETE(
+      Report report, String buildingID) async {
     await FirebaseFirestore.instance
         .collection('Buildings')
         .doc(buildingID)
