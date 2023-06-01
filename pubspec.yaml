@@ -52,6 +52,7 @@ dependencies:
   overlay_support: ^2.1.0
   flutter_local_notifications: ^14.0.0+1
   cloud_functions: ^4.2.0
+  country_picker_plus: ^2.0.1
 
 
 dev_dependencies:

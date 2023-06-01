@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_picker_plus/country_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -144,8 +145,8 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                       if (userInputAsInteger != -1) {
                         apartmentInputController.text =
                             userInputAsInteger.toString();
-                          _congratulationsDialog(
-                              userID, joinID, apartmentInputController.text);
+                        _congratulationsDialog(
+                            userID, joinID, apartmentInputController.text);
                       }
                     }),
               ],
@@ -160,11 +161,11 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
     final isValid = _formkey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
-    if (isValid) {
+    if (isValid && _country.isNotEmpty && _city.isNotEmpty) {
       _formkey.currentState!.save();
       _submitAuthForm(
         context,
-        _country.trim(),
+        _country,
         _city,
         _street,
         _buildingNumber,
@@ -233,53 +234,12 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('country'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.location_city_outlined),
-                    labelText: 'Country',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
-                      return 'Please Enter country name';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _country = value!;
-                  },
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  key: const ValueKey('city'),
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    suffixIcon: Icon(Icons.location_city_outlined),
-                    labelText: 'City',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter City Name';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _city = value!;
-                  },
-                ),
-              ),
+              CountryAndCityPicker(),
               Container(
                 padding: const EdgeInsets.all(10),
                 child: TextFormField(
                   key: const ValueKey('Street'),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.near_me_outlined),
                     labelText: 'Street',
@@ -300,14 +260,15 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                 padding: const EdgeInsets.all(10),
                 child: TextFormField(
                   key: const ValueKey('Building Number'),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
                     suffixIcon: Icon(Icons.numbers),
                     labelText: 'Building Number',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || checkUserInputValidation(value) == -1) {
+                    if (value!.isEmpty ||
+                        checkUserInputValidation(value) == -1) {
                       return 'Please Enter Building Number';
                     }
 
@@ -351,6 +312,97 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
         ),
       ),
     );
+  }
+
+  CountryPickerPlus CountryAndCityPicker() {
+    return CountryPickerPlus(
+              isRequired: true,
+              countryLabel: "Country",
+              countrySearchHintText: "Search Country",
+              countryHintText: "Tap to Select Country",
+              stateLabel: "State",
+              stateHintText: "Tap to Select State",
+              cityLabel: "City",
+              cityHintText: "Tap to Select City",
+              bottomSheetDecoration: CPPBSHDecoration(
+                closeColor: Colors.black,
+                itemDecoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.03),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                itemsPadding: const EdgeInsets.all(8),
+                itemsSpace: const EdgeInsets.symmetric(vertical: 4),
+                itemTextStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+              ),
+              decoration: CPPFDecoration(
+                labelStyle: const TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.w500),
+                hintStyle: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w400),
+                margin: const EdgeInsets.all(10),
+                suffixIcon: Icons.business_outlined,
+                filled: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide:
+                      const BorderSide(color: Colors.blue),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.deepOrangeAccent.withOpacity(0.2)),
+                ),
+              ),
+              searchDecoration: CPPSFDecoration(
+                height: 45,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 2,
+                  horizontal: 10,
+                ),
+                filled: true,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                hintStyle: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+                searchIconColor: Colors.black,
+                textStyle: const TextStyle(color: Colors.black, fontSize: 12),
+                // innerColor: Colors.blue,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onCountrySaved: (value) {
+                _country = value ?? '';
+              },
+              onCountrySelected: (value) {
+                _country = value;
+              },
+              onStateSelected: (value) {
+                _city = value;
+              },
+              onCitySelected: (value) {
+                _city = value;
+              },
+            );
   }
 
   // -1 : invalid input
@@ -419,7 +471,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
   }
 
   bool containsOnlyCharacters(String input) {
-  final RegExp regex = RegExp(r'^[a-zA-Z]+$');
-  return regex.hasMatch(input);
-}
+    final RegExp regex = RegExp(r'^[a-zA-Z]+$');
+    return regex.hasMatch(input);
+  }
 }
