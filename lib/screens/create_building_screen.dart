@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/MANAGER/overview_manager_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
@@ -90,6 +91,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
               onPressed: () async {
                 await updateMANAGERApartmentNumber(
                     userID, inputNumber, context);
+                await FirebaseHelper.updateUserPayments(userID);
               },
             ),
           ],
@@ -137,15 +139,9 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                 CupertinoDialogAction(
                     child: const Text("Update"),
                     onPressed: () async {
-                      // _congratulationsDialog(userID, joinID, apartmentInputController.text);
-                      // updateUserPayments(userID);
                       var userInputAsInteger = checkUserInputValidation(
                           apartmentInputController.text);
                       if (userInputAsInteger != -1) {
-                        // checkValidApartmentNumber(
-                        //     joinID, apartmentInputController.text);
-                        // if (_isValidApartmentNumber == true) {
-                        // }
                         apartmentInputController.text =
                             userInputAsInteger.toString();
                           _congratulationsDialog(
@@ -269,7 +265,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
+                    if (value!.isEmpty) {
                       return 'Please Enter City Name';
                     }
                     return null;
@@ -290,7 +286,7 @@ class _CreateBuildingScreenState extends State<CreateBuildingScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || !containsOnlyCharacters(value)) {
+                    if (value!.isEmpty) {
                       return 'Please Enter Street Name';
                     }
                     return null;

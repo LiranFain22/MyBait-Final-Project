@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mybait/screens/login_screen.dart';
 
 import '../firebase_options.dart';
@@ -179,5 +180,31 @@ class FirebaseHelper {
         .collection('Surveys')
         .doc(surveyID)
         .get();
+  }
+
+  static Future<void> updateUserPayments(String userID) async {
+    var now = DateTime.now();
+    var currentMonth = now.month;
+    var currentYear = now.year;
+
+    // Loop through the remaining months of the year, starting from the current month
+    for (var i = currentMonth; i <= 12; i++) {
+      var month = DateFormat('MMMM').format(DateTime(currentYear, i));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userID)
+          .collection('payments')
+          .doc(currentYear.toString())
+          .collection('House committee payments')
+          .doc(month)
+          .set({
+        'title': 'Month Payment: $month',
+        'paymentType': 'month',
+        'amount': 30,
+        'isPaid': false,
+        'monthNumber': i,
+      });
+    }
   }
 }

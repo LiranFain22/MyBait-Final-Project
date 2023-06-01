@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mybait/Services/firebase_helper.dart';
 import 'package:mybait/screens/TENANT/overview_tenant_screen.dart';
 
 import 'package:mybait/screens/welcome_screen.dart';
@@ -134,33 +135,7 @@ class _JoinBuildingScreenState extends State<JoinBuildingScreen> {
     await updateTenantsArrayOfBuilding(buildingCode, userID);
 
     // Update user's payments
-    await updateUserPayments(userID);
-  }
-
-  Future<void> updateUserPayments(String userID) async {
-    var now = DateTime.now();
-    var currentMonth = now.month;
-    var currentYear = now.year;
-
-    // Loop through the remaining months of the year, starting from the current month
-    for (var i = currentMonth; i <= 12; i++) {
-      var month = DateFormat('MMMM').format(DateTime(currentYear, i));
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userID)
-          .collection('payments')
-          .doc(currentYear.toString())
-          .collection('House committee payments')
-          .doc(month)
-          .set({
-        'title': 'Month Payment: $month',
-        'paymentType': 'month',
-        'amount': 30,
-        'isPaid': false,
-        'monthNumber': i,
-      });
-    }
+    await FirebaseHelper.updateUserPayments(userID);
   }
 
   void _updateApartmentNumberDialog(String joinID, String userID) {
