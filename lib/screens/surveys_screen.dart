@@ -88,7 +88,7 @@ class _SurveysScreenState extends State<SurveysScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushNamed(createSurveyScreen.routeName);
+          Navigator.of(context).pushNamed(CreateSurveyScreen.routeName);
         },
       ),
     );

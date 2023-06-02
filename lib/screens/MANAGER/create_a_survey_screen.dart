@@ -9,16 +9,16 @@ import 'package:mybait/widgets/custom_toast.dart';
 import '../../widgets/custom_popupMenuButton.dart';
 import '../surveys_screen.dart';
 
-class createSurveyScreen extends StatefulWidget {
+class CreateSurveyScreen extends StatefulWidget {
   static const routeName = '/create-survey';
 
-  const createSurveyScreen({super.key});
+  const CreateSurveyScreen({super.key});
 
   @override
-  State<createSurveyScreen> createState() => _createSurveyScreenState();
+  State<CreateSurveyScreen> createState() => _CreateSurveyScreenState();
 }
 
-class _createSurveyScreenState extends State<createSurveyScreen> {
+class _CreateSurveyScreenState extends State<CreateSurveyScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _optionsController = TextEditingController();

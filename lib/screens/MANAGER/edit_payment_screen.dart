@@ -62,8 +62,8 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                     if (value!.isEmpty) {
                       return 'Title is Empty, Please Enter a Title';
                     }
-                    if (!ValidatorHelper.containsOnlyCharacters(value)) {
-                      return 'Title contain only numbers, Please Enter a Characters';
+                    if (ValidatorHelper.containsOnlyNumbers(value)) {
+                      return 'Title Must Containt Characters';
                     }
                     return null;
                   },
@@ -89,12 +89,8 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
                     if (value!.isEmpty) {
                       return 'Cost is Empty, Please Enter a Cost';
                     }
-                    int valueAsInteger = int.parse(value);
-                    if (valueAsInteger.isNegative || valueAsInteger == 0) {
-                      return 'Cost Must Be Greater than Zero';
-                    }
-                    if (!ValidatorHelper.containsOnlyNumbers(value)) {
-                      return 'Cost contain only numbers, Please Enter a Numbers';
+                    else if (!ValidatorHelper.containsOnlyNumbers(value)) {
+                      return 'Please Enter a Cost (Numbers Only)';
                     }
                     return null;
                   },
