@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -318,16 +317,6 @@ class _ManagingPaymentScreenState extends State<ManagingPaymentScreen> {
     }
     return notPaidList;
   }
-
-  // Future<String> fetchBuildingID() async {
-  //   var userDocument = await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   var data = userDocument.data();
-  //   var buildingID = data!['buildingID'] as String;
-  //   return buildingID;
-  // }
 
   Future<List<Map<String, dynamic>>> fetchNotPaidList(
       buildingID, currentYear) async {

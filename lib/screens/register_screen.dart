@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mybait/Services/validator_helper.dart';
 import 'package:mybait/screens/login_screen.dart';
 import 'package:mybait/screens/welcome_screen.dart';
 
@@ -163,7 +164,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty || !value.contains('@')) {
+                    if (value!.isEmpty) {
+                      return 'Please Enter an Email Address';
+                    }
+                    else if (!ValidatorHelper.isEmail(value)) {
                       return 'Please Enter an Correct Email Address';
                     }
                     return null;
@@ -184,7 +188,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   obscureText: true,
                   validator: (value) {
-                    if (value!.isEmpty || value.length < 7) {
+                    if (value!.isEmpty) {
+                      return 'Please Enter a Password';
+                    }
+                    else if (value.length < 7) {
                       return 'Password must be at least 7 characters long.';
                     }
                     return null;
@@ -208,6 +215,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value!.isEmpty) {
                       return 'Please Enter First Name';
                     }
+                    else if (!ValidatorHelper.containsOnlyCharacters(value)) {
+                      return 'First Name not valid';
+                    }
                     return null;
                   },
                   onSaved: (value) {
@@ -228,6 +238,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please Enter Last Name';
+                    }
+                    else if (!ValidatorHelper.containsOnlyCharacters(value)) {
+                      return 'Last Name not valid';
                     }
                     return null;
                   },

@@ -107,7 +107,7 @@ class MyApp extends StatelessWidget {
         routes: {
           SummaryScreen.routeName: (context) => SummaryScreen(),
           SurveysScreen.routeName: (context) => SurveysScreen(),
-          createSurveyScreen.routeName: (context) => createSurveyScreen(),
+          CreateSurveyScreen.routeName: (context) => CreateSurveyScreen(),
           OverviewManagerScreen.routeName: (context) => OverviewManagerScreen(),
           OverviewTenantScreen.routeName: (context) => OverviewTenantScreen(),
           EditReportScreen.routeName: (context) => EditReportScreen(),
