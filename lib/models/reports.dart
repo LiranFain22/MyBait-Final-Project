@@ -71,7 +71,8 @@ class Reports {
               'imageURL': report.imageUrl,
               'status': 'WAITING',
               'createdBy': FirebaseAuth.instance.currentUser!.displayName,
-              'timestamp': DateTime.now()
+              'timestamp': DateTime.now(),
+              'lastUpdate': DateTime.now(),
             });
           },
         );
