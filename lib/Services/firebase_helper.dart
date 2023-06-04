@@ -207,4 +207,11 @@ class FirebaseHelper {
       });
     }
   }
+
+  static Future<int> getTenantsNumber() async{
+    String buildingID = await fetchBuildingID();
+    var buildingDoc = await _db.collection('Buildings').doc(buildingID).get();
+    List<dynamic> tenantsList = buildingDoc.data()!['tenants'];
+    return tenantsList.length;
+  }
 }

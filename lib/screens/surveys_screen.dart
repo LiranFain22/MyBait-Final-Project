@@ -84,13 +84,31 @@ class _SurveysScreenState extends State<SurveysScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed(CreateSurveyScreen.routeName);
-        },
-      ),
+      floatingActionButton: FloatingActionButtonBaseUserType(),
+    );
+  }
+
+  Widget FloatingActionButtonBaseUserType() {
+    return FutureBuilder(
+      future: FirebaseHelper.fetchUserType(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.none) {
+          return SizedBox.shrink();
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox.shrink();
+        }
+        String userType = snapshot.data!;
+        if (userType == 'MANAGER') {
+          return FloatingActionButton(
+            backgroundColor: Colors.blue,
+            child: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed(CreateSurveyScreen.routeName);
+            },
+          );
+        }
+        return SizedBox.shrink();
+      },
     );
   }
 
@@ -109,9 +127,9 @@ class _SurveysScreenState extends State<SurveysScreen> {
       List<dynamic> values = entry.value;
       for (String value in values) {
         if (value == FirebaseAuth.instance.currentUser!.uid) {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => SurveyResultScreen(buildingID!, surveyID)));
-              return;
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => SurveyResultScreen(buildingID!, surveyID)));
+          return;
         }
       }
     }
