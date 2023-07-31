@@ -208,6 +208,18 @@ class FirebaseHelper {
     }
   }
 
+  static Future<int> getReportsInProgress(String buildingID) async {
+    int count = await _db
+        .collection("Buildings")
+        .doc(buildingID)
+        .collection("Reports")
+        .where("status", isEqualTo: "INPROGRESS")
+        .get()
+        .then((snapshot) => snapshot.size);
+
+    return count;
+  }
+
   static Future<int> getTenantsNumber() async{
     String buildingID = await fetchBuildingID();
     var buildingDoc = await _db.collection('Buildings').doc(buildingID).get();
