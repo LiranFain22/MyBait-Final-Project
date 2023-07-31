@@ -141,8 +141,6 @@ class _SurveyResultScreenState extends State<SurveyResultScreen> {
           List<dynamic> voteList = value;
           totalVotes += voteList.length;
           int totalVotesCurrentKey = voteList.length;
-          print(key);
-          print(totalVotesCurrentKey);
 
           if (totalVotesCurrentKey > maxVotes) {
             maxVotes = totalVotesCurrentKey;
