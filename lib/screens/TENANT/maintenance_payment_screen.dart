@@ -235,7 +235,7 @@ class MaintenancePaymentScreen extends StatelessWidget {
                           .doc(FirebaseAuth.instance.currentUser!.uid)
                           .collection('payments')
                           .doc(currentYear.toString())
-                          .collection('Maintenance payments')
+                          .collection('Maintenance Payments')
                           .doc(docId.id)
                           .update({
                         'isPaid': true,

@@ -152,7 +152,7 @@ class _EditPaymentScreenState extends State<EditPaymentScreen> {
       for (var tenantID in tenants) {
         if (newExpense.title!.isNotEmpty) {
           print(newExpense.title);
-          await FirebaseFirestore.instance
+          var documentReference = await FirebaseFirestore.instance
               .collection('users')
               .doc(tenantID)
               .collection('payments')
