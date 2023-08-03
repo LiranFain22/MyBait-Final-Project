@@ -173,7 +173,8 @@ class FirebaseHelper {
     return userType;
   }
 
-  static Future<DocumentSnapshot> fetchSurveyDoc(String buildingID, String surveyID) {
+  static Future<DocumentSnapshot> fetchSurveyDoc(
+      String buildingID, String surveyID) {
     return _db
         .collection('Buildings')
         .doc(buildingID)
@@ -220,10 +221,60 @@ class FirebaseHelper {
     return count;
   }
 
-  static Future<int> getTenantsNumber() async{
+  static Future<int> getTenantsNumber() async {
     String buildingID = await fetchBuildingID();
     var buildingDoc = await _db.collection('Buildings').doc(buildingID).get();
     List<dynamic> tenantsList = buildingDoc.data()!['tenants'];
     return tenantsList.length;
+  }
+
+  static Future<int> getPaymentsToPay(String uid, String currentYear) async {
+    int houseCommitteePaymentsCount = await _db
+        .collection("users")
+        .doc(uid)
+        .collection("payments")
+        .doc(currentYear)
+        .collection("House committee payments")
+        .where("isPaid", isEqualTo: false)
+        .get()
+        .then((snapshot) => snapshot.size);
+
+    int maintenancePaymentsCount = await _db
+        .collection("users")
+        .doc(uid)
+        .collection("payments")
+        .doc(currentYear)
+        .collection("Maintenance Payments")
+        .where("isPaid", isEqualTo: false)
+        .get()
+        .then((snapshot) => snapshot.size);
+
+    return houseCommitteePaymentsCount + maintenancePaymentsCount;
+  }
+
+  static Future<int> getSurveysToAnswer(String buildingID, String uid) async {
+    CollectionReference surveyCollection =
+        await _db.collection("Buildings").doc(buildingID).collection("Surveys");
+
+    // get the total surveys of specific building id
+    QuerySnapshot totalSurveys = await surveyCollection.get();
+
+    // count all 'Yes' of user
+    QuerySnapshot countYesOfUser = await surveyCollection
+        .where('result.Yes', arrayContains: uid)
+        .get();
+
+    // count all 'No' of user
+    QuerySnapshot countNoOfUser = await surveyCollection
+        .where('result.No', arrayContains: uid)
+        .get();
+
+    // Sum up all the counting
+    int totalCounting = countYesOfUser.size + countNoOfUser.size;
+
+    // Check if user have surveys to answer
+    int numOfSurveysToAnswer = totalSurveys.size - totalCounting;
+
+    return numOfSurveysToAnswer;
   }
 }
