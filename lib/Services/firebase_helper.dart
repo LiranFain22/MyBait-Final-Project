@@ -1,3 +1,5 @@
+import 'package:rxdart/rxdart.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -228,28 +230,74 @@ class FirebaseHelper {
     return tenantsList.length;
   }
 
-  static Future<int> getPaymentsToPay(String uid, String currentYear) async {
-    int houseCommitteePaymentsCount = await _db
+  // static Future<int> getHouseCommitteePaymentsToPay(
+  //     String uid, String currentYear) async {
+  //   return await _db
+  //       .collection("users")
+  //       .doc(uid)
+  //       .collection("payments")
+  //       .doc(currentYear)
+  //       .collection("House committee payments")
+  //       .where("isPaid", isEqualTo: false)
+  //       .get()
+  //       .then((snapshot) => snapshot.size);
+  // }
+
+  static Stream<int> getHouseCommitteePaymentsToPay(
+      String uid, String currentYear) {
+    return _db
         .collection("users")
         .doc(uid)
         .collection("payments")
         .doc(currentYear)
         .collection("House committee payments")
         .where("isPaid", isEqualTo: false)
-        .get()
-        .then((snapshot) => snapshot.size);
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+  }
 
-    int maintenancePaymentsCount = await _db
+  // static Future<int> getMaintenancePaymentsToPay(
+  //     String uid, String currentYear) async {
+  //   return await _db
+  //       .collection("users")
+  //       .doc(uid)
+  //       .collection("payments")
+  //       .doc(currentYear)
+  //       .collection("Maintenance Payments")
+  //       .where("isPaid", isEqualTo: false)
+  //       .get()
+  //       .then((snapshot) => snapshot.size);
+  // }
+
+  static Stream<int> getMaintenancePaymentsToPay(
+      String uid, String currentYear) {
+    return _db
         .collection("users")
         .doc(uid)
         .collection("payments")
         .doc(currentYear)
         .collection("Maintenance Payments")
         .where("isPaid", isEqualTo: false)
-        .get()
-        .then((snapshot) => snapshot.size);
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+  }
 
-    return houseCommitteePaymentsCount + maintenancePaymentsCount;
+  // static Future<int> getPaymentsToPay(String uid, String currentYear) async {
+  //   int houseCommitteePaymentsCount =
+  //       await getHouseCommitteePaymentsToPay(uid, currentYear);
+  //   int maintenancePaymentsCount =
+  //       await getMaintenancePaymentsToPay(uid, currentYear);
+  //   return houseCommitteePaymentsCount + maintenancePaymentsCount;
+  // }
+
+  static Stream<int> getPaymentsToPay(String uid, String currentYear) {
+    Stream<int> houseCommitteePaymentsStream =
+        getHouseCommitteePaymentsToPay(uid, currentYear);
+    Stream<int> maintenancePaymentsStream =
+        getMaintenancePaymentsToPay(uid, currentYear);
+
+    return houseCommitteePaymentsStream.zipWith(maintenancePaymentsStream,
+        (houseCount, maintenanceCount) => houseCount + maintenanceCount);
   }
 
   static Future<int> getSurveysToAnswer(String buildingID, String uid) async {
@@ -260,14 +308,12 @@ class FirebaseHelper {
     QuerySnapshot totalSurveys = await surveyCollection.get();
 
     // count all 'Yes' of user
-    QuerySnapshot countYesOfUser = await surveyCollection
-        .where('result.Yes', arrayContains: uid)
-        .get();
+    QuerySnapshot countYesOfUser =
+        await surveyCollection.where('result.Yes', arrayContains: uid).get();
 
     // count all 'No' of user
-    QuerySnapshot countNoOfUser = await surveyCollection
-        .where('result.No', arrayContains: uid)
-        .get();
+    QuerySnapshot countNoOfUser =
+        await surveyCollection.where('result.No', arrayContains: uid).get();
 
     // Sum up all the counting
     int totalCounting = countYesOfUser.size + countNoOfUser.size;
