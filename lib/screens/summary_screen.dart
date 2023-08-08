@@ -27,8 +27,8 @@ class SummaryScreen extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.paid, color: Colors.green),
                 title: Text("Payments"),
-                subtitle: FutureBuilder(
-                  future: FirebaseHelper.getPaymentsToPay(
+                subtitle: StreamBuilder(
+                  stream: FirebaseHelper.getPaymentsToPay(
                       FirebaseAuth.instance.currentUser!.uid,
                       DateTime.now().year.toString()),
                   builder: (context, snapshot) {
