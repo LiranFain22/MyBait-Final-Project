@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mybait/Services/firebase_helper.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../../widgets/app_drawer.dart';
 import '../../widgets/custom_popupMenuButton.dart';
@@ -41,10 +42,43 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   int numOfHomeCommittee = snapshot.data ?? 0;
 
                   if (numOfHomeCommittee > 0) {
-                    return Badge(
-                      label: Text("$numOfHomeCommittee",
-                          style: TextStyle(fontSize: 22)),
-                      largeSize: 25,
+                    // return Badge(
+                    //   label: Text("$numOfHomeCommittee",
+                    //       style: TextStyle(fontSize: 22)),
+                    //   largeSize: 25,
+                    //   child: SizedBox(
+                    //     height: 150,
+                    //     width: 300,
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.only(bottom: 20),
+                    //       child: ElevatedButton(
+                    //         onPressed: () {
+                    //           Navigator.pushNamed(context,
+                    //               HomeCommitteePaymentScreen.routeName);
+                    //         },
+                    //         style: ElevatedButton.styleFrom(
+                    //           shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(10),
+                    //           ),
+                    //         ),
+                    //         child: const Text(
+                    //           'Home Committee Payments',
+                    //           style: TextStyle(fontSize: 25),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+                    return badges.Badge(
+                      badgeContent: Text(
+                        '$numOfHomeCommittee',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      position: badges.BadgePosition.topEnd(top: -15, end: 20),
                       child: SizedBox(
                         height: 150,
                         width: 300,
@@ -108,10 +142,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   int numOfHomeCommittee = snapshot.data ?? 0;
 
                   if (numOfHomeCommittee > 0) {
-                    return Badge(
-                      label: Text("$numOfHomeCommittee",
-                          style: TextStyle(fontSize: 22)),
-                      largeSize: 25,
+                    return badges.Badge(
+                      badgeContent: Text(
+                        '$numOfHomeCommittee',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      position: badges.BadgePosition.topEnd(top: -15, end: 20),
                       child: SizedBox(
                         height: 150,
                         width: 300,
