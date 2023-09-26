@@ -44,7 +44,7 @@ class _OverviewTenantScreenState extends State<OverviewTenantScreen> {
   List menuList = [
     _MenuItem(Icons.report_gmailerrorred, 'Report'),
     _MenuItem(Icons.payment_outlined, 'Payment'),
-    _MenuItem(Icons.info_outline, 'Information'),
+    _MenuItem(Icons.account_circle_outlined, 'Information'),
     _MenuItem(Icons.insert_chart, 'Surveys'),
     _MenuItem(Icons.assignment, 'Summary'), 
   ];
